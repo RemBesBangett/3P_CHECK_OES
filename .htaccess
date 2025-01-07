@@ -1,0 +1,74 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteBase /3P%20CHECK%20OES/
+
+# Menghapus %25 dari URL
+RewriteCond %{THE_REQUEST} (%25)
+RewriteRule ^(.*)$ $1 [N,R=301]
+
+# Redirect requests for SIL_*.php to the appropriate file
+
+
+RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/USER/3P_USER_VIEW\.php[\s?] [NC] #Dashboard Manangement User /
+RewriteRule ^OPERATIONAL/USER [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/MAIN/3P_DASHBORD_VIEW\.php[\s?] [NC] #Dashboard Menu Utama 
+RewriteRule ^DASHBOARD [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW\.php[\s?] [NC] #Dashboard Menu Login
+RewriteRule ^LOGIN [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/OPERATIONAL/DASHBOARD/MAIN/3P_DASHBORD_VIEW\.php[\s?] [NC] #Dashboard Menu Operational
+RewriteRule ^OPERATIONAL [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_VIEW\.php[\s?] [NC] #Dashboard Operational TAM
+RewriteRule ^OPERATIONAL/TAM [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_VIEW\.php[\s?] [NC] # Dashboard Operational TMMIN
+RewriteRule ^OPERATIONAL/TMMIN [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_VIEW\.php[\s?] [NC] #Dashboard Operational ADM
+RewriteRule ^OPERATIONAL/ADM [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/PC_GENBA/EXPORT/3P_PC_VIEW\.php[\s?] [NC] #Dashboard Operational ADM
+RewriteRule ^PC-GENBA [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/ERROR/Error_Access\.php[\s?] [NC] #Dashboard Operational ADM
+RewriteRule ^ERROR_ACCESS [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+CONTROLLER/LOGIN/3P_LOGOUT_CONTROL\.php[\s?] [NC] #Dashboard Operational ADM
+RewriteRule ^LOGOUT [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/HISTORY/3P_HISTORY_VIEW\.php[\s?] [NC] #Dashboard Operational ADM
+RewriteRule ^OPERATIONAL/REPORT [R=301,L]   
+RewriteCond %{THE_REQUEST} \s/VIEW/OPERATIONAL/DASHBOARD/ADM/SIL_FILES/SIL_(\d+)\.php[\s?] [NC]
+RewriteRule ^OPERATIONAL/ADM/SIL_(\d+)$ /VIEW/OPERATIONAL/DASHBOARD/ADM/SIL_FILES/SIL_$1.php [R=301,L]
+RewriteCond %{THE_REQUEST} \s/VIEW/OPERATIONAL/DASHBOARD/TMMIN/SIL_FILES/SIL_(\d+)\.php[\s?] [NC]
+RewriteRule ^OPERATIONAL/ADM/SIL_(\d+)$ /VIEW/OPERATIONAL/DASHBOARD/TMMIN/SIL_FILES/SIL_$1.php [R=301,L]
+
+
+# Internally map URL bersih ke file asli
+RewriteRule ^OPERATIONAL/USER$ VIEW/GENERAL/USER/3P_USER_VIEW.php [NC,L]
+RewriteRule ^DASHBOARD$ VIEW/MAIN/3P_DASHBORD_VIEW.php [NC,L]
+RewriteRule ^LOGIN$ VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW.php [NC,L]
+RewriteRule ^OPERATIONAL$ VIEW/OPERATIONAL/DASHBOARD/MAIN/3P_DASHBORD_VIEW.php [NC,L]
+RewriteRule ^OPERATIONAL/TAM$ VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_VIEW.php [NC,L]
+RewriteRule ^OPERATIONAL/TMMIN$ VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_VIEW.php [NC,L]
+RewriteRule ^OPERATIONAL/ADM$ VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_VIEW.php [NC,L]
+RewriteRule ^PC-GENBA$ VIEW/PC_GENBA/EXPORT/3P_PC_VIEW.php [NC,L]
+RewriteRule ^ERROR_ACCESS$ VIEW/GENERAL/ERROR/Error_Access.php [NC,L]
+RewriteRule ^LOGOUT$ CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php [NC,L]
+RewriteRule ^OPERATIONAL/REPORT$ VIEW/GENERAL/HISTORY/3P_HISTORY_VIEW.php [NC,L]
+RewriteRule ^OPERATIONAL/ADM/SIL_(\d+)$ VIEW/OPERATIONAL/DASHBOARD/ADM/SIL_FILES/SIL_$1.php [NC,L]
+RewriteRule ^OPERATIONAL/TMMIN/SIL_(\d+)$ VIEW/OPERATIONAL/DASHBOARD/TMMIN/SIL_FILES/SIL_$1.php [NC,L]
+
+
+
+# Handle asset requests when using clean URL
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ASSET/(.*)$ ASSET/$1 [L]
+
+# Error documents
+ErrorDocument 404 /3P%20CHECK%20OES/VIEW/ERROR/Error.php
+ErrorDocument 500 /3P%20CHECK%20OES/VIEW/ERROR/Error.php
+
+# Allow static files
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+
