@@ -14,7 +14,6 @@ RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/USER/3P_USER_VIEW\.php[\s?] [NC] #Da
 RewriteRule ^OPERATIONAL/USER [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+VIEW/MAIN/3P_DASHBORD_VIEW\.php[\s?] [NC] #Dashboard Menu Utama 
 RewriteRule ^DASHBOARD [R=301,L]
-
 RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW\.php[\s?] [NC] #Dashboard Menu Login
 RewriteRule ^LOGIN [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+VIEW/OPERATIONAL/DASHBOARD/MAIN/3P_DASHBORD_VIEW\.php[\s?] [NC] #Dashboard Menu Operational

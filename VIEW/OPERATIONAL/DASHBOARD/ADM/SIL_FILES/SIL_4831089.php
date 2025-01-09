@@ -4,7 +4,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
 }
-$baseUrl = '/3P CHECK OES/'
+$baseUrl = '/3P_CHECK_OES/'
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +94,7 @@ $baseUrl = '/3P CHECK OES/'
                 <div class='card'>
                     <div class='card-header bg-primary text-white d-flex justify-content-between align-items-center'>
                         <h3 class='mb-0' id='noSil'>4831089</h3>
-                        <a href='/3P CHECK OES/OPERATIONAL/ADM' class='btn btn-secondary btn-sm'>
+                        <a href='/3P_CHECK_OES/OPERATIONAL/ADM' class='btn btn-secondary btn-sm'>
                             <i class='fas fa-arrow-left'></i> Back to List
                         </a>
                     </div>
@@ -794,7 +794,7 @@ $baseUrl = '/3P CHECK OES/'
                                         });
                                     }
                                 });
-                                location.href = '<?= $baseUrl; ?>Operatioanl/Adm';
+                                location.href = '<?= $baseUrl; ?>Operational/Adm';
                             }
                         });
                     } else {
