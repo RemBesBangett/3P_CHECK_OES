@@ -17,7 +17,7 @@ $title = '';
 // } elseif ($page == 'E_Lot_Formation_Done.php') {
 //     $title = 'E-LOT DONE';
 // }
-$baseUrl = '/3P Check OES/';
+$baseUrl = '/3P_CHECK_OES/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -182,7 +182,7 @@ $baseUrl = '/3P Check OES/';
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="<?php echo $baseUrl; ?>CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    <li><a class="dropdown-item" href="<?php echo $baseUrl; ?>LOGOUT"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                 </ul>
             </div>
         </div>

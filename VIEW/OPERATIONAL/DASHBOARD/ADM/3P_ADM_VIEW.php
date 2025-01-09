@@ -337,6 +337,71 @@ $silFiles = getSilFiles('SIL_FILES/');
 
 
 
+        
+        function deleteEntry(button) {
+            const row = button.closest('tr');
+            const numberSils = row.cells[1].innerText;
+            
+            swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete SIL` + numberSils,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            numSil: numberSils
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                row.remove();
+                                swal.fire({
+                                    icon: 'success',
+                                    title: 'SIL Deleted',
+                                    text: `SIL ${numberSils} has been deleted.`,
+                                    confirmButtonText: 'OK'
+                                });
+                                window.location.reload();
+                            } else {
+                                swal.fire({
+                                    icon: 'success',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to delete SIL.',
+                                    confirmButtonText: 'OK'
+                                });
+                                window.location.reload();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            let errorMessage = 'Unknown error occurred';
+                            try {
+                                const errorResponse = JSON.parse(xhr.responseText);
+                                errorMessage = errorResponse.message || errorMessage;
+                            } catch (e) {
+                                errorMessage = xhr.responseText || 'Unable to parse error response';
+                            }
+                            
+                            swal.fire({
+                                icon: 'success',
+                                title: 'Success Delete Data',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+
+        }
         // function exportData() {
         //     var timePort = document.getElementById('timePort').value;
 
@@ -440,71 +505,6 @@ $silFiles = getSilFiles('SIL_FILES/');
         //     });
 
         // }
-
-        function deleteEntry(button) {
-            const row = button.closest('tr');
-            const numberSils = row.cells[1].innerText;
-
-            swal.fire({
-                title: 'Are you sure?',
-                text: `You are about to delete SIL` + numberSils,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '3P_ADM_DELETE.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            numSil: numberSils
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                row.remove();
-                                swal.fire({
-                                    icon: 'success',
-                                    title: 'SIL Deleted',
-                                    text: `SIL ${numberSils} has been deleted.`,
-                                    confirmButtonText: 'OK'
-                                });
-                                window.location.reload();
-                            } else {
-                                swal.fire({
-                                    icon: 'success',
-                                    title: 'Error',
-                                    text: response.message || 'Failed to delete SIL.',
-                                    confirmButtonText: 'OK'
-                                });
-                                window.location.reload();
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            let errorMessage = 'Unknown error occurred';
-                            try {
-                                const errorResponse = JSON.parse(xhr.responseText);
-                                errorMessage = errorResponse.message || errorMessage;
-                            } catch (e) {
-                                errorMessage = xhr.responseText || 'Unable to parse error response';
-                            }
-
-                            swal.fire({
-                                icon: 'success',
-                                title: 'Success Delete Data',
-                                text: errorMessage,
-                                confirmButtonText: 'OK'
-                            }).then(function() {
-                                window.location.reload();
-                            });
-                        }
-                    });
-                }
-            });
-
-        }
     </script>
 </body>
 

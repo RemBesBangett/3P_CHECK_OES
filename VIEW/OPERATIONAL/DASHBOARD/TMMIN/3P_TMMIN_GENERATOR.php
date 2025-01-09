@@ -34,7 +34,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             header('location: /3P_CHECK_OES/Logout');
             exit();
         };
-    \$baseUrl = '/3P CHECK OES/';
+    \$baseUrl = '/3P_CHECK_OES/';
     ?>
     <!DOCTYPE html>
 <html lang='en'>
@@ -480,7 +480,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 qtyLabelOri = modalQuantitySupplier;
                 // Validasi jika jumlah yang dipindai melebihi total
                 if (currentScannedLabelCount > totalLabelCount) {
-                    alert(`Error: Cannot exceed total label count of ${totalLabelCount}`);
+                    alert(`Error: Cannot exceed total label count of \${totalLabelCount}`);
                     return;
                 }
 
@@ -654,7 +654,8 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 dataID: 'D',
                 manifestKanban: manifestKanbanDB,
             };
-
+            console.log(saveToDatabase);
+            
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
 
@@ -708,7 +709,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                 }).then((result) => {
                                     if (result.isConfirmed) {
 
-                                        location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
+                                        location.reload();
                                     }
                                 });
                             } else {
@@ -856,7 +857,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                         });
                                     }
                                 });
-                                location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
+                                location.href = '<?= $baseUrl; ?>OPERATIONAL/TMMIN';
                             }
                         });
                     } else {

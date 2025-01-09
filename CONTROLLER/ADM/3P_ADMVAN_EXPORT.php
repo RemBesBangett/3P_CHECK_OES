@@ -5,7 +5,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\IOFactory; 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-include "../../MODEL/TMMIN/3P_TMMIN_HANDLER.php";
+include "../../MODEL/ADM/3P_ADM_HANDLER.php";
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -37,7 +37,7 @@ try {
         exit();
     }
 
-    $templateFile = '../../DOC/FORMAT/UPLOAD EXCEL TMMIN VANNING/sub_manifest_creation_template (27).xls';
+    $templateFile = '/3P_CHECK_OES/FORMAT/ADM ASSYST/FORMAT ADM ASSYST.xlsx';
 
     // Load spreadsheet
     $spreadsheet = IOFactory::load($templateFile);

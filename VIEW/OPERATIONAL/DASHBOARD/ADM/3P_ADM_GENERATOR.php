@@ -820,7 +820,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>Operatioanl/Adm';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/ADM';
                             }
                         });
                     } else {

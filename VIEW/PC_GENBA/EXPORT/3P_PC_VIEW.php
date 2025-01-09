@@ -3,9 +3,8 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-}
-else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
-    header('location: /3P_CHECK_OES/Error_access'); 
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+    header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 }
 
@@ -127,7 +126,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         document.getElementById('submitDateButton').addEventListener('click', function() {
             const date = document.getElementById('inputDate').value;
             if (date) {
-                alert('Tanggal yang dipilih: ' + date);
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('dateModal'));
                 modal.hide(); // Close the modal
             } else {
@@ -152,11 +151,13 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             // Konversi format tanggal dari YYYY-MM-DD ke DD/MM/YYYY
             var dateParts = timePort.split('-');
             var formattedDate = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
+            console.log(formattedDate);
 
             var dataToSend = {
                 timePort: formattedDate,
                 customer: customerDocument
             };
+            console.log(dataToSend);
 
             // Tampilkan loading
             Swal.fire({

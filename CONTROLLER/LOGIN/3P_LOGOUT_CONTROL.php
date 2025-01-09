@@ -58,7 +58,7 @@ header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 header('Cache-Control: no-cache, no-store, must-revalidate, private');
 
 // Define base URL and login path
-$baseURL = '/3P%20CHECK%20OES'; 
+$baseURL = '/3P_CHECK_OES'; 
 $loginPath = '/VIEW/LOGIN/3P_LOGIN_VIEW.php'; 
 
 // Redirect to login page with random parameter

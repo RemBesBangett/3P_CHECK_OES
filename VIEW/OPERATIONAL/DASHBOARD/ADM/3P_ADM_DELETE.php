@@ -1,14 +1,14 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P_CHECK_OES/logout');
+    header('location: /3P_CHECK_OES/logout ');
     exit();
 }
 
 error_log("Script started");
 
 // Gunakan konstanta atau konfigurasi path yang konsisten
-define('BASE_PATH', 'C:/xampp/htdocs/3P CHECK OES/VIEW/OPERATIONAL/DASHBOARD/ADM/SIL_FILES/');
+define('BASE_PATH', 'C:/xampp/htdocs/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/ADM/SIL_FILES/');
 
 try {
     // Pastikan file yang diterima valid
@@ -32,6 +32,7 @@ try {
         if (unlink($filePath)) {
            
             echo 'success';
+  
         } else {
             throw new Exception('Failed to delete file');
         }
@@ -43,15 +44,5 @@ try {
     error_log("Error: " . $e->getMessage());
     
     // Kirim respon sesuai kesalahan
-    switch ($e->getMessage()) {
-        case 'File not found':
-            echo 'not_found';
-            break;
-        case 'File not writable':
-            echo 'permission_denied';
-            break;
-        default:
-            echo 'error';
-    }
 }
 ?>

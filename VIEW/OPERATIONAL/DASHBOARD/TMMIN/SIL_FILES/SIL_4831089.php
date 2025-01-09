@@ -1,14 +1,14 @@
-<?php
-session_start();
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P_CHECK_OES/Logout');
-    exit();
-};
-$baseUrl = '/3P CHECK OES/';
-?>
-<!DOCTYPE html>
-<html lang='en'>
 
+    <?php
+    session_start();
+        if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+            header('location: /3P_CHECK_OES/Logout');
+            exit();
+        };
+    $baseUrl = '/3P_CHECK_OES/';
+    ?>
+    <!DOCTYPE html>
+<html lang='en'>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -25,17 +25,14 @@ $baseUrl = '/3P CHECK OES/';
             padding: 2px 5px;
             font-size: 12px;
         }
-
         .label-custom {
             font-size: 12px;
             margin-bottom: 2px;
         }
-
         .text-left {
             text-align: left;
         }
-
-        .process-guide {
+          .process-guide {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,10 +50,9 @@ $baseUrl = '/3P CHECK OES/';
             margin: 0 2px;
             font-size: 0.8rem;
             transition: all 0.3s ease;
-        }
+        }   
     </style>
 </head>
-
 <body>
     <div class='container-fluid'>
         <div class='row'>
@@ -116,7 +112,7 @@ $baseUrl = '/3P CHECK OES/';
                                 </table>
                             </div>
                         </form>
-                        <button type='button' class='btn btn-success' onclick='submitJob()'>Finish</button>
+                          <button type='button' class='btn btn-success' onclick='submitJob()'>Finish</button>
                     </div>
                 </div>
             </div>
@@ -629,7 +625,8 @@ $baseUrl = '/3P CHECK OES/';
                 dataID: 'D',
                 manifestKanban: manifestKanbanDB,
             };
-
+            console.log(saveToDatabase);
+            
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
 
@@ -683,7 +680,7 @@ $baseUrl = '/3P CHECK OES/';
                                 }).then((result) => {
                                     if (result.isConfirmed) {
 
-                                        location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
+                                        location.reload();
                                     }
                                 });
                             } else {
@@ -831,7 +828,7 @@ $baseUrl = '/3P CHECK OES/';
                                         });
                                     }
                                 });
-                                location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
+                                location.href = '<?= $baseUrl; ?>OPERATIONAL/TMMIN';
                             }
                         });
                     } else {
@@ -858,5 +855,4 @@ $baseUrl = '/3P CHECK OES/';
         }
     </script>
 </body>
-
 </html>

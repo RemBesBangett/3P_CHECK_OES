@@ -61,8 +61,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ASSET/(.*)$ ASSET/$1 [L]
 
 # Error documents
-ErrorDocument 404 /3P%20CHECK%20OES/VIEW/ERROR/Error.php
-ErrorDocument 500 /3P%20CHECK%20OES/VIEW/ERROR/Error.php
+ErrorDocument 404 /3P_CHECK_OES/VIEW/ERROR/Error.php
+ErrorDocument 500 /3P_CHECK_OES/VIEW/ERROR/Error.php
 
 # Allow static files
 <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico)$">
