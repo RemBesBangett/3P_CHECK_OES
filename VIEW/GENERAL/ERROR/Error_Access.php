@@ -1,6 +1,6 @@
 <?php
 session_start();
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 // Cek apakah user sudah login
 
 // Variabel untuk detail 

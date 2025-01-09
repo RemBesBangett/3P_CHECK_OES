@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/logout');
+    header('location: /3P_CHECK_OES/logout');
     exit();
 }
 $baseUrl = '/3P CHECK OES/'
@@ -239,7 +239,7 @@ $baseUrl = '/3P CHECK OES/'
         function getData(noSils) {
             $.ajax({
                 type: 'GET',
-                url: '/3P%20CHECK%20OES/CONTROLLER/ADM/3P_ADM_SHOW.php',
+                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_SHOW.php',
                 data: {
                     noSil: noSils
                 },
@@ -619,7 +619,7 @@ $baseUrl = '/3P CHECK OES/'
                 if (result.isConfirmed) {
                     // Kirim data ke server
                     $.ajax({
-                        url: '/3P%20CHECK%20OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                        url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
                         type: 'POST',
                         dataType: 'json',
                         data: saveToDatabase,
@@ -736,7 +736,7 @@ $baseUrl = '/3P CHECK OES/'
 
             // Send the data via AJAX
             $.ajax({
-                url: '/3P%20CHECK%20OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -753,7 +753,7 @@ $baseUrl = '/3P CHECK OES/'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P%20CHECK%20OES/VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {

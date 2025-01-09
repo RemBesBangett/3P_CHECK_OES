@@ -1,5 +1,5 @@
 <?php
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 ?>
 <!DOCTYPE html>
 <html lang="en">

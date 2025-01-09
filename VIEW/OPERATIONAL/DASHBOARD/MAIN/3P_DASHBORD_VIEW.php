@@ -1,7 +1,7 @@
 <?php
   session_start();
   if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-      header('location: /3P%20CHECK%20OES/logout ');
+      header('location: /3P_CHECK_OES/logout ');
       exit();
   }
 
@@ -10,7 +10,7 @@ else if(isset($_SESSION['section']) && $_SESSION['section'] === 'PC-GENBA'){
     header('location: ' . $baseUrl . 'error_access');
     exit();   
 }
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 ?>
 
 <!DOCTYPE html>
@@ -152,7 +152,7 @@ $baseUrl = '/3P%20CHECK%20OES/';
 </head>
 <body>
     <div class="dashboard-container">
-        <button type="button" class="btn btn-warning" onclick="window.location.href='/3P%20CHECK%20OES/DASHBOARD'">
+        <button type="button" class="btn btn-warning" onclick="window.location.href='/3P_CHECK_OES/DASHBOARD'">
             <i class="fa fa-home"></i> Main Menu
         </button>
         <div class="page-header animate__animated animate__fadeInDown">

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/logout');
+    header('location: /3P_CHECK_OES/logout');
     exit();
 } 
 
@@ -9,7 +9,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 include '../../../MODEL/HISTORY/3P_HISTORY_HANDLER.php';
 include '../TEMPLATE/3P_Header.php';
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 
 // Ambil data history
 $historyResult = getAllHistory();

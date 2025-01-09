@@ -1,5 +1,5 @@
 <?php
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,13 +106,13 @@ $baseUrl = '/3P%20CHECK%20OES/';
             
             if (timeLeft <= 0) {
                 clearInterval(countdownTimer);
-                window.location.href = 'C:/xampp/htdocs/3P%20CHECK%20OES/CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php';
+                window.location.href = 'C:/xampp/htdocs/3P_CHECK_OES/CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php';
             }
         }, 1000);
 
         // Backup redirect jika meta refresh gagal
         setTimeout(() => {
-            window.location.href = 'C:/xampp/htdocs/3P%20CHECK%20OES/CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php';
+            window.location.href = 'C:/xampp/htdocs/3P_CHECK_OES/CONTROLLER/LOGIN/3P_LOGOUT_CONTROL.php';
         }, 5000);
     </script>
 </body>

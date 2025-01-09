@@ -1,18 +1,18 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/logout'); 
+    header('location: /3P_CHECK_OES/logout'); 
     exit();
 }
 
 // Cek apakah session username sudah ada (sudah login)
 else if (!isset($_SESSION['nama'])) {
     // Jika tidak ada session, redirect ke halaman login
-    header("Location: /3P%20CHECK%20OES/LOGOUT");
+    header("Location: /3P_CHECK_OES/LOGOUT");
     exit(); // Pastikan script berhenti setelah redirect
 }
 // Jika sudah login, ambil nama pengguna dari session
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 ?>
 
 <!DOCTYPE html>

@@ -1,7 +1,7 @@
 Options -Indexes
 
 RewriteEngine On
-RewriteBase /3P%20CHECK%20OES/
+RewriteBase /3P_CHECK_OES/
 
 # Menghapus %25 dari URL
 RewriteCond %{THE_REQUEST} (%25)

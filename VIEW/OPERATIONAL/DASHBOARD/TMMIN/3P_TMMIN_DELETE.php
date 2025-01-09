@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/logout ');
+    header('location: /3P_CHECK_OES/logout ');
     exit();
 }
 

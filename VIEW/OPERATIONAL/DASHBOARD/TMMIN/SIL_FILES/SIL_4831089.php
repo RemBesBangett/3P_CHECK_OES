@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/Logout');
+    header('location: /3P_CHECK_OES/Logout');
     exit();
 };
 $baseUrl = '/3P CHECK OES/';
@@ -245,7 +245,7 @@ $baseUrl = '/3P CHECK OES/';
         function getData(noSils) {
             $.ajax({
                 type: 'GET',
-                url: '/3P%20CHECK%20OES/CONTROLLER/TMMIN/3P_TMMIN_SHOW.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_SHOW.php',
                 data: {
                     noSil: noSils
                 },
@@ -654,7 +654,7 @@ $baseUrl = '/3P CHECK OES/';
                 if (result.isConfirmed) {
                     // Kirim data ke server
                     $.ajax({
-                        url: '/3P%20CHECK%20OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
+                        url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                         type: 'POST',
                         dataType: 'json',
                         data: saveToDatabase,
@@ -683,7 +683,7 @@ $baseUrl = '/3P CHECK OES/';
                                 }).then((result) => {
                                     if (result.isConfirmed) {
 
-                                        location.href = '/3P%20CHECK%20OES/OPERATIONAL/TMMIN';
+                                        location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
                                     }
                                 });
                             } else {
@@ -773,7 +773,7 @@ $baseUrl = '/3P CHECK OES/';
 
             // Send the data via AJAX
             $.ajax({
-                url: '/3P%20CHECK%20OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -790,7 +790,7 @@ $baseUrl = '/3P CHECK OES/';
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P%20CHECK%20OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {
@@ -831,7 +831,7 @@ $baseUrl = '/3P CHECK OES/';
                                         });
                                     }
                                 });
-                                location.href = '/3P%20CHECK%20OES/OPERATIONAL/TMMIN';
+                                location.href = '/3P_CHECK_OES/OPERATIONAL/TMMIN';
                             }
                         });
                     } else {

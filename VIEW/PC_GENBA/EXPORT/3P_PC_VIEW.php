@@ -1,15 +1,15 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P%20CHECK%20OES/logout');
+    header('location: /3P_CHECK_OES/logout');
     exit();
 }
 else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
-    header('location: /3P%20CHECK%20OES/Error_access'); 
+    header('location: /3P_CHECK_OES/Error_access'); 
     die('Access denied: Invalid session section');
 }
 
-$baseUrl = '/3P%20CHECK%20OES/';
+$baseUrl = '/3P_CHECK_OES/';
 include '../../GENERAL/TEMPLATE/3P_Header.php';
 ?>
 

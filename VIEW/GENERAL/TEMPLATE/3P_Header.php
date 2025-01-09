@@ -209,7 +209,7 @@ $baseUrl = '/3P Check OES/';
 
                 // Pastikan URL menggunakan format yang benar
                 href = href.replace(/\/+/g, '/'); // Menghapus multiple slashes
-                href = href.replace(/ /g, '%20'); // Mengubah spasi menjadi %20
+                href = href.replace(/ /g, '_'); // Mengubah spasi menjadi _
 
                 window.location.href = href;
             });
