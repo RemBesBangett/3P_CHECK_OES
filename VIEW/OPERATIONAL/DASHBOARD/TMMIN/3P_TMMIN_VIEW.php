@@ -43,7 +43,7 @@ $silFiles = getSilFiles('SIL_FILES/');
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
     <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
-    <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;

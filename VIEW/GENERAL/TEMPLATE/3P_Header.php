@@ -25,7 +25,7 @@ $baseUrl = '/3P_CHECK_OES/';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOT SIZING SYSTEM</title>
+    <title>3P CHECK OES</title>
     <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>ASSET/Image/Logo DE.png">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
     <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.min.js"></script>
@@ -149,12 +149,12 @@ $baseUrl = '/3P_CHECK_OES/';
 
 <body>
     <div id="sidebar">
-        <a href="<?php echo $baseUrl; ?>Dashboard" class="<?= ($page === 'data') ? 'active' : '' ?>">
-            <i class="fas fa-database me-2"></i>DASHBOARD
-        </a>
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="<?php echo $baseUrl; ?>Dashboard" class="<?= ($page === 'data') ? 'active' : '' ?>">
+            <i class="fas fa-database me-2"></i>MAIN DASHBOARD
+        </a>
         <a href="<?php echo $baseUrl; ?>Operational" class="<?= ($page === 'home') ? 'active' : '' ?>">
-            <i class="fas fa-home me-2"></i>HOME
+            <i class="fas fa-home me-2"></i>HOME MENU
         </a>
         <a href="<?php echo $baseUrl; ?>Operational/Report" class="<?= ($page === 'history') ? 'active' : '' ?>">
             <i class="fas fa-box me-2"></i>REPORT

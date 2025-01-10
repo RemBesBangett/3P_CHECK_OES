@@ -857,7 +857,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                         });
                                     }
                                 });
-                                location.href = '<?= $baseUrl; ?>OPERATIONAL/TMMIN';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/TMMIN';
                             }
                         });
                     } else {

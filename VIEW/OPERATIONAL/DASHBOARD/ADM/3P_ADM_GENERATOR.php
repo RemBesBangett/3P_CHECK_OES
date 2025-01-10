@@ -35,7 +35,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             header('location: /3P_CHECK_OES/logout');
             exit();
         }
-\$baseUrl = '/3P CHECK OES/'
+\$baseUrl = '/3P_CHECK_OES/'
     ?>
 
     <!DOCTYPE html>
@@ -357,7 +357,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             const totalQuantity = parseInt(document.getElementById('totalCount').textContent);
             const partNumber = partNumberOri;
             const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
-            const supplierLabel = kanbanContent.substring(53, 67).trim();
+            const supplierLabel = kanbanContent.substring(52, 67).trim();
             const PONumber = kanbanContent.substring(106, 116).trim();
             const lineItems = kanbanContent.substring(140, 144).trim();
             const deliveryDate = kanbanContent.substring(126, 136).trim();

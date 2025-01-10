@@ -5,19 +5,19 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\IOFactory; 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-include "../../MODEL/ADM/3P_ADM_HANDLER.php";
+require '../../MODEL/DBCON/dbcon.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 try {
     // Validasi input (sama seperti sebelumnya)
-    if (empty($_POST['timePort']) || empty($_POST['customer'])) {
+    if (!isset($_POST['timePort']) || empty($_POST['timePort'])) {
         throw new Exception('Required parameters are missing.');
     }
-
-    $timeExport = $_POST['timePort'];
-    $customer = $_POST['customer'];
+    
+    $timeExport = trim($_POST['timePort']);
+    $customers = trim($_POST['customer']);
 
     // Validasi format tanggal
     if (!preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $timeExport)) {
@@ -25,37 +25,36 @@ try {
     }
 
     // Ambil data history
-    $getAllHistory = getAllHistory($timeExport, $customer);
+    $getAllHistory = getAllHistory($timeExport, $customers);
 
     // Cek apakah data ada
     if (empty($getAllHistory)) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'message' => 'No data found for the specified date and customer.'
+            'message' => 'No data found for the specified date and customers.'
         ]);
         exit();
     }
 
-    $templateFile = '/3P_CHECK_OES/FORMAT/ADM ASSYST/FORMAT ADM ASSYST.xlsx';
+    $templateFile = '../../FORMAT/ADM ASSYST/FORMAT ADM ASSYST.xlsx';
 
     // Load spreadsheet
+    if (!file_exists($templateFile)) {
+        throw new Exception('Template file not found.');
+    }
     $spreadsheet = IOFactory::load($templateFile);
     $sheet = $spreadsheet->getActiveSheet();
 
     // Tulis data baris
     $row = 2;
     foreach ($getAllHistory as $history) {
-        $sheet->setCellValue('A' . $row, 'D' ?? '');
-        $sheet->setCellValue('B' . $row, $history['KANBAN_ID'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
-        $sheet->setCellValue('C' . $row, $history['CUSTOMER_LABEL'] ?? ''); //PARTNUMBER CUSTOMER
-        $sheet->setCellValue('D' . $row, $history['KANBAN_ITEM'] ?? ''); //ITEM NO
-        $sheet->setCellValue('E' . $row, $history['TOTAL_LABEL'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('F' . $row, '' ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('G' . $row, $history['MANIFEST'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('H' . $row, $history['DELIVERY_VANNING'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('I' . $row, $history['NO_SIL'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('J' . $row, $history['PART_NUMBER'] ?? ''); //QTY DELIVERY
+    
+        $sheet->setCellValue('A' . $row, $history['DELIVERY_DATE'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('B' . $row, $history['PO_NUMBER'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('C' . $row, $history['PART_NUMBER'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('D' . $row, $history['ITEM_VENDOR'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('E' . $row, $history['TOTAL_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
 
         // Gaya border
         $styleArray = [
@@ -67,17 +66,17 @@ try {
             ],
         ];
 
-        $sheet->getStyle('A' . $row . ':J' . $row)->applyFromArray($styleArray);
+        $sheet->getStyle('A' . $row . ':E' . $row)->applyFromArray($styleArray);
 
         $row++;
     }
 
     // Nama file download
-    $filename = $customer . '_export_' . date('Ymd_His') . '.xlsx';
+    $filename = 'Upload Assys_' . date('Y-m-d/H:i') . '.xlsx';
 
     // Siapkan untuk download
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="export.xlsx"');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: no-cache, no-store, must-revalidate');
     header('Pragma: no-cache');
     header('Expires: 0');
@@ -108,7 +107,7 @@ function validateDateFormat($date)
 }
 
 // Fungsi untuk mengambil data history
-function getAllHistory($timeExport, $customer)
+function getAllHistory($timeExport, $customers)
 {
     try {
         $conn = dbcon();
@@ -118,8 +117,9 @@ function getAllHistory($timeExport, $customer)
             throw new Exception('Database connection failed: ' . print_r(sqlsrv_errors(), true));
         }
 
+ 
         $tsql = "SELECT * FROM [3P_T_HISTORY] WHERE PREPARE_DATE = ? AND CUSTOMER = ?";
-        $params = [$timeExport, $customer];
+        $params = [$timeExport, $customers];
         $stmt = sqlsrv_query($conn, $tsql, $params);
 
         if ($stmt === false) {

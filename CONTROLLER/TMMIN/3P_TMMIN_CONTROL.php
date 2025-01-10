@@ -4,7 +4,7 @@ include "../../MODEL/TMMIN/3P_TMMIN_HANDLER.php";
 
 try {
     // Pastikan request adalah POST
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { 
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Metode request tidak valid");
     }
 
@@ -28,16 +28,17 @@ try {
     $actualTimes = isset($_POST['actualTime']) ? trim($_POST['actualTime']) : "";
     $delDates = isset($_POST['delDates']) ? trim($_POST['delDates']) : "";
     $dataSilAll = isset($_POST['dataSil']) ? json_decode($_POST['dataSil'], true) : []; // Decode JSON to associative array
-    $dataID = isset($_POST['dataID']) ? trim ($_POST['dataID']) : "";
-    $delivVan = isset($_POST['delivVan']) ? trim ($_POST['delivVan']) : "";
-    $kanbanItem = isset($_POST['kanbanItem']) ? trim ($_POST['kanbanItem']) : "";
-    $kanbanId = isset($_POST['KanbanId']) ? trim ($_POST['KanbanId']) : "";
-    $manifestKanban = isset($_POST['manifestKanban']) ? trim ($_POST['manifestKanban']) : "";
-    $noSilDelete = isset($_POST['noSilDel']) ? trim ($_POST['noSilDel']) : "";
+    $dataID = isset($_POST['dataID']) ? trim($_POST['dataID']) : "";
+    $delivVan = isset($_POST['delivVan']) ? trim($_POST['delivVan']) : "";
+    $kanbanItem = isset($_POST['kanbanItem']) ? trim($_POST['kanbanItem']) : "";
+    $kanbanId = isset($_POST['KanbanId']) ? trim($_POST['KanbanId']) : "";
+    $manifestKanban = isset($_POST['manifestKanban']) ? trim($_POST['manifestKanban']) : "";
+    $noSilDelete = isset($_POST['noSilDel']) ? trim($_POST['noSilDel']) : "";
 
     // Cek apakah hanya $noSilDelete dan $dataSilAll yang diposting
-    if (!empty($noSilDelete) && !empty($dataSilAll)) {
-        // Panggil fungsi untuk menyimpan ke database
+    // Cek apakah semua variabel dari $noSil sampai $manifestKanban kosong
+    if (empty($noSil) && empty($partNumber) && empty($customerLabel) && empty($scanKanban) && empty($totalKanban) && empty($totalLabel) && empty($scanLabel) && empty($qtyLabel) && empty($qtyKanban) && empty($customer) && empty($labelItemDB) && empty($PONumber) && empty($prepareTime) && empty($actualTimes) && empty($delDates) && empty($dataID) && empty($delivVan) && empty($manifestKanban) && empty($kanbanId) && empty($kanbanItem)) {
+        // Panggil fungsi finishOperational
         $results = finishOperational($noSilDelete, $dataSilAll);
 
         // Kirim response
@@ -48,7 +49,7 @@ try {
         ]);
     } else {
         // Panggil fungsi untuk menyimpan ke database
-       
+
         $result = sendDatabase(
             $noSil,
             $partNumber,
