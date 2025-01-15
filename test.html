@@ -6,24 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Identitas Barang</title>
     <style>
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            .card-Label {
-                width: 9.5cm;
-                height: 8.5cm;
-                page-break-after: always;
-                margin: 0;
-                padding: 0px;
-            }
+        @page {
+            size: 10cm 8.5cm;
+            margin: 0;
         }
 
-        html,
         body {
-            height: 100%;
+            width: 10cm;
+            height: 8.5cm;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -35,13 +25,15 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Arial', sans-serif;
-            width: 9.5cm;
+            width: 10cm;
             height: 8.5cm;
-            /* padding: 10px; */
             display: flex;
             flex-direction: column;
             overflow: hidden;
             font-size: 0.9rem;
+            margin: 0;
+            padding: 5px;
+            box-sizing: border-box;
         }
 
         .header {
@@ -57,10 +49,12 @@
             margin: 0;
         }
 
+
         .content-wrapper {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+
         }
 
         .container {
@@ -75,18 +69,20 @@
         }
 
         .col {
-            flex: 1;
             text-align: center;
+            max-width: 120px;
         }
 
         .judul-fot {
             background-color: #e6f2ff;
             border-radius: 3px;
             padding: 2px;
-            font-size: 0.6rem;
-            margin-bottom: 2px;
+            font-size: 11px;
+            margin-bottom: 5px;
             color: #0066cc;
             margin-top: 0px;
+            width: 100px;
+            font-weight: bold;
         }
 
         .namProd,
@@ -103,12 +99,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-left: 20px;
         }
 
         .qr-code img {
-            max-width: 60px;
-            max-height: 60px;
-            border: 1px solid #0066cc;
+            width: 90px;
+            height: 90px;
+            border: 1px solid #000000;
             border-radius: 5px;
         }
 
@@ -119,33 +116,50 @@
             text-align: center;
             font-size: 18px;
         }
+
+        #firstlayer {
+            margin-bottom: -70px;
+        }
+
+        .Identitas {
+            margin-bottom: 0px;
+        }
+
+        .nomer-produk {
+            margin-bottom: 20px;
+            font-size: 30px;
+        }
     </style>
 </head>
 
 <body>
     <div class="card-Label">
         <div class="header">
-            <h1>${qrValue.customer}</h1>
+            <h1>${qrValue.namaProduk}</h1>
             <h1>Identitas Barang</h1>
         </div>
         <div class="content-wrapper">
             <div>
-                <p class="Identitas">Nomer Pelanggan:</p>
+                <p class="Identitas">Nomor Pelanggan:</p>
                 <h5 class="nomer-pelanggan">${qrValue.customerNumber}</h5>
             </div>
             <div>
-                <p class="Identitas">Nomer Produk:</p>
+                <p class="Identitas">Nomor Produk:</p>
                 <h3 class="nomer-produk">${qrValue.densoNumber}</h3>
             </div>
             <div class="container" style="border-top: solid 1px black;">
-                <div class="row">
+                <div class="row" id="firstlayer">
                     <div class="col">
                         <p class="judul-fot">Nama Produk</p>
                         <h5 class="namProd">${qrValue.namaProduk}</h5>
                     </div>
                     <div class="col">
-                        <p class="judul-fot">Model</p>
-                        <h5 class="namMod">${qrValue.processKanban}</h5>
+                        <p class="judul-fot">Tanggal Delivery</p>
+                        <h6 class="namDel">${qrValue.date}</h6>
+                    </div>
+                    <div class="col qr-code">
+                        <p class="judul-fot">QR Code</p>
+                        <img src="${qrImageUrl}" alt="QR Code" />
                     </div>
                 </div>
             </div>
@@ -156,14 +170,8 @@
                         <h6 class="namQty" style="justify-content: center;">${qrValue.qtyKanban}</h6>
                     </div>
                     <div class="col">
-                        <p class="judul-fot">Tanggal Delivery</p>
-                        <h6 class="namDel">${qrValue.date}</h6>
                         <p class="judul-fot">Seq</p>
                         <h6 class="namSeq">${qrValue.seqKanban}</h6>
-                    </div>
-                    <div class="col qr-code">
-                        <p class="judul-fot">QR Code</p>
-                        <img src="${qrImageUrl}" alt="QR Code" />
                     </div>
                 </div>
             </div>

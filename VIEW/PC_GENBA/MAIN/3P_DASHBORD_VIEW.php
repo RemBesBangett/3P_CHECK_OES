@@ -178,14 +178,14 @@ $baseUrl = '/3P_CHECK_OES/';
             $dashboards = [
                 [
                     'title' => 'EXPORT',
-                    'description' => 'Export Document',
-                    'icon' => 'display',  // Bootstrap Icon name
+                    'description' => 'Export Document From Operational',
+                    'icon' => 'journal',  // Bootstrap Icon name
                     'link' => 'EXPORT'
                 ],
                 [
-                    'title' => 'KANBAN ROOM',
-                    'description' => 'Generate Any QR',
-                    'icon' => 'gear',  // Bootstrap Icon name
+                    'title' => 'KANBAN GENERATOR',
+                    'description' => 'Generate Any Kanban With Spesific Values',
+                    'icon' => 'text-wrap',  // Bootstrap Icon name
                     'link' => 'KANBAN'
                 ]
                 // [

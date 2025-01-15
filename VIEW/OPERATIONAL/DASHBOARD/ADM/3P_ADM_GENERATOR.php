@@ -593,8 +593,8 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             };
 
-            const formattedDate = date.toLocaleString('id-ID', options);
             const formattedTime = date.toLocaleString('id-ID', optionsFull);
+            const formattedDate = date.toLocaleString('id-ID', options);
 
             if (!noSil || !partNumberOri) {
                 Swal.fire('Error', 'Harap lengkapi semua data yang diperlukan', 'error');
