@@ -1,5 +1,4 @@
 <?php
-
 require "../../MODEL/DBCON/dbcon.php";
 
 function sendDatabase(
@@ -17,15 +16,20 @@ function sendDatabase(
     $PONumber,
     $prepareTime,
     $actualTimes,
-    $delDates
+    $delDates,
+    $dataID,
+    $delivVan,
+    $manifestKanban,
+    $kanbanId,
+    $kanbanItem
  ) {
    
     try {
         $conn = dbcon();
         $tsql = "INSERT INTO [3P_T_HISTORY] 
-                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS) 
+                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ID, KANBAN_ITEM) 
                  VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $noSil,
@@ -43,7 +47,12 @@ function sendDatabase(
             $prepareTime,
             $actualTimes,
             $delDates,
-            'CLOSED'
+            'CLOSED',
+            'D',
+            $delivVan,
+            $manifestKanban,
+            $kanbanId,
+            $kanbanItem
         ];
 
         $stmt = sqlsrv_prepare($conn, $tsql, $params);
@@ -57,7 +66,7 @@ function sendDatabase(
 
         $tsqlUpdate = "UPDATE [3P_T_DATA-SIL] SET STATUS = 'CLOSED' WHERE NO_SIL = ? AND PART_NUMBER = ? AND STATUS = 'OPEN'";
         $paramsUpdate = [$noSil, $partNumber];
-        $stmtUpdate = sqlsrv_prepare($conn, $tsqlUpdate, $paramsUpdate); 
+        $stmtUpdate = sqlsrv_prepare($conn, $tsqlUpdate, $paramsUpdate);
         if (!$stmtUpdate) {
             throw new Exception("Error preparing SQL statement for update: " . print_r(sqlsrv_errors(), true));
         }
@@ -85,7 +94,7 @@ function getSilData($noSil)
 {
     $conn = dbcon();
     $tsql = "SELECT * FROM [3P_T_DATA-SIL] WHERE NO_SIL = ? AND CUSTOMER = ?";
-    $params = [$noSil, 'ADM ASSYST'];
+    $params = [$noSil, 'TMMIN'];
     $stmt = sqlsrv_query($conn, $tsql, $params);
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
@@ -126,12 +135,12 @@ function finishOperational($noSil, $dataSilAll)
 
         // Prepare parameters for the SQL query
         $params = [
-            $noSils,
+            $noSils, 
             $partNumber,
             $quantity,
             $status,
             $time,
-            'ADM' // Assuming TIME_ENTRY is set to 0 for now
+            'TAM' // Assuming TIME_ENTRY is set to 0 for now
         ];
 
         // Execute the query

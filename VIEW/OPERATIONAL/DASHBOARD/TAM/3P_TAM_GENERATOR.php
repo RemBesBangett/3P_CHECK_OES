@@ -28,22 +28,21 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
     // Buat konten HTML lengkap
     echo "
-  
+    
     <?php
-        session_start();
+    session_start();
         if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
-            header('location: /3P_CHECK_OES/logout');
+            header('location: /3P_CHECK_OES/Logout');
             exit();
-        }
-\$baseUrl = '/3P_CHECK_OES/'
+        };
+    \$baseUrl = '/3P_CHECK_OES/';
     ?>
-
     <!DOCTYPE html>
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>SIL Details - " . htmlspecialchars($noSil) . "</title>
+    <title>SIL Details - 3713737</title>
     <!-- Script Dependencies -->
     <script src='<?= \$baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
     <script src='<?= \$baseUrl; ?>ASSET/jquery-3.7.1.js'></script>
@@ -63,7 +62,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         .text-left {
             text-align: left;
         }
-             .process-guide {
+          .process-guide {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -81,7 +80,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             margin: 0 2px;
             font-size: 0.8rem;
             transition: all 0.3s ease;
-        }
+        }   
     </style>
 </head>
 <body>
@@ -92,7 +91,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                     <h5>Kanban</h5>
                     <div class='card mb-2'>
                         <div class='card-body p-2'>
-                            <h6 class='card-title mb-1'>Open</h6> 
+                            <h6 class='card-title mb-1'>Open</h6>
                             <div class='progress'>
                                 <div class='progress-bar bg-warning' role='progressbar' style='width: 25%' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>25%</div>
                             </div>
@@ -119,8 +118,8 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             <div class='col-10 p-4'>
                 <div class='card'>
                     <div class='card-header bg-primary text-white d-flex justify-content-between align-items-center'>
-                        <h3 class='mb-0' id='noSil'>" . htmlspecialchars($noSil) . "</h3>
-                        <a href='/3P_CHECK_OES/OPERATIONAL/ADM' class='btn btn-secondary btn-sm'>
+                        <h3 class='mb-0' id='noSil'>3713737</h3>
+                        <a href='<?= \$baseUrl; ?>OPERATIONAL/TAM' class='btn btn-secondary btn-sm'>
                             <i class='fas fa-arrow-left'></i> Back to List
                         </a>
                     </div>
@@ -212,7 +211,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
     </div>
 
     <script>
-          let partNumberOri = '';
+        let partNumberOri = '';
         let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
         let totalScanKanbanOri = 0;
         let labelOri = '';
@@ -228,10 +227,17 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         let totalTimesScan = 0;
         let repeaterScanning = 0;
         let noSilOri;
-        let poNumberOri;
-        let lineItemDB;
-        let delDate;
+        let currentStep = 0;
         let qtyOriSil;
+        //postpone zone
+        let kanbanItemDB;
+        let delDateDB;
+        let kanbanIdDB;
+        let partNumberDB;
+        let manifestKanbanDB;
+        let convertDelDateDB;
+        // ------------------------------
+
 
 
         function updateProcessGuide() {
@@ -265,7 +271,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         function getData(noSils) {
             $.ajax({
                 type: 'GET',
-                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_SHOW.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TAM/3P_TAM_SHOW.php',
                 data: {
                     noSil: noSils
                 },
@@ -317,7 +323,6 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         // Contoh pemanggilan fungsi getData
 
         // Event listener untuk inputScanKanban
-
         document.getElementById('inputScanKanban').addEventListener('input', function() {
             const kanbanContent = this.value; // Ambil nilai dari inputScanKanban
 
@@ -346,22 +351,20 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         });
 
 
-
-
-
-
-
-
         // Fungsi processScan
         function processScan(kanbanContent) {
             const totalQuantity = parseInt(document.getElementById('totalCount').textContent);
             const partNumber = partNumberOri;
-            const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
-            const supplierLabel = kanbanContent.substring(52, 67).trim();
-            const PONumber = kanbanContent.substring(106, 116).trim();
-            const lineItems = kanbanContent.substring(140, 144).trim();
-            const deliveryDate = kanbanContent.substring(126, 136).trim();
             totalScanKanban = totalQuantity;
+            const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
+            const supplierLabel = kanbanContent.substring(51, 63).trim().replace(/-/g, '');
+            const itemNo = kanbanContent.substring(143, 145).trim();
+            const PONumber = kanbanContent.substring(106, 116).trim();
+            const kanbanID = kanbanContent.substring(134, 142).trim(); //5
+            const deliveryDate = kanbanContent.substring(126, 134).trim(); //6 
+            const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //3
+            const manifestKanban = kanbanContent.substring(106, 116).trim(); //1
+            const partNumberTAM = kanbanContent.substring(76, 90).trim(); //9
 
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
@@ -378,8 +381,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 }
 
                 if (kanbanContent.includes(partNumber)) {
-
-
+                    // Disable the input immediately upon success
 
                     swal.fire({
                         icon: 'success',
@@ -408,19 +410,29 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                     });
                 }
 
+                //postpone zone
+
                 // Ekstrak jumlah dari pemindaian
 
 
 
-                poNumberOri = PONumber;
+                manifestKanbanDB = manifestKanban; //manifest kanban
+                partNumberDB = partNumberTAM; //part number
                 qtyKanbanOri = quantityFromScan;
-                labelOri = supplierLabel;
-                lineItemDB = lineItems;
-                delDate = deliveryDate;
+                labelOri = supplierLabel; //customer label
+                kanbanItemDB = kanbanItem; //Kanban Item
+                delDateDB = deliveryDate; //ETD dd/mm/yyyy
+                kanbanIdDB = kanbanID; //Kanban ID
 
+                console.log('Kanban ID:', kanbanID);
+                console.log('Manifest Kanban:', manifestKanbanDB);
+                console.log('Part Number:', partNumberDB);
+                console.log('Qty Kanban:', qtyKanbanOri);
+                console.log('Customer Label:', labelOri);
+                console.log('Kanban Item:', kanbanItemDB);
+                console.log('Delivery Date:', delDateDB);
 
-
-
+                //--------------------------------------------------------------------------------
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
                 } else {
@@ -450,7 +462,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
                 // Clear kanban input
                 document.getElementById('inputScanKanban').value = '';
-            }, 500);
+            }, 1000);
         }
 
         // Event listener for label scanning
@@ -543,7 +555,6 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             qtyOriSil = quantity;
             // Set nilai ke modal
             document.getElementById('modalPartNumber').value = partNumber;
-
             document.getElementById('saveButton').disabled = true;
 
             currentStep = 0;
@@ -562,15 +573,24 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         function resetKanbanInput() {
             document.getElementById('inputScanKanban').disabled = false;
             repeaterScanning = 1;
-            if (contentLabel !== '') {
-                document.getElementById('modalQuantitySupplier').disabled = true;
-            }
         }
 
+
+
+
         function saveData() {
-            currentStep = 3;
-            updateProcessGuide();
+
             repeaterScanning = 0;
+            // if (/R[0-9]/.test(manifestKanbanDB)) {
+            //     customerAuto = 'ADM VANNING';
+            // } else {
+            //     customerAuto = 'TMMIN VANNING';
+            // }
+            // if (/^[A-Za-z]{2}/.test(manifestKanbanDB)) {
+            //     customerAuto = 'TMMIN VANNING';
+            // } else if (/^[A-Za-z][0-9]/.test(manifestKanbanDB)) {
+            //     customerAuto = 'ADM VANNING';
+            // }
             const date = new Date();
             // Format dengan opsi
             const options = {
@@ -593,8 +613,20 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             };
 
-            const formattedTime = date.toLocaleString('id-ID', optionsFull);
+            let stringDate = delDateDB;
+            const dateParts = stringDate.split('-');
+            const days = dateParts[0];
+            const months = dateParts[1];
+            let years = dateParts[2];
+
+            if (years.length == 2) {
+                years = '20' + years;
+            }
+
+            const deliveFormated = days + '.' + months + '.' + years;
+
             const formattedDate = date.toLocaleString('id-ID', options);
+            const formattedTime = date.toLocaleString('id-ID', optionsFull);
 
             if (!noSil || !partNumberOri) {
                 Swal.fire('Error', 'Harap lengkapi semua data yang diperlukan', 'error');
@@ -603,24 +635,28 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             // Siapkan objek data untuk dikirim
             const saveToDatabase = {
-                noSil: noSil,
-                partNumber: partNumberOri,
-                qtyKanban: qtyKanbanOri,
-                totalKanban: totalScanKanbanOri,
-                customerLabel: labelOri,
-                qtyLabel: qtyLabelOri || 0, // Pastikan tidak null
-                totalLabel: totalTimesScan,
-                contentScanKanban: contentKanban,
-                contentScanLabel: contentLabel,
-                customer: 'ADM ASSYST',
-                saveButton: true,
-                prepareTime: formattedDate,
-                PONumber: poNumberOri,
-                labelItem: lineItemDB,
-                actualTime: formattedTime,
-                delDates: delDate
+                noSil: noSil, //SUPLIER REF NO#1
+                partNumber: partNumberOri, //SUPLIER REF NO#2
+                qtyKanban: qtyKanbanOri, //OK
+                totalKanban: totalScanKanbanOri, //OK
+                customerLabel: labelOri, //OK
+                qtyLabel: qtyLabelOri || 0, // OK
+                totalLabel: totalTimesScan, // OK Qty Delivery
+                contentScanKanban: contentKanban, // OK
+                contentScanLabel: contentLabel, // OK
+                customer: customerAuto,
+                saveButton: true, //SOLID
+                prepareTime: formattedDate, //OK
+                KanbanId: kanbanIdDB, //OK
+                kanbanItem: kanbanItemDB, //OK
+                actualTime: formattedTime, //OK 
+                delDates: delDateDB, //ETD dd/mm/yyyy
+                delivVan: deliveFormated,
+                dataID: 'D',
+                manifestKanban: manifestKanbanDB,
             };
-
+            console.log(saveToDatabase);
+            
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
 
@@ -645,7 +681,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 if (result.isConfirmed) {
                     // Kirim data ke server
                     $.ajax({
-                        url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                        url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                         type: 'POST',
                         dataType: 'json',
                         data: saveToDatabase,
@@ -671,10 +707,12 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                     title: 'Berhasil!',
                                     text: response.message || 'Data berhasil disimpan',
                                     confirmButtonText: 'OK'
-                                }).then ((result) => {
-                                    location.reload();
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+
+                                        location.reload();
+                                    }
                                 });
-                                
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -762,11 +800,11 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             // Send the data via AJAX
             $.ajax({
-                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    noSilDel: noSil,
+                    nosil: noSil,
                     dataSil: JSON.stringify(entireData) // Convert entireData to JSON string
                 },
                 success: function(data) {
@@ -779,7 +817,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {
@@ -820,7 +858,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/ADM';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/TMMIN';
                             }
                         });
                     } else {
@@ -844,7 +882,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                     });
                 }
             });
-             }
+        }
     </script>
 </body>
 </html>";

@@ -125,9 +125,9 @@ function finishOperational($noSil, $dataSilAll)
 
         // Prepare the SQL statement based on the status
         if ($status === 'CLOSED') {
-            $tsql = "INSERT INTO [3P_T_DATA-REG] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY) VALUES (?, ?, ?, ?, ?)";
+            $tsql = "INSERT INTO [3P_T_DATA-REG] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
         } elseif ($status === 'OPEN') {
-            $tsql = "INSERT INTO [3P_T_DATA-BO] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY) VALUES (?, ?, ?, ?, ?)";
+            $tsql = "INSERT INTO [3P_T_DATA-BO] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
         } else {
             // If status is neither CLOSED nor OPEN, you can choose to skip or handle it
             continue; // Skip this iteration if status is not recognized
@@ -139,7 +139,8 @@ function finishOperational($noSil, $dataSilAll)
             $partNumber,
             $quantity,
             $status,
-            $time // Assuming TIME_ENTRY is set to 0 for now
+            $time,
+            'TMMIN' // Assuming TIME_ENTRY is set to 0 for now
         ];
 
         // Execute the query
