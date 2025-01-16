@@ -220,7 +220,7 @@ $baseUrl = '/3P_CHECK_OES/';
         let processCodeDB; // no need
         let poNumberDB; // Config
         let vendorCodeDB; // Config
-        let caseLabelDB; //Config
+        let caseLabelDB = ''; //Config
         let caseLabelContentDB = '';
 
 
@@ -403,13 +403,14 @@ $baseUrl = '/3P_CHECK_OES/';
                             document.getElementById('scannedLabelCount').textContent = '0'; // Set jumlah label yang sudah dipindai 
                             document.getElementById('totalCount').textContent = totalScanKanbanOri; // Set total count
                             currentStep = 1;
-                            if (caseLabelContentDB === '') {
-                                document.getElementById('inputScanCase').focus(); // Fokus pada input label
+                            if (caseLabelDB == '' || caseLabelContentDB === '') {
+                                document.getElementById('inputScanLabel').disabled = true; // Aktifkan input label
+                                document.getElementById('inputScanCase').focus();
+                                console.log('TRUE');
                             } else {
-                                document.getElementById('inputScanCase').setAttribute('readonly', true); // Aktifkan input label
-                                document.getElementById('inputScanCase').value = caseLabelContentDB;
                                 document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                                 document.getElementById('inputScanLabel').focus();
+                                console.log('coy');
 
                             }
                             updateProcessGuide();
@@ -424,12 +425,12 @@ $baseUrl = '/3P_CHECK_OES/';
                 //--------------------------------------------------------------------------------
 
                 qtyLabelOri = quantityFromScan,
-                    kanbanIdDB = kanbanID,
-                    delDateDB = deliveryDate,
-                    poNumberDB = PONumber,
-                    vendorCodeDB = vendorCode,
-                    partNumberDB = partNumberTAM,
-                    labelOri = supplierLabel
+                kanbanIdDB = kanbanID,
+                delDateDB = deliveryDate,
+                poNumberDB = PONumber,
+                vendorCodeDB = vendorCode,
+                partNumberDB = partNumberTAM,
+                labelOri = supplierLabel
 
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
@@ -470,6 +471,7 @@ $baseUrl = '/3P_CHECK_OES/';
             clearLabelTimeoutId = setTimeout(() => {
                 if (caseLabel === kanbanIdDB) {
                     caseLabelDB = caseLabel;
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
@@ -483,8 +485,18 @@ $baseUrl = '/3P_CHECK_OES/';
                             document.getElementById('inputScanLabel').focus();
                         }
                     });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Scan Berhasil',
+                        text: `Scan Case Label Succes`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        willClose: () => {
+                            location.reload();
+                        }
+                    });
                 }
-
 
 
                 currentStep = 2;
@@ -674,7 +686,7 @@ $baseUrl = '/3P_CHECK_OES/';
                 kanbanItem: kanbanItemDB, // Item No
                 delDates: delDateDB, // shipment date
                 PONumber: poNumberDB, // PO Number
-                vendorCode: vendorCodeDB,
+                labelItem: vendorCodeDB,
                 caseNo: caseLabelDB,
                 // processCode: processCodeDB, // Process Code
             };

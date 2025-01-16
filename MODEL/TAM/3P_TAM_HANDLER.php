@@ -48,7 +48,7 @@ function sendDatabase(
             $actualTimes,
             $delDates,
             'CLOSED',
-            'D',
+            $dataID,
             $delivVan,
             $manifestKanban,
             $kanbanId,
