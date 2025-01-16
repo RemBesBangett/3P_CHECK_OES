@@ -25,7 +25,46 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         .form-control {
             margin-bottom: 10px;
         }
-    </style>
+        #showSisa{
+            font-weight: bold;
+            font-size: 25pt;
+            text-align: left;
+            text-decoration: underline;
+            color : red;
+            -webkit-animation: bounce 3s infinite;
+            animation: bounce 1s infinite;
+        }
+    @-webkit-keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        40% {
+            -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+        }
+        60% {
+            -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+        }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        40% {
+            -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+        }
+        60% {
+            -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+        }
+    }
+
+       </style>
 </head>
 
 <body class="bg-light">
@@ -52,14 +91,11 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                             <input type="text" id="customerNumber" class="form-control" placeholder="Customer Number" maxlength="25" required />
                             <input type="text" id="descriptionCust" class="form-control" placeholder="Description Part" />
                             <input type="text" id="densoNumber" class="form-control" placeholder="Denso Number" maxlength="15" required />
-                            <select name="typeGen" id="typeGen" class="form-control" onclick="valueDropDown()">
-                                <option value="" id="dummyas">Pilih Tipe Kanban</option>
-                                <option value="NewKanban">Kanban Baru</option>
-                                <option value="ExistKanban">Kanban Satuan</option>
-                            </select>
+                            <input type="text" id="qtyRequest" class="form-control" placeholder="Quantity Request" required />
+                      
                         </div>
                         <div class="col-md-6">
-                            <input type="number" id="qtyKanban" class="form-control" placeholder="Qty" required min="1" />
+                            <input type="number" id="qtyKanban" class="form-control" placeholder="Qty" required min="1" oninput="calculationSeq()" />
                             <input type="text" id="processKanban" class="form-control" placeholder="Process Code" maxlength="4" />
                             <input type="text" id="seqKanban" class="form-control" placeholder="Seq" maxlength="4" required />
                             <input type="text" id="customerPO" class="form-control" placeholder="Customer PO" maxlength="20" required />
@@ -70,6 +106,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                             </div>
                         </div>
                     </div>
+                    <p id="showSisa"></p>
                     <button type="submit" id="generateBtn" class="btn btn-success mt-3">Buat QR Code</button>
                 </form>
 
@@ -91,24 +128,19 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         let typeKanban;
         let nameCustomer;
         let dateUse;
-
-
+        let seqKanban = '0';
+        let qtyKanban = '0';
 
         document.addEventListener('DOMContentLoaded', function() {
             const customerSelect = document.getElementById('customerName');
             const kanbanSelect = document.getElementById('typeGen');
             customerSelect.addEventListener('change', valueDropDown);
-            kanbanSelect.addEventListener('change', valueDropDown);
+
         });
 
         function valueDropDown() {
             let customerName = document.getElementById('customerName').value;
-            let kanbanType = document.getElementById('typeGen').value;
             nameCustomer = customerName;
-            typeKanban = kanbanType;
-            if (kanbanType.trim() !== '') {
-                document.getElementById('dummyas').disabled = true;
-            }
             if (customerName.trim() !== '') {
                 // Nonaktifkan input saat proses
                 document.getElementById('dummy').disabled = true;
@@ -236,7 +268,34 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             e.preventDefault();
             generateQrValue();
         });
-        
+
+        function calculationSeq() {
+            const qtyKanbans = parseInt(document.getElementById('qtyKanban').value.trim());
+            const qtyRequests = parseInt(document.getElementById('qtyRequest').value.trim());
+
+            // Menghitung jumlah dokumen penuh dan sisa
+            const fullDocs = Math.floor(qtyRequests / qtyKanbans);
+            const remainder = qtyRequests % qtyKanbans;
+            const seqLeft = fullDocs + 1;
+
+            // Menampilkan hasil di elemen yang sesuai
+            document.getElementById('seqKanban').value = fullDocs;
+            // Jika ada sisa, tampilkan dengan SweetAlert
+            if (remainder > 0 || seqLeft == 0) {
+                Swal.fire({
+                    title: 'Dokumen Sisa',
+                    text: `Jumlah dokumen sisa: 1 (berisi ${remainder} pcs, Seq ke ${seqLeft})`,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+                document.getElementById('showSisa').textContent = `Sisa Kanban: 1 Kanban (berisi ${remainder} pcs, Seq ke ${seqLeft})`
+            } else {
+                document.getElementById('showSisa').textContent ='';
+            }
+            seqKanban = fullDocs;
+            qtyKanban = qtyKanbans;
+        }
+
         function generateQrValue() {
             const datePicker = document.getElementById('dateKanban').value;
             const date = new Date();
@@ -279,12 +338,12 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             // Get input values
             const customerNumber = document.getElementById('customerNumber').value.trim();
             const densoNumber = document.getElementById('densoNumber').value.trim();
-            const qtyKanban = document.getElementById('qtyKanban').value.trim();
+
             const processKanban = document.getElementById('processKanban').value.trim();
-            const seqKanban = document.getElementById('seqKanban').value.trim();
             const customerPO = document.getElementById('customerPO').value.trim();
             const descriptionCust = document.getElementById('descriptionCust').value.trim();
             descriptionCustomer = descriptionCust;
+
 
             // Ambil jumlah seq yang akan digenerate
             const seqCount = parseInt(seqKanban);
@@ -295,7 +354,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             // Generate QR Code dan HTML untuk setiap seq
             for (let seq = 1; seq <= seqCount; seq++) {
                 // Format inputs
-                let qtyMod = qtyKanban.padStart(7, "0");
+                let qtyMod = qtyKanban.toString().padStart(7, "0");
                 let seqModKanban = seq.toString().padStart(4, ' ');
                 let cusModKanban = customerPO.padEnd(20, ' ');
                 let customerModNumber = customerNumber.padEnd(25, ' ');

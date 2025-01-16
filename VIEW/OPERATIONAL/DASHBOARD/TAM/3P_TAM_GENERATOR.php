@@ -35,6 +35,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             header('location: /3P_CHECK_OES/Logout');
             exit();
         };
+        \$username = \$_SESSION['nama'];
     \$baseUrl = '/3P_CHECK_OES/';
     ?>
     <!DOCTYPE html>
@@ -654,6 +655,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 delivVan: deliveFormated,
                 dataID: 'D',
                 manifestKanban: manifestKanbanDB,
+                userName : '<?= \$username ?>'
             };
             console.log(saveToDatabase);
             

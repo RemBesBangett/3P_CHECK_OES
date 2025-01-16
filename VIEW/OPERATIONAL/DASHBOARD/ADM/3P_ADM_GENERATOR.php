@@ -35,6 +35,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             header('location: /3P_CHECK_OES/logout');
             exit();
         }
+            \$userName = \$_SESSION['nama'];
 \$baseUrl = '/3P_CHECK_OES/'
     ?>
 
@@ -618,7 +619,8 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 PONumber: poNumberOri,
                 labelItem: lineItemDB,
                 actualTime: formattedTime,
-                delDates: delDate
+                delDates: delDate,
+                userName: '<?= \$userName; ?>'
             };
 
             // Tampilkan data di console.log untuk debugging

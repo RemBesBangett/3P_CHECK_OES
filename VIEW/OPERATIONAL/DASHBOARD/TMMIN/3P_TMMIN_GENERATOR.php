@@ -34,6 +34,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             header('location: /3P_CHECK_OES/Logout');
             exit();
         };
+        \$username = \$_SESSION['nama'];
     \$baseUrl = '/3P_CHECK_OES/';
     ?>
     <!DOCTYPE html>
@@ -367,7 +368,13 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
-                alert('Error: Kanban content is empty.');
+                swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Kanban content is empty!',
+                timer: 2000,
+                showConfirmButton: false
+                });
                 return;
             }
 
@@ -442,7 +449,16 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
                 // Validasi jumlah yang diekstrak
                 if (isNaN(quantityFromScan) || quantityFromScan <= 0) {
-                    alert('Error: Invalid quantity extracted from scan.');
+                  swal.fire({
+                  title: 'Error',
+                  text: 'Invalid quantity',
+                  icon: 'error',
+                  timer: 2000,
+                  showConfirmButton: false,  
+                  willClose: () => {
+                  document.getElementById('inputScanKanban').value = '';
+                  }
+                  });
                     return;
                 }
 
@@ -580,14 +596,9 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         function saveData() {
 
             repeaterScanning = 0;
-            if (/R[0-9]/.test(manifestKanbanDB)) {
-                customerAuto = 'ADM VANNING';
-            } else {
-                customerAuto = 'TMMIN VANNING';
-            }
             if (/^[A-Za-z]{2}/.test(manifestKanbanDB)) {
                 customerAuto = 'TMMIN VANNING';
-            } else if (/^[A-Za-z][0-9]/.test(manifestKanbanDB)) {
+            } else if (/^[A-Za-z]/.test(manifestKanbanDB)) {
                 customerAuto = 'ADM VANNING';
             }
             const date = new Date();
@@ -653,6 +664,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 delivVan: deliveFormated,
                 dataID: 'D',
                 manifestKanban: manifestKanbanDB,
+                userName : '<?= \$username; ?>'
             };
             console.log(saveToDatabase);
             

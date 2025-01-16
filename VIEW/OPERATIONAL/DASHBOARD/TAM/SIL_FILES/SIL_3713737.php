@@ -144,7 +144,7 @@ $baseUrl = '/3P_CHECK_OES/';
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Case</label>
-                                <input type='text' class='form-control' id='inputScanCase' placeholder='Scan Case Label'>
+                                <input type='text' class='form-control' id='inputScanCase' class='cektohok' placeholder='Scan Case Label'>
                             </div>
                             <div class='col-md-12 mb-3'>
                                 <p class='jumlahScanKanban'>Scanned: <span id='scannedCount'>0</span> / <span id='totalCount'>0</span></p>
@@ -155,7 +155,7 @@ $baseUrl = '/3P_CHECK_OES/';
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Qty</label>
-                                <input type='text' class='form-control' id='modalQuantitySupplier' readonly placeholder="Masukkan Quantity Label">
+                                <input type='text' class='form-control' id='modalQuantitySupplier' placeholder="Masukkan Quantity Label">
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Label</label>
@@ -383,7 +383,7 @@ $baseUrl = '/3P_CHECK_OES/';
                     document.getElementById('inputScanKanban').value = '';
                     return;
                 }
-
+                //postpone
                 if (kanbanContent.includes(partNumber)) {
                     // Disable the input immediately upon success
                     swal.fire({
@@ -396,41 +396,38 @@ $baseUrl = '/3P_CHECK_OES/';
                             totalScanKanbanOri = qtyOriSil / quantityFromScan;
                             document.getElementById('inputScanKanban').disabled = true;
                             document.getElementById('scannedCount').textContent = currentScannedCount;
-                            document.getElementById('inputScanLabel').disabled = true; // Aktifkan input label
-                            document.getElementById('inputScanCase').disabled = false; // Aktifkan input label
                             document.getElementById('modalSupplierLabel').value = supplierLabel; // Set label supplier
                             document.getElementById('totalLabelCount').textContent = quantityFromScan; // Set total label count
                             document.getElementById('scannedLabelCount').textContent = '0'; // Set jumlah label yang sudah dipindai 
                             document.getElementById('totalCount').textContent = totalScanKanbanOri; // Set total count
-                            currentStep = 1;
+
                             if (caseLabelDB == '' || caseLabelContentDB === '') {
+                                // document.getElementById('inputScanCase').focus();
+                                document.getElementById('inputScanCase').disabled = false; // Aktifkan input label
                                 document.getElementById('inputScanLabel').disabled = true; // Aktifkan input label
-                                document.getElementById('inputScanCase').focus();
-                                console.log('TRUE');
                             } else {
                                 document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                                 document.getElementById('inputScanLabel').focus();
-                                console.log('coy');
-
                             }
-                            updateProcessGuide();
                             if (contentLabel !== '') {
                                 document.getElementById('modalQuantitySupplier').disabled = true; // Set jumlah KanbcontentKanban supplier
                             } else if (contentLabel === '') {
                                 document.getElementById('modalQuantitySupplier').value = '1';
                             }
+                            currentStep = 1;
+                            updateProcessGuide();
                         }
                     });
                 }
                 //--------------------------------------------------------------------------------
 
                 qtyLabelOri = quantityFromScan,
-                kanbanIdDB = kanbanID,
-                delDateDB = deliveryDate,
-                poNumberDB = PONumber,
-                vendorCodeDB = vendorCode,
-                partNumberDB = partNumberTAM,
-                labelOri = supplierLabel
+                    kanbanIdDB = kanbanID,
+                    delDateDB = deliveryDate,
+                    poNumberDB = PONumber,
+                    vendorCodeDB = vendorCode,
+                    partNumberDB = partNumberTAM,
+                    labelOri = supplierLabel
 
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
@@ -479,17 +476,18 @@ $baseUrl = '/3P_CHECK_OES/';
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
-                            document.getElementById('inputScanCase').setAttribute('readonly', true); // Aktifkan input label
-                            document.getElementById('inputScanCase').value = caseLabelContentDB;
+                            document.getElementById('inputScanCase').setAttribute('readonly', caseLabelContentDB); // Aktifkan input label
+                            // document.getElementById('inputScanCase').value = caseLabelContentDB;
                             document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                             document.getElementById('inputScanLabel').focus();
+                            document.getElementById('modalQuantitySupplier').disabled = false; // Set jumlah KanbcontentKan
                         }
                     });
                 } else {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Scan Berhasil',
-                        text: `Scan Case Label Succes`,
+                        icon: 'error',
+                        title: 'Scan Gagal',
+                        text: `Check dan Pastikan Label Case Sesuai Kanban`,
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
@@ -688,6 +686,7 @@ $baseUrl = '/3P_CHECK_OES/';
                 PONumber: poNumberDB, // PO Number
                 labelItem: vendorCodeDB,
                 caseNo: caseLabelDB,
+                
                 // processCode: processCodeDB, // Process Code
             };
             console.log(saveToDatabase);
