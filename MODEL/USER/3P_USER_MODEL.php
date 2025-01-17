@@ -1,5 +1,5 @@
 <?php
-require_once "C:/xampp/htdocs/3P CHECK OES/MODEL/DBCON/dbcon.php";
+require_once "C:/xampp/htdocs/3P_CHECK_OES/MODEL/DBCON/dbcon.php";
 
 function showAllUser()
 {

@@ -1,9 +1,10 @@
 <?php
+require '../../MODEL/DBCON/dbcon.php';
 
 function authentication($username, $password)
 {
     $conn = dbcon();
-    $tsql = "SELECT * FROM USER_LOGIN WHERE (ACCESS = 'LEADER' OR ACCESS = 'ADMIN') AND NAMA = ? AND PASSWORD = ?";
+    $tsql = "SELECT * FROM [3P_M_USER] WHERE (ACCESS = 'LEADER' OR ACCESS = 'ADMIN') AND NAMA = ? AND PASSWORD = ?";
 
     $params = array($username, $password);
     $stmt = sqlsrv_query($conn, $tsql, $params);

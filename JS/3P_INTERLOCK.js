@@ -53,19 +53,17 @@ function handleAuthentication() {
     const password = document.getElementById("authPassword").value;
     const authModal = bootstrap.Modal.getInstance(document.getElementById("authenticationModal"));
 
-    // Send authentication request to server
-    fetch("/PACKING%20LINE%20SYSTEM/ACTION/DASHBOARD/Authentication.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+
+    // Send authentication request to server using jQuery AJAX
+    $.ajax({
+        url: "/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_INTERLOCK_CONTROL.php",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
             username: username,
             password: password,
         }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
+        success: function (data) {
             if (data.success) {
                 document.getElementById("authUsername").value = "";
                 document.getElementById("authPassword").value = "";
@@ -81,19 +79,6 @@ function handleAuthentication() {
                 }).then(() => {
                     // Refresh the page after the success message is shown
                     localStorage.removeItem('allScanData');
-                    allScanData = {
-                        seqNumber: "",
-                        firstScanTimestamp: "",
-                        firstScanResult: "",
-                        currentPartNumber: "",
-                        isFirstScanComplete: false,
-                        firstSecondScanResult: "",
-                        secondScanResult: "",
-                        tableData: [],
-                        currentStep: 0,
-                        sopImageSrc: "",
-                        psaImageSrc: ""
-                    };
                     restoreUI();
                     location.reload();
                 });
@@ -106,8 +91,8 @@ function handleAuthentication() {
                     showCancelButton: false,
                 });
             }
-        })
-        .catch((error) => {
+        },
+        error: function (error) {
             console.error("Error:", error);
             Swal.fire({
                 title: "Error",
@@ -115,7 +100,8 @@ function handleAuthentication() {
                 icon: "error",
                 confirmButtonText: "OK",
             });
-        });
+        }
+    });
 }
 
 function preventModalHide(event) {
