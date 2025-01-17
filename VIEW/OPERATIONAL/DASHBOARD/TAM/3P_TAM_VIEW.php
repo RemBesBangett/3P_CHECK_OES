@@ -204,7 +204,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             hour12: false,
         };
 
-    
+
         const formattedDate = date.toLocaleString('id-ID', options);
 
         document.getElementById('addForm').addEventListener('submit', function(e) {
@@ -334,16 +334,16 @@ $silFiles = getSilFiles('SIL_FILES/');
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/TAM/SIL_' + noSil; 
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/TAM/SIL_' + noSil;
         }
 
 
 
-        
+
         function deleteEntry(button) {
             const row = button.closest('tr');
             const numberSils = row.cells[1].innerText;
-            
+
             swal.fire({
                 title: 'Are you sure?',
                 text: `You are about to delete SIL` + numberSils,
@@ -389,7 +389,7 @@ $silFiles = getSilFiles('SIL_FILES/');
                             } catch (e) {
                                 errorMessage = xhr.responseText || 'Unable to parse error response';
                             }
-                            
+
                             swal.fire({
                                 icon: 'success',
                                 title: 'Success Delete Data',
@@ -403,109 +403,19 @@ $silFiles = getSilFiles('SIL_FILES/');
                 }
             });
         }
-        // function exportData() {
-        //     var timePort = document.getElementById('timePort').value;
 
-        //     // Validasi input tanggal
-        //     if (!timePort) {
-        //         Swal.fire({
-        //             icon: 'warning',
-        //             title: 'Invalid Input',
-        //             text: 'Please select a date to export data.',
-        //             confirmButtonText: 'OK'
-        //         });
-        //         return;
-        //     }
+        function deleteAllSIL() {
+            const tableBody = document.querySelector('#dataTable tbody');
+            const rows = tableBody.querySelectorAll('tr');
+            const silNumbers = [];
 
-        //     // Konversi format tanggal dari YYYY-MM-DD ke DD/MM/YYYY
-        //     var dateParts = timePort.split('-');
-        //     var formattedDate = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
-
-        //     var dataToSend = {
-        //         timePort: formattedDate,
-        //         customer: 'TAM ASSYST'
-        //     };
-
-        //     // Tampilkan loading
-        //     Swal.fire({
-        //         title: 'Exporting Data...',
-        //         html: 'Please wait while preparing your export...',
-        //         allowOutsideClick: false,
-        //         didOpen: function() {
-        //             Swal.showLoading();
-        //         }
-        //     });
-
-        //     // Gunakan jQuery AJAX (sesuai dengan kode asli Anda)
-        //     $.ajax({
-        //         url: <?= $baseUrl; ?> + 'CONTROLLER/TAM/3P_TAM_EXPORT.php',
-        //         type: 'POST',
-        //         data: dataToSend,
-        //         xhrFields: {
-        //             responseType: 'blob'
-        //         },
-        //         success: function(data, status, xhr) {
-        //             Swal.close();
-
-        //             // Dapatkan nama file dari header Content-Disposition
-        //             var filename = 'Report .xlsx';
-        //             var disposition = xhr.getResponseHeader('Content-Disposition');
-        //             if (disposition && disposition.indexOf('attachment') !== -1) {
-        //                 var filenameMatch = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        //                 if (filenameMatch && filenameMatch[1]) {
-        //                     filename = filenameMatch[1].replace(/['"]/g, '');
-        //                 }
-        //             }
-
-        //             // Buat URL untuk download
-        //             var downloadUrl = window.URL.createObjectURL(data);
-        //             var a = document.createElement('a');
-        //             a.style.display = 'none';
-        //             a.href = downloadUrl;
-        //             a.download = filename;
-
-        //             document.body.appendChild(a);
-        //             a.click();
-
-        //             // Bersihkan URL objek
-        //             window.URL.revokeObjectURL(downloadUrl);
-
-        //             // Tampilkan pesan sukses
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Export Successful',
-        //                 text: 'File ' + filename + ' has been downloaded',
-        //                 confirmButtonText: 'OK'
-        //             });
-        //         },
-        //         error: function(xhr, status, error) {
-        //             Swal.close();
-
-        //             var errorMessage = 'Unknown error occurred';
-
-        //             // Coba parsing error response
-        //             try {
-        //                 // Jika response adalah text, parse sebagai JSON
-        //                 var responseText = xhr.responseText;
-        //                 if (responseText) {
-        //                     var errorResponse = JSON.parse(responseText);
-        //                     errorMessage = errorResponse.message || errorMessage;
-        //                 }
-        //             } catch (e) {
-        //                 // Jika parsing gagal, gunakan pesan error default
-        //                 errorMessage = xhr.statusText || 'Export failed';
-        //             }
-
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Export Failed',
-        //                 text: errorMessage,
-        //                 confirmButtonText: 'OK'
-        //             });
-        //         }
-        //     });
-
-        // }
+            rows.forEach(row => {
+                const silNumber = row.cells[1].innerText;
+                silNumbers.push(silNumber);
+            });
+            console.log(silNumbers);
+            //data numSils untuk delete 
+        }
     </script>
 </body>
 

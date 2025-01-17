@@ -288,7 +288,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                     icon: 'info',
                     confirmButtonText: 'OK'
                 });
-                document.getElementById('showSisa').textContent = `Sisa Kanban: 1 Kanban (berisi ${remainder} pcs, Seq ke ${seqLeft})`
+                document.getElementById('showSisa').textContent = `Seq ${seqLeft} berisi ${remainder} pcs.`;
             } else {
                 document.getElementById('showSisa').textContent ='';
             }

@@ -21,15 +21,19 @@ function sendDatabase(
     $delivVan,
     $manifestKanban,
     $kanbanId,
-    $kanbanItem
- ) {
-   
+    $kanbanItem,
+    $username,
+    $caseLabel
+) {
     try {
         $conn = dbcon();
+        sqlsrv_begin_transaction($conn); // Memulai transaksi
+
+        // Insert statement
         $tsql = "INSERT INTO [3P_T_HISTORY] 
-                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ID, KANBAN_ITEM) 
+                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ID, KANBAN_ITEM, USER_ENTRY, CASE_LABEL) 
                  VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $noSil,
@@ -48,11 +52,13 @@ function sendDatabase(
             $actualTimes,
             $delDates,
             'CLOSED',
-            $dataID,
+            '',
             $delivVan,
             $manifestKanban,
             $kanbanId,
-            $kanbanItem
+            $kanbanItem,
+            $username,
+            $caseLabel
         ];
 
         $stmt = sqlsrv_prepare($conn, $tsql, $params);
@@ -61,11 +67,17 @@ function sendDatabase(
         }
 
         if (!sqlsrv_execute($stmt)) {
-            throw new Exception("Error executing query: " . print_r(sqlsrv_errors(), true));
+            throw new Exception("Error executing insert query: " . print_r(sqlsrv_errors(), true));
         }
 
+        // Update statement
+        // Update statement
         $tsqlUpdate = "UPDATE [3P_T_DATA-SIL] SET STATUS = 'CLOSED' WHERE NO_SIL = ? AND PART_NUMBER = ? AND STATUS = 'OPEN'";
         $paramsUpdate = [$noSil, $partNumber];
+
+        // Log parameter untuk debugging
+        error_log("Updating with NO_SIL: $noSil, PART_NUMBER: $partNumber");
+
         $stmtUpdate = sqlsrv_prepare($conn, $tsqlUpdate, $paramsUpdate);
         if (!$stmtUpdate) {
             throw new Exception("Error preparing SQL statement for update: " . print_r(sqlsrv_errors(), true));
@@ -75,11 +87,11 @@ function sendDatabase(
             throw new Exception("Error executing update query: " . print_r(sqlsrv_errors(), true));
         }
 
-        sqlsrv_commit($conn);
+        sqlsrv_commit($conn); // Commit jika semua berhasil
         return true;
     } catch (Exception $e) {
         if ($conn) {
-            sqlsrv_rollback($conn);
+            sqlsrv_rollback($conn); // Rollback jika ada kesalahan
         }
         error_log($e->getMessage());
         return false;
@@ -135,7 +147,7 @@ function finishOperational($noSil, $dataSilAll)
 
         // Prepare parameters for the SQL query
         $params = [
-            $noSils, 
+            $noSils,
             $partNumber,
             $quantity,
             $status,

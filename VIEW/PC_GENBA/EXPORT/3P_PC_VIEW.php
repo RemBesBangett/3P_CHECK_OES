@@ -213,7 +213,10 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                     }
 
                     // Buat URL untuk download
-                    var downloadUrl = window.URL.createObjectURL(data);
+                    var blob = new Blob([data], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+                    var downloadUrl = window.URL.createObjectURL(blob);
                     var a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = downloadUrl;

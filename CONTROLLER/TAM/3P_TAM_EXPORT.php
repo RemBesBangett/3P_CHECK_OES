@@ -49,34 +49,33 @@ try {
     // Tulis data baris
     $row = 2;
     foreach ($getAllHistory as $history) {
-        $sheet->setCellValue('A' . $row, 'D' ?? '');
-        $sheet->setCellValue('B' . $row, $history['KANBAN_ID'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
-        $sheet->setCellValue('C' . $row, $history['CUSTOMER_LABEL'] ?? ''); //PARTNUMBER CUSTOMER
-        $sheet->setCellValue('D' . $row, $history['KANBAN_ITEM'] ?? ''); //ITEM NO
-        $sheet->setCellValue('E' . $row, $history['TOTAL_LABEL'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('F' . $row, '' ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('G' . $row, $history['MANIFEST'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('H' . $row, $history['DELIVERY_VANNING'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('I' . $row, $history['NO_SIL'] ?? ''); //QTY DELIVERY
-        $sheet->setCellValue('J' . $row, $history['PART_NUMBER'] ?? ''); //QTY DELIVERY
+
+        $sheet->setCellValue('C' . $row, $history['DELIVERY_DATE'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('D' . $row, $history['CASE_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('F' . $row, $history['PO_NUMBER'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('H' . $row, $history['KANBAN_ITEM'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('J' . $row, $history['KANBAN_ID'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('J' . $row, $history['CUSTOMER_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('K' . $row, $history['TOTAL_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('L' . $row, $history['ITEM_VENDOR'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
 
         // Gaya border
-        $styleArray = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['argb' => 'FF000000'],
-                ],
-            ],
-        ];
+        // $styleArray = [
+        //     'borders' => [
+        //         'allBorders' => [
+        //             'borderStyle' => Border::BORDER_THIN,
+        //             'color' => ['argb' => 'FF000000'],
+        //         ],
+        //     ],
+        // ];
 
-        $sheet->getStyle('A' . $row . ':J' . $row)->applyFromArray($styleArray);
+        // $sheet->getStyle('A' . $row . ':M' . $row)->applyFromArray($styleArray);
 
         $row++;
     }
 
     // Nama file download
-    $filename = 'export_' . date('Ymd_His') . '.xlsx';
+    $filename = 'Vanning SIP dlv ' . date('d') . ' ' .date('M') . ' ' . date('y') . '.xlsx';
 
     // Siapkan untuk download
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -121,9 +120,9 @@ function getAllHistory($timeExport, $customers)
             throw new Exception('Database connection failed: ' . print_r(sqlsrv_errors(), true));
         }
 
-        $placeholders = implode(',', array_fill(0, count($customers), '?'));
-        $tsql = "SELECT * FROM [3P_T_HISTORY] WHERE PREPARE_DATE = ? AND CUSTOMER IN ($placeholders)";
-        $params = array_merge([$timeExport], $customers);
+
+        $tsql = "SELECT * FROM [3P_T_HISTORY] WHERE PREPARE_DATE = ? AND CUSTOMER = ?";
+        $params = [$timeExport, $customers];
         $stmt = sqlsrv_query($conn, $tsql, $params);
 
         if ($stmt === false) {

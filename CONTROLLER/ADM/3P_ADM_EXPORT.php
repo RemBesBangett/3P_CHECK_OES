@@ -117,7 +117,7 @@ function getAllHistory($timeExport, $customers)
             throw new Exception('Database connection failed: ' . print_r(sqlsrv_errors(), true));
         }
 
- 
+
         $tsql = "SELECT * FROM [3P_T_HISTORY] WHERE PREPARE_DATE = ? AND CUSTOMER = ?";
         $params = [$timeExport, $customers];
         $stmt = sqlsrv_query($conn, $tsql, $params);

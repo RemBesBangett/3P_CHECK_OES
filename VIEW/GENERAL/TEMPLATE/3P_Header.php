@@ -4,19 +4,6 @@
 
 $page = basename($_SERVER['PHP_SELF']);
 $title = '';
-// if ($page == 'Packing_Line_Dashboard_Real.php') {
-//     $title = 'Lot Sizing System';
-// } elseif ($page == 'Packaging_Line_History.php') {
-//     $title = 'Report';
-// } elseif ($page == 'User.php') {
-//     $title = 'User ';
-// } elseif ($page == 'View_Data_Master.php') {
-//     $title = 'Master Part';
-// } elseif ($page == 'E-Lot_Formation.php') {
-//     $title = 'E-LOT PROGGRESS';
-// } elseif ($page == 'E_Lot_Formation_Done.php') {
-//     $title = 'E-LOT DONE';
-// }
 $baseUrl = '/3P_CHECK_OES/';
 ?>
 <!DOCTYPE html>
@@ -151,10 +138,10 @@ $baseUrl = '/3P_CHECK_OES/';
     <div id="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="<?php echo $baseUrl; ?>Dashboard" class="<?= ($page === 'data') ? 'active' : '' ?>">
-            <i class="fas fa-database me-2"></i>MAIN DASHBOARD
+        <i class="fa-duotone fa-solid fa-house"></i> MAIN DASHBOARD
         </a>
         <a href="<?php echo $baseUrl; ?>Operational" class="<?= ($page === 'home') ? 'active' : '' ?>">
-            <i class="fas fa-home me-2"></i>HOME MENU
+        <i class="fa-brands fa-microsoft fa-spin-pulse"></i></i> HOME MENU
         </a>
         <a href="<?php echo $baseUrl; ?>Operational/Report" class="<?= ($page === 'history') ? 'active' : '' ?>">
             <i class="fas fa-box me-2"></i>REPORT

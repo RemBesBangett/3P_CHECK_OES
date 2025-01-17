@@ -30,16 +30,17 @@ if (isset($data['noSil']) && isset($data['entries'])) {
     echo "
     
     <?php
-    session_start();
-        if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
-            header('location: /3P_CHECK_OES/Logout');
-            exit();
-        };
-        \$username = \$_SESSION['nama'];
-    \$baseUrl = '/3P_CHECK_OES/';
-    ?>
-    <!DOCTYPE html>
+session_start();
+if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
+    header('location: /3P_CHECK_OES/Logout');
+    exit();
+};
+\$username = \$_SESSION['nama'];
+\$baseUrl = '/3P_CHECK_OES/';
+?>
+<!DOCTYPE html>
 <html lang='en'>
+
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -56,14 +57,17 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             padding: 2px 5px;
             font-size: 12px;
         }
+
         .label-custom {
             font-size: 12px;
             margin-bottom: 2px;
         }
+
         .text-left {
             text-align: left;
         }
-          .process-guide {
+
+        .process-guide {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -81,9 +85,10 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             margin: 0 2px;
             font-size: 0.8rem;
             transition: all 0.3s ease;
-        }   
+        }
     </style>
 </head>
+
 <body>
     <div class='container-fluid'>
         <div class='row'>
@@ -143,7 +148,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                 </table>
                             </div>
                         </form>
-                          <button type='button' class='btn btn-success' onclick='submitJob()'>Finish</button>
+                        <button type='button' class='btn btn-success' onclick='submitJob()'>Finish</button>
                     </div>
                 </div>
             </div>
@@ -167,22 +172,26 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Kanban</label>
-                                <input type='text' class='form-control' id='inputScanKanban' placeholder='Enter scanned quantity'>
+                                <input type='text' class='form-control' id='inputScanKanban' placeholder='Scan Kanban'>
+                            </div>
+                            <div class='col-md-4 mb-3'>
+                                <label class='form-label'>Scan Case</label>
+                                <input type='text' class='form-control' id='inputScanCase' class='cektohok' placeholder='Scan Case Label'>
                             </div>
                             <div class='col-md-12 mb-3'>
                                 <p class='jumlahScanKanban'>Scanned: <span id='scannedCount'>0</span> / <span id='totalCount'>0</span></p>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Supplier Label</label>
-                                <input type='text' class='form-control' id='modalSupplierLabel' readonly>
+                                <input type='text' class='form-control' id='modalSupplierLabel' readonly placeholder='Scan Kanban (Customer PN)'>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Qty</label>
-                                <input type='text' class='form-control' id='modalQuantitySupplier'>
+                                <input type='text' class='form-control' id='modalQuantitySupplier' placeholder='Masukkan Quantity Label'>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Label</label>
-                                <input type='text' class='form-control' id='inputScanLabel' placeholder='Enter scanned label'>
+                                <input type='text' class='form-control' id='inputScanLabel' placeholder='Scan Supplier Label'>
                             </div>
                             <div class='col-md-12 mb-3'>
                                 <p class='jumlahScanLabel'>Scanned: <span id='scannedLabelCount'>0</span> | <span id='totalLabelCount'>0</span></p>
@@ -190,6 +199,9 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                             <div class='process-guide bg-light border-top'>
                                 <div id='kanban-scan-process' class='guide-step'>
                                     <i class='fas fa-barcode'></i> SCAN KANBAN
+                                </div>
+                                <div id='case-scan-process' class='guide-step'>
+                                    <i class='fa-sharp-duotone fa-solid fa-box'></i> SCAN CASE
                                 </div>
                                 <div id='supplier-label-guide' class='guide-step'>
                                     <i class='fas fa-tag'></i> SCAN LABEL
@@ -211,11 +223,9 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         </div>
     </div>
 
-    <script>
+       <script>
         let partNumberOri = '';
-        let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
         let totalScanKanbanOri = 0;
-        let labelOri = '';
         let qtyLabelOri = 0; //diambil dari nilai total. / bisa juga nilai input label.
         let totalScanLabelOri = 0; //diambil dari inputanlabel
         let progressScanKanbanOri = 0;
@@ -230,20 +240,28 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         let noSilOri;
         let currentStep = 0;
         let qtyOriSil;
-        //postpone zone
-        let kanbanItemDB;
-        let delDateDB;
-        let kanbanIdDB;
-        let partNumberDB;
-        let manifestKanbanDB;
-        let convertDelDateDB;
-        // ------------------------------
+        //Database Zone
+        let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
+        let labelOri = '';
+        let kanbanItemDB; //Config
+        let delDateDB; //OK
+        let kanbanIdDB; //Config
+        let partNumberDB; //Config
+        let manifestKanbanDB; // no need
+        let convertDelDateDB; // Config yyyymmdd
+        let processCodeDB; // no need
+        let poNumberDB; // Config
+        let vendorCodeDB; // Config
+        let caseLabelDB = ''; //Config
+        let caseLabelContentDB = '';
+        let currentSteps = '';
 
 
 
         function updateProcessGuide() {
             const steps = [
                 'kanban-scan-process',
+                'case-scan-process',
                 'supplier-label-guide',
                 'save-data-process',
             ];
@@ -260,7 +278,12 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                     element.style.backgroundColor = '#cccccc';
                     element.style.color = 'black';
                 }
+                if (currentSteps === 99 && step === 'case-scan-process') {
+                    element.style.backgroundColor = 'green';
+                    element.style.color = 'white';
+                }
             });
+    
         }
 
         $(document).ready(function() {
@@ -337,6 +360,21 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             }, 500);
         });
 
+        document.getElementById('inputScanCase').addEventListener('input', function() {
+            const scanContent = this.value; // Ambil nilai dari inputScanKanban
+            caseLabelContentDB = scanContent;
+
+
+            // Hapus timeout sebelumnya jika ada input baru
+            clearTimeout(clearLabelTimeoutId);
+
+            // Set timeout untuk memeriksa nilai setelah 1 detik
+            clearLabelTimeoutId = setTimeout(() => {
+                // Panggil processScan dengan nilai yang diambil
+                caseScan(scanContent);
+            }, 500);
+        });
+
         document.getElementById('inputScanLabel').addEventListener('input', function() {
             if (!labelScanningEnabled) {
                 alert('Please scan Kanban first!');
@@ -358,19 +396,23 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             const partNumber = partNumberOri;
             totalScanKanban = totalQuantity;
             const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
-            const supplierLabel = kanbanContent.substring(51, 63).trim().replace(/-/g, '');
-            const itemNo = kanbanContent.substring(143, 145).trim();
-            const PONumber = kanbanContent.substring(106, 116).trim();
-            const kanbanID = kanbanContent.substring(134, 142).trim(); //5
-            const deliveryDate = kanbanContent.substring(126, 134).trim(); //6 
-            const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //3
-            const manifestKanban = kanbanContent.substring(106, 116).trim(); //1
-            const partNumberTAM = kanbanContent.substring(76, 90).trim(); //9
-
+            const supplierLabel = kanbanContent.substring(51, 75).trim().replace(/-/g, ''); //OKOK
+            const itemNo = kanbanContent.substring(144, 147).trim(); //OKOK
+            const PONumber = kanbanContent.substring(106, 125).trim(); //OKOK
+            const kanbanID = kanbanContent.substring(134, 143).trim(); //
+            const deliveryDate = kanbanContent.substring(126, 134).trim(); // Original format dd-mm-yy
+            const [day, month, year] = deliveryDate.split('-');
+            const formattedDeliveryDate = `20\${year}\${month}\${day}`; // Convert to yyyymmdd format
+            const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //
+            // const manifestKanban = kanbanContent.substring(106, 125).trim(); //
+            const partNumberTAM = kanbanContent.substring(76, 91).trim(); // OK
+            const vendorCode = kanbanContent.substring(148, 152).trim(); // OK
+            let currentScannedCount = parseInt(document.getElementById('scannedCount').textContent) || 0;
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
                 alert('Error: Kanban content is empty.');
                 return;
+
             }
 
             clearLabelTimeoutId = setTimeout(() => {
@@ -380,10 +422,9 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                     document.getElementById('inputScanKanban').value = '';
                     return;
                 }
-
+                //postpone
                 if (kanbanContent.includes(partNumber)) {
                     // Disable the input immediately upon success
-
                     swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
@@ -394,46 +435,42 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                             totalScanKanbanOri = qtyOriSil / quantityFromScan;
                             document.getElementById('inputScanKanban').disabled = true;
                             document.getElementById('scannedCount').textContent = currentScannedCount;
-                            document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                             document.getElementById('modalSupplierLabel').value = supplierLabel; // Set label supplier
                             document.getElementById('totalLabelCount').textContent = quantityFromScan; // Set total label count
                             document.getElementById('scannedLabelCount').textContent = '0'; // Set jumlah label yang sudah dipindai 
-                            document.getElementById('inputScanLabel').focus(); // Fokus pada input label
                             document.getElementById('totalCount').textContent = totalScanKanbanOri; // Set total count
-                            currentStep = 1;
-                            updateProcessGuide();
+
+                            if (caseLabelDB == '' || caseLabelContentDB === '') {
+                                // document.getElementById('inputScanCase').focus();
+                                document.getElementById('inputScanCase').disabled = false; // Aktifkan input label
+                                document.getElementById('inputScanLabel').disabled = true; // Aktifkan input label
+                                document.getElementById('inputScanCase').focus();
+                                currentStep = 1;
+                                updateProcessGuide();
+                            } else {
+                                document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
+                                document.getElementById('inputScanLabel').focus();
+                                currentStep = 2;
+                                  updateProcessGuide();
+                            }
                             if (contentLabel !== '') {
                                 document.getElementById('modalQuantitySupplier').disabled = true; // Set jumlah KanbcontentKanban supplier
                             } else if (contentLabel === '') {
                                 document.getElementById('modalQuantitySupplier').value = '1';
-                            }
+                            } 
                         }
                     });
                 }
-
-                //postpone zone
-
-                // Ekstrak jumlah dari pemindaian
-
-
-
-                manifestKanbanDB = manifestKanban; //manifest kanban
-                partNumberDB = partNumberTAM; //part number
-                qtyKanbanOri = quantityFromScan;
-                labelOri = supplierLabel; //customer label
-                kanbanItemDB = kanbanItem; //Kanban Item
-                delDateDB = deliveryDate; //ETD dd/mm/yyyy
-                kanbanIdDB = kanbanID; //Kanban ID
-
-                console.log('Kanban ID:', kanbanID);
-                console.log('Manifest Kanban:', manifestKanbanDB);
-                console.log('Part Number:', partNumberDB);
-                console.log('Qty Kanban:', qtyKanbanOri);
-                console.log('Customer Label:', labelOri);
-                console.log('Kanban Item:', kanbanItemDB);
-                console.log('Delivery Date:', delDateDB);
-
                 //--------------------------------------------------------------------------------
+
+                qtyLabelOri = quantityFromScan,
+                    kanbanIdDB = kanbanID,
+                    delDateDB = formattedDeliveryDate,
+                    poNumberDB = PONumber,
+                    vendorCodeDB = vendorCode,
+                    partNumberDB = partNumberTAM,
+                    labelOri = supplierLabel
+                kanbanItemDB = kanbanItem;
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
                 } else {
@@ -449,7 +486,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 }
 
                 // Mendapatkan jumlah yang sudah dipindai
-                let currentScannedCount = parseInt(document.getElementById('scannedCount').textContent) || 0;
+
 
                 // Update UI
                 currentScannedCount += 1; // Update jumlah yang sudah dipindai
@@ -463,6 +500,47 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
                 // Clear kanban input
                 document.getElementById('inputScanKanban').value = '';
+            }, 1000);
+        }
+
+        function caseScan(scanContent) {
+            const caseLabel = scanContent.substring(0, 1)
+
+
+            clearLabelTimeoutId = setTimeout(() => {
+                if (caseLabel === kanbanIdDB) {
+                    caseLabelDB = caseLabel;
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Scan Berhasil',
+                        text: `Scan Case Label Succes`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        willClose: () => {
+                            document.getElementById('inputScanCase').disabled = true; // Aktifkan input label
+                            document.getElementById('inputScanCase').setAttribute('readonly', caseLabelContentDB); // Aktifkan input label
+                            document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
+                            document.getElementById('inputScanLabel').focus();
+                            document.getElementById('modalQuantitySupplier').disabled = false; // Set jumlah KanbcontentKan
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Scan Gagal',
+                        text: `Check dan Pastikan Label Case Sesuai Kanban`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        willClose: () => {
+                            location.reload();
+                        }
+                    });
+                }
+
+
+                currentStep = 2;
+                updateProcessGuide();
             }, 1000);
         }
 
@@ -515,8 +593,11 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                             if (progressScanKanbanOri < totalScanKanbanOri) {
                                 resetKanbanInput(); // Reset input kanban jika perlu
                                 document.getElementById('inputScanKanban').focus(); // Fokus pada input kanban
+                                  currentSteps = 99;
+                                  currentStep = 0;
+                                  updateProcessGuide();
                             } else if (progressScanKanbanOri === totalScanKanbanOri) {
-                                currentStep = 2;
+                                currentStep = 3;
                                 updateProcessGuide();
                                 document.getElementById('saveButton').disabled = false;
                             }
@@ -557,6 +638,9 @@ if (isset($data['noSil']) && isset($data['entries'])) {
             // Set nilai ke modal
             document.getElementById('modalPartNumber').value = partNumber;
             document.getElementById('saveButton').disabled = true;
+            document.getElementById('inputScanLabel').disabled = true;
+            document.getElementById('inputScanCase').disabled = true;
+            document.getElementById('modalQuantitySupplier').disabled = true;
 
             currentStep = 0;
             updateProcessGuide();
@@ -582,16 +666,6 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         function saveData() {
 
             repeaterScanning = 0;
-            // if (/R[0-9]/.test(manifestKanbanDB)) {
-            //     customerAuto = 'ADM VANNING';
-            // } else {
-            //     customerAuto = 'TMMIN VANNING';
-            // }
-            // if (/^[A-Za-z]{2}/.test(manifestKanbanDB)) {
-            //     customerAuto = 'TMMIN VANNING';
-            // } else if (/^[A-Za-z][0-9]/.test(manifestKanbanDB)) {
-            //     customerAuto = 'ADM VANNING';
-            // }
             const date = new Date();
             // Format dengan opsi
             const options = {
@@ -614,18 +688,6 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             };
 
-            let stringDate = delDateDB;
-            const dateParts = stringDate.split('-');
-            const days = dateParts[0];
-            const months = dateParts[1];
-            let years = dateParts[2];
-
-            if (years.length == 2) {
-                years = '20' + years;
-            }
-
-            const deliveFormated = days + '.' + months + '.' + years;
-
             const formattedDate = date.toLocaleString('id-ID', options);
             const formattedTime = date.toLocaleString('id-ID', optionsFull);
 
@@ -636,29 +698,32 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             // Siapkan objek data untuk dikirim
             const saveToDatabase = {
-                noSil: noSil, //SUPLIER REF NO#1
-                partNumber: partNumberOri, //SUPLIER REF NO#2
-                qtyKanban: qtyKanbanOri, //OK
-                totalKanban: totalScanKanbanOri, //OK
-                customerLabel: labelOri, //OK
-                qtyLabel: qtyLabelOri || 0, // OK
-                totalLabel: totalTimesScan, // OK Qty Delivery
-                contentScanKanban: contentKanban, // OK
-                contentScanLabel: contentLabel, // OK
-                customer: customerAuto,
-                saveButton: true, //SOLID
-                prepareTime: formattedDate, //OK
-                KanbanId: kanbanIdDB, //OK
-                kanbanItem: kanbanItemDB, //OK
-                actualTime: formattedTime, //OK 
-                delDates: delDateDB, //ETD dd/mm/yyyy
-                delivVan: deliveFormated,
-                dataID: 'D',
-                manifestKanban: manifestKanbanDB,
-                userName : '<?= \$username ?>'
+                noSil: noSil, //
+                qtyKanban: qtyKanbanOri, //
+                totalKanban: totalScanKanbanOri, //
+                qtyLabel: qtyLabelOri || 0, // Traceability qtyLabel
+                contentScanKanban: contentKanban, // Traceability Actual Label Content
+                contentScanLabel: contentLabel, // Traceability Actual Label Content
+                prepareTime: formattedDate, // Traceability Actual dd/mm/yyyy
+                actualTime: formattedTime, // Traceability Actual Jam
+                customer: 'TAM',
+                saveButton: true, //
+
+                //CHARACTERISTIC ZONE
+                partNumber: partNumberDB, // PartNUmber
+                customerLabel: labelOri, // Customer Label
+                totalLabel: totalTimesScan, // Qty ORI SIL
+                KanbanId: kanbanIdDB, // franchise & case
+                kanbanItem: kanbanItemDB, // Item No
+                delDates: delDateDB, // shipment date
+                PONumber: poNumberDB, // PO Number
+                labelItem: vendorCodeDB,
+                caseNo: caseLabelContentDB,
+                userName: '<?= \$username; ?>'
+                // processCode: processCodeDB, // Process Code
             };
             console.log(saveToDatabase);
-            
+
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
 
@@ -683,7 +748,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                 if (result.isConfirmed) {
                     // Kirim data ke server
                     $.ajax({
-                        url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
+                        url: '/3P_CHECK_OES/CONTROLLER/TAM/3P_TAM_CONTROL.php',
                         type: 'POST',
                         dataType: 'json',
                         data: saveToDatabase,
@@ -802,7 +867,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
 
             // Send the data via AJAX
             $.ajax({
-                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TAM/3P_TAM_CONTROL.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -819,7 +884,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {
@@ -860,7 +925,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/TMMIN';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/TAM';
                             }
                         });
                     } else {
@@ -887,6 +952,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
         }
     </script>
 </body>
+
 </html>";
 
     // Tulis konten ke file
