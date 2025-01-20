@@ -1,16 +1,18 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P_CHECK_OES/logout'); 
+    header('location: /3P_CHECK_OES/logout');
+    exit();
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
+    header('location: /3P_CHECK_OES/Error_access');
+    die('Access denied: Invalid session section');
+} else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
+    header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-
-// Cek apakah session username sudah ada (sudah login)
-else if (!isset($_SESSION['nama'])) {
-    // Jika tidak ada session, redirect ke halaman login
-    header("Location: /3P_CHECK_OES/LOGOUT");
-    exit(); // Pastikan script berhenti setelah redirect
-}
+$userLogin = $_SESSION['nama'];
+$statusUser = $_SESSION['status_user'];
+echo $statusUser;
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
 ?>
@@ -22,12 +24,13 @@ $baseUrl = '/3P_CHECK_OES/';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3 Point Check OES - Dashboard</title>
-
+    <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
     <!-- Bootstrap & Custom CSS -->
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/Animate.min.css">
     <script src="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
+    <script src='<?= $baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
 
     <style>
         :root {
@@ -152,6 +155,7 @@ $baseUrl = '/3P_CHECK_OES/';
         .card-custom:hover::after {
             left: 100%;
         }
+
         .card-custom .card-body i {
             font-size: 4rem;
             color: var(--accent-color);
@@ -169,10 +173,11 @@ $baseUrl = '/3P_CHECK_OES/';
 <body>
     <div class="dashboard-container">
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>SELAMAT DATANG <login user></h1>
+            <h1>SELAMAT DATANG <login user>
+            </h1>
             <p class="lead">SELESAIKAN 1 CYCLE PROSES SEBELUM MENINGGALKAN PROSES</p>
         </div>
-        
+
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">
             <?php
             $dashboards = [
@@ -211,6 +216,64 @@ $baseUrl = '/3P_CHECK_OES/';
             <?php endforeach; ?>
         </div>
     </div>
+    <div class='modal fade' id='authenticationModal' tabindex='-1' aria-labelledby='authenticationModalLabel' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='authenticationModalLabel'>Authentication Required</h5>
+                </div>
+                <div class='modal-body'>
+                    <form id='authenticationForm'>
+                        <div class='mb-3'>
+                            <label for='authUsername' class='form-label'>Username</label>
+                            <input type='text' class='form-control' id='authUsername' required>
+                        </div>
+                        <div class='mb-3'>
+                            <label for='authPassword' class='form-label'>Password</label>
+                            <input type='password' class='form-control' id='authPassword' required>
+                        </div>
+                    </form>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-primary' id='authenticateButton'>Authenticate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="<?= $baseUrl; ?>/JS/3P_INTERLOCK.js"></script>
+    <script>
+        const usernameLogin = '<?= $userLogin; ?>';
+
+        $(document).ready(function() {
+            const user = '<?= $userLogin; ?>';
+            const statusLogin = '<?= $statusUser; ?>';
+            $.ajax({
+                type: 'GET',
+                url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_CHECKER.php',
+                data: {
+                    userLogin: user
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status !== 'error') {
+                        // Jika status pengguna adalah 'OPEN', tidak perlu autentikasi
+                        if (response[0].STATUS_USER === 'OPEN') {
+                            console.log('NIHAO');
+                        } else {
+                            // Tampilkan modal autentikasi jika status bukan 'OPEN'
+                            showAuthenticationModal();
+                        }
+                    } else {
+                        console.log('Error:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        });
+    </script>
 
 </body>
 

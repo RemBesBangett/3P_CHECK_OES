@@ -6,6 +6,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 } else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
+} else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
+    header('location: /3P_CHECK_OES/Dashboard');
+    exit();
 }
 
 $baseUrl = '/3P_CHECK_OES/';

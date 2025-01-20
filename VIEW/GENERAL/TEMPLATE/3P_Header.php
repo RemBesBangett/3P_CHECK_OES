@@ -1,7 +1,4 @@
 <?php 
-
- 
-
 $page = basename($_SERVER['PHP_SELF']);
 $title = '';
 $baseUrl = '/3P_CHECK_OES/';

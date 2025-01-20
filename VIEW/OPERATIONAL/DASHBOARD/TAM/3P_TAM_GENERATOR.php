@@ -32,9 +32,15 @@ if (isset($data['noSil']) && isset($data['entries'])) {
     <?php
 session_start();
 if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
-    header('location: /3P_CHECK_OES/Logout');
+    header('location: /3P_CHECK_OES/logout');
     exit();
-};
+} else if (!isset(\$_SESSION['section']) || \$_SESSION['section'] != 'OPERATIONAL' && \$_SESSION['access'] != 'ADMIN') {
+    header('location: /3P_CHECK_OES/Error_access');
+    die('Access denied: Invalid session section');
+} else if (isset(\$_SESSION['status_user']) && \$_SESSION['status_user'] == 'locked') {
+    header('location: /3P_CHECK_OES/Dashboard');
+    exit();
+}
 \$username = \$_SESSION['nama'];
 \$baseUrl = '/3P_CHECK_OES/';
 ?>
@@ -222,7 +228,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             </div>
         </div>
     </div>
-
+    
+<script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
        <script>
         let partNumberOri = '';
         let totalScanKanbanOri = 0;
@@ -255,6 +262,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         let caseLabelDB = ''; //Config
         let caseLabelContentDB = '';
         let currentSteps = '';
+        let usernameLogin = '<?= \$username; ?>';
 
 
 

@@ -8,7 +8,7 @@ function handleLogin($nama, $password)
     error_log("Received NAMA: " . $nama);
     error_log("Received Password: " . $password);
 
-    $sql = "SELECT NPK, ACCESS, STATUS, LINE, SECTION FROM [3P_M_USER] WHERE NAMA = ? AND PASSWORD = ?";  
+    $sql = "SELECT NPK, ACCESS, STATUS, LINE, SECTION, STATUS_USER FROM [3P_M_USER] WHERE NAMA = ? AND PASSWORD = ?";  
     $params = array($nama, $password);
 
     $stmt = sqlsrv_query($conn, $sql, $params);
@@ -23,7 +23,8 @@ function handleLogin($nama, $password)
         $accountStatus = $row['STATUS'];
         $line = $row['LINE'];
         $npk = $row['NPK'];
-        $section = $row['SECTION']; // Retrieve section from the query result
+        $section = $row['SECTION'];
+        $userStatus = $row['STATUS_USER'];
 
         if ($accountStatus == 'EXPIRED') {
             error_log("Account expired for user: " . $nama);
@@ -36,10 +37,19 @@ function handleLogin($nama, $password)
             $_SESSION['role'] = $userRole;
             $_SESSION['line'] = $line;
             $_SESSION['npk'] = $npk;
-            $_SESSION['section'] = $section; // Store section in session
+            $_SESSION['section'] = $section;
+            $_SESSION['status_user'] = $userStatus;
 
             error_log("User successfully logged in: " . $nama . " with role: " . $userRole);
-            return ["status" => "success", "access" => $userRole, "nama" => $nama, "line" => $line, "npk" => $npk, "section" => $section];
+            return [
+                "status" => "success",
+                "access" => $userRole,
+                "nama" => $nama,
+                "line" => $line,
+                "npk" => $npk,
+                "section" => $section,
+                "status_user" => $userStatus // Tambahkan status_user ke array hasil
+            ];
         }
     } else {
         error_log("Login attempt failed for user: " . $nama);

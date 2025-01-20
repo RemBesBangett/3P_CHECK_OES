@@ -1,7 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('location: /3P_CHECK_OES/logout ');
+    header('location: /3P_CHECK_OES/logout');
+    exit();
+} else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
+    header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
 

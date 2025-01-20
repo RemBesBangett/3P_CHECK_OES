@@ -1,118 +1,161 @@
-function showAuthenticationModal(errorMessage = null) {
-    // Pastikan dokumen sudah dimuat sepenuhnya
-    if (document.readyState !== 'complete') {
-        document.addEventListener('DOMContentLoaded', () => initializeAuthModal(errorMessage));
-        return;
-    }
-
-    initializeAuthModal(errorMessage);
-}
-
-function initializeAuthModal(errorMessage = null) {
-    // Inisialisasi modal Bootstrap
-    const authModal = new bootstrap.Modal(
-        document.getElementById("authenticationModal")
-    );
-
-    // Set flag autentikasi diperlukan
-    localStorage.setItem("authenticationRequired", "true");
-
-    // Tampilkan modal
-    authModal.show();
-
-    // Tampilkan pesan error jika ada
-    if (errorMessage) {
-        Swal.fire({
-            title: "Error!",
-            text: errorMessage,
-            icon: "error",
-            confirmButtonText: "OK",
-            showCancelButton: false,
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-        });
-    }
-
-    // Pastikan event listener hanya ditambahkan sekali
-    const authenticateButton = document.getElementById("authenticateButton");
-    authenticateButton.removeEventListener('click', handleAuthentication);
-    authenticateButton.addEventListener('click', handleAuthentication);
-
-    // Prevent modal dari dismiss
-    const authenticationModal = document.getElementById("authenticationModal");
-    authenticationModal.removeEventListener('hide.bs.modal', preventModalHide);
-    authenticationModal.addEventListener('hide.bs.modal', preventModalHide);
-
-    // Prevent page unload
-    window.removeEventListener('beforeunload', preventPageUnload);
-    window.addEventListener('beforeunload', preventPageUnload);
-}
-
-function handleAuthentication() {
-    const username = document.getElementById("authUsername").value;
-    const password = document.getElementById("authPassword").value;
-    const authModal = bootstrap.Modal.getInstance(document.getElementById("authenticationModal"));
-
-
-    // Send authentication request to server using jQuery AJAX
+// Fungsi untuk menampilkan modal autentikasi
+function showAuthenticationModal() {
+    // Kirim request untuk mengecek status user sebelum menampilkan modal
     $.ajax({
-        url: "/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_INTERLOCK_CONTROL.php",
-        type: "POST",
-        contentType: "application/json",
+        type: 'POST',
+        url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_INTERLOCK_CONTROL.php',
         data: JSON.stringify({
-            username: username,
-            password: password,
+            action: 'preCheck',
+            userSession: usernameLogin // Tambahkan user session yang sedang aktif
         }),
-        success: function (data) {
-            if (data.success) {
-                document.getElementById("authUsername").value = "";
-                document.getElementById("authPassword").value = "";
-                localStorage.removeItem("authenticationRequired");
-                authModal.hide();
+        contentType: "application/json",
+        success: function(response) {
+            console.log("Server Pre-Check Response:", response);
+
+            // Jika status membutuhkan autentikasi ulang
+            if (response.status === 'requireAuth') {
+                // Tampilkan Sweet Alert konfirmasi
                 Swal.fire({
-                    title: "Authentication Successful",
-                    text: "You can now proceed with the scan.",
-                    icon: "success",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    showConfirmButton: false,
-                }).then(() => {
-                    // Refresh the page after the success message is shown
-                    localStorage.removeItem('allScanData');
-                    restoreUI();
-                    location.reload();
+                    title: "Verifikasi Diperlukan",
+                    text: response.message || "Sistem membutuhkan verifikasi ulang.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, Verifikasi",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Inisialisasi modal
+                        const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        // Tampilkan modal
+                        modal.show();
+                    }
                 });
-            } else {
+            } 
+            // Jika terjadi kesalahan
+            else {
                 Swal.fire({
-                    title: "Authentication Failed",
-                    text: "Invalid username or password.",
+                    title: "Kesalahan Autentikasi",
+                    text: response.message || "Gagal memeriksa status pengguna",
                     icon: "error",
-                    confirmButtonText: "Try Again",
-                    showCancelButton: false,
+                    confirmButtonText: "Coba Lagi"
                 });
             }
+            const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            // Tampilkan modal
+            modal.show();
         },
-        error: function (error) {
-            console.error("Error:", error);
+        error: function(xhr, status, error) {
+            console.error("Error pre-checking user status:", error);
             Swal.fire({
-                title: "Error",
-                text: "An error occurred during authentication.",
+                title: "Kesalahan Sistem",
+                text: "Terjadi kesalahan saat memeriksa status pengguna",
                 icon: "error",
-                confirmButtonText: "OK",
+                confirmButtonText: "Tutup"
             });
         }
     });
 }
 
-function preventModalHide(event) {
-    if (localStorage.getItem("authenticationRequired") === "true") {
-        event.preventDefault();
+// Fungsi untuk menangani proses autentikasi
+function interlockArea() {
+    // Ambil nilai username dan password dari input
+    const usernamE = document.getElementById('authUsername').value;
+    const passworD = document.getElementById('authPassword').value;
+
+    // Validasi input
+    if (!usernamE || !passworD) {
+        Swal.fire({
+            title: "Kesalahan Input",
+            text: "Username dan password harus diisi",
+            icon: "warning",
+            confirmButtonText: "OK"
+        });
+        return;
     }
+
+    // Kirim request autentikasi
+    $.ajax({
+        type: 'POST',
+        url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_INTERLOCK_CONTROL.php',
+        data: JSON.stringify({
+            action: 'authenticate',
+            username: usernamE,
+            password: passworD,
+            userSession: usernameLogin
+        }),
+        contentType: "application/json",
+        success: function (response) {
+            console.log("Server Response:", response);
+
+            // Cek apakah autentikasi berhasil
+            if (response.status === 'success') {
+                // Simpan informasi user di localStorage
+                localStorage.setItem('userAccess', response.data.access);
+                localStorage.setItem('userName', response.data.nama);
+
+                // Tampilkan pesan sukses
+                Swal.fire({
+                    title: "Autentikasi Berhasil",
+                    text: "Anda dapat melanjutkan proses",
+                    icon: "success",
+                    timer: 1500,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Tutup semua modal yang sedang terbuka
+                    closeAllModals();
+                });
+            } else {
+                // Autentikasi gagal
+                Swal.fire({
+                    title: "Autentikasi Gagal",
+                    text: response.message, 
+                    icon: "error",
+                    confirmButtonText: "Coba Lagi"
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error autentikasi:", error);
+            Swal.fire({
+                title: "Kesalahan Sistem",
+                text: "Terjadi kesalahan saat autentikasi",
+                icon: "error",
+                confirmButtonText: "Tutup"
+            });
+        }
+    });
 }
 
-function preventPageUnload(e) {
-    if (localStorage.getItem("authenticationRequired") === "true") {
-        e.preventDefault();
-        e.returnValue = "";
-    }
+// Fungsi untuk menutup semua modal
+function closeAllModals() {
+    // Dapatkan semua modal yang sedang terbuka
+    const openModals = document.querySelectorAll('.modal.show');
+    
+    openModals.forEach(modalElement => {
+        // Dapatkan instance modal Bootstrap
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        
+        // Jika instance modal ditemukan, tutup modal
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
+
+    // Optional: Tambahkan penanganan modal kustom jika ada
+    const customModals = document.querySelectorAll('.custom-modal');
+    customModals.forEach(modal => {
+        modal.style.display = 'none';
+    });
 }
+
+// Event listener untuk tombol Authenticate
+document.getElementById('authenticateButton').addEventListener('click', function () {
+    interlockArea();
+});
