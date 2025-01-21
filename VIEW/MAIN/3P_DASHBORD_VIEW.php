@@ -12,7 +12,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 $userLogin = $_SESSION['nama'];
 $statusUser = $_SESSION['status_user'];
-echo $statusUser;
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
 ?>
@@ -242,37 +241,11 @@ $baseUrl = '/3P_CHECK_OES/';
     </div>
 
     <script src="<?= $baseUrl; ?>/JS/3P_INTERLOCK.js"></script>
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
     <script>
         const usernameLogin = '<?= $userLogin; ?>';
-
-        $(document).ready(function() {
-            const user = '<?= $userLogin; ?>';
-            const statusLogin = '<?= $statusUser; ?>';
-            $.ajax({
-                type: 'GET',
-                url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_CHECKER.php',
-                data: {
-                    userLogin: user
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status !== 'error') {
-                        // Jika status pengguna adalah 'OPEN', tidak perlu autentikasi
-                        if (response[0].STATUS_USER === 'OPEN') {
-                            console.log('NIHAO');
-                        } else {
-                            // Tampilkan modal autentikasi jika status bukan 'OPEN'
-                            showAuthenticationModal();
-                        }
-                    } else {
-                        console.log('Error:', response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        });
+        const user = '<?= $userLogin; ?>';
+        const statusLogin = '<?= $statusUser; ?>';
     </script>
 
 </body>

@@ -228,7 +228,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             </div>
         </div>
     </div>
-    
+
 <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
        <script>
         let partNumberOri = '';
@@ -411,7 +411,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             const deliveryDate = kanbanContent.substring(126, 134).trim(); // Original format dd-mm-yy
             const [day, month, year] = deliveryDate.split('-');
             const formattedDeliveryDate = `20\${year}\${month}\${day}`; // Convert to yyyymmdd format
-            const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //
+            const kanbanItem = kanbanContent.substring(143, 147).trim();
             // const manifestKanban = kanbanContent.substring(106, 125).trim(); //
             const partNumberTAM = kanbanContent.substring(76, 91).trim(); // OK
             const vendorCode = kanbanContent.substring(148, 152).trim(); // OK
