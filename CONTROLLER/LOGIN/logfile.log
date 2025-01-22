@@ -1,0 +1,2 @@
+Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
