@@ -10,7 +10,7 @@ $(document).ready(function() {
             if (response.status !== 'error') {
                 // Jika status pengguna adalah 'OPEN', tidak perlu autentikasi
                 if (response[0].STATUS_USER === 'OPEN') {
-                    console.log('サムスゥ');
+                    console.log('おはよう');
                 } else {
                     // Tampilkan modal autentikasi jika status bukan 'OPEN'
                     showAuthenticationModal();
