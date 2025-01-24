@@ -1,5 +1,5 @@
 <?php
-require "../../MODEL/DBCON/dbcon.php";
+require_once "C:/xampp/htdocs/3P_CHECK_OES/MODEL/DBCON/dbcon.php";
 
 function sendDatabase(
     $noSil,
@@ -177,4 +177,112 @@ function finishOperational($noSil, $dataSilAll)
 
     // Close the connection if needed
     sqlsrv_close($conn);
+}
+
+
+function deleteSilFile($fileToDelete)
+{
+    $conn = dbcon();
+
+    // Ambil semua data dari NO_SIL yang ingin dihapus
+    $statusQuery = "SELECT * FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
+    $statusParams = [$fileToDelete];
+    $statusStmt = sqlsrv_query($conn, $statusQuery, $statusParams);
+
+    if ($statusStmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    // Cek apakah ada data
+    $rowCount = sqlsrv_num_rows($statusStmt);
+    if ($rowCount === 0) {
+        sqlsrv_free_stmt($statusStmt);
+        sqlsrv_close($conn);
+        return "No data found for NO_SIL: $fileToDelete";
+    }
+
+    // Mulai transaksi
+    sqlsrv_begin_transaction($conn);
+
+    try {
+        // Simpan data yang akan diproses
+        $dataToProcess = [];
+        while ($row = sqlsrv_fetch_array($statusStmt, SQLSRV_FETCH_ASSOC)) {
+            $dataToProcess[] = $row;
+        }
+
+        // Hapus semua data dari tabel [3P_T_DATA-SIL] dengan NO_SIL yang sama
+        $deleteQuery = "DELETE FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
+        $deleteParams = [$fileToDelete];
+        $deleteStmt = sqlsrv_query($conn, $deleteQuery, $deleteParams);
+
+        if ($deleteStmt === false) {
+            throw new Exception(print_r(sqlsrv_errors(), true));
+        }
+
+        // Proses setiap baris data
+        $processedRows = 0;
+        $processedStatuses = [];
+
+        foreach ($dataToProcess as $row) {
+            // Ambil informasi yang diperlukan
+            $status = $row['STATUS'];
+            $partNumber = $row['PART_NUMBER'];
+            $quantity = $row['QUANTITY'];
+            $timeEntry = $row['TIME_ENTRY'];
+            $customer = $row['CUSTOMER'];
+
+            // Tentukan tabel tujuan berdasarkan status
+            if ($status === 'CLOSED') {
+                $insertQuery = "INSERT INTO [3P_T_DATA-REG] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
+            } elseif ($status === 'OPEN') {
+                $insertQuery = "INSERT INTO [3P_T_DATA-BO] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
+            } else {
+                // Lewati jika status tidak dikenali
+                continue;
+            }
+
+            // Siapkan parameter untuk insert
+            $insertParams = [$fileToDelete, $partNumber, $quantity, $status, $timeEntry, $customer];
+            $insertStmt = sqlsrv_query($conn, $insertQuery, $insertParams);
+
+            if ($insertStmt === false) {
+                throw new Exception(print_r(sqlsrv_errors(), true));
+            }
+
+            $processedRows++;
+            $processedStatuses[] = $status;
+
+            // Bebaskan statement insert
+            sqlsrv_free_stmt($insertStmt);
+        }
+
+        // Commit transaksi
+        sqlsrv_commit($conn);
+
+        // Bebaskan statement
+        sqlsrv_free_stmt($deleteStmt);
+        sqlsrv_free_stmt($statusStmt);
+        sqlsrv_close($conn);
+
+        // Kembalikan informasi proses
+        return [
+            'message' => "Processed $processedRows rows for NO_SIL: $fileToDelete",
+            'processedStatuses' => array_unique($processedStatuses)
+        ];
+
+    } catch (Exception $e) {
+        // Rollback transaksi jika terjadi kesalahan
+        sqlsrv_rollback($conn);
+        
+        // Bebaskan statement
+        sqlsrv_free_stmt($statusStmt);
+        sqlsrv_close($conn);
+
+        // Kembalikan pesan kesalahan
+        return [
+            'error' => true,
+            'message' => $e->getMessage()
+        ];
+    }
 }

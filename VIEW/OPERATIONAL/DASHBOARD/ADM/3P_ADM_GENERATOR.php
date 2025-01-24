@@ -41,8 +41,9 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-            \$userName = \$_SESSION['nama'];
-\$baseUrl = '/3P_CHECK_OES/'
+\$username = \$_SESSION['nama'];
+\$status = \$_SESSION['status_user'];
+\$baseUrl = '/3P_CHECK_OES/';
     ?>
 
     <!DOCTYPE html>
@@ -58,19 +59,40 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
     <link rel='stylesheet' href='<?= \$baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css'>
     <link rel='stylesheet' href='<?= \$baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css'>
     <style>
+        /* Tambahkan di bagian <style> di head dokumen */
+        .closed-row {
+            background-color: rgb(0, 219, 51) !important;
+            /* Warna hijau muda */
+            color: #155724 !important;
+            /* Warna teks gelap */
+        }
+
+        .closed-row td {
+            opacity: 0.7;
+            /* Membuat teks sedikit transparan */
+        }
+
+        .closed-row .btn {
+            display: none;
+            /* Menyembunyikan tombol */
+        }
+
         .form-control-custom {
             height: 30px;
             padding: 2px 5px;
             font-size: 12px;
         }
+
         .label-custom {
             font-size: 12px;
             margin-bottom: 2px;
         }
+
         .text-left {
             text-align: left;
         }
-             .process-guide {
+
+        .process-guide {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -218,9 +240,38 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         </div>
     </div>
 
-    <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
+        <div class='modal' id='authenticationModal' tabindex='-1'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title'>Autentikasi</h5>
+                    </div>
+                    <div class='modal-body'>
+                        <!-- Tambahkan elemen untuk pesan kustom -->
+                        <p id='authModalMessage'>Silakan masukkan autentikasi</p>
+
+                        <div class='form-group'>
+                            <label>Username</label>
+                            <input type='text' id='authUsername' class='form-control'>
+                        </div>
+                        <div class='form-group'>
+                            <label>Password</label>
+                            <input type='password' id='authPassword' class='form-control'>
+                        </div>
+                    </div>
+                    <div class='modal-footer'>
+                        <button id='authenticateButton' class='btn btn-primary'>Autentikasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script> <!-- LOL -->
+    <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script> <!-- LOL -->
     <script>
-          let partNumberOri = '';
+        const user = '<?= \$username; ?>'; //LOL
+        const statusLogin = '<?= \$status; ?>'; //LOL
+        let partNumberOri = '';
         let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
         let totalScanKanbanOri = 0;
         let labelOri = '';
@@ -240,7 +291,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         let lineItemDB;
         let delDate;
         let qtyOriSil;
-                let usernameLogin = '<?= \$userName; ?>';
+        let usernameLogin = '<?= \$username; ?>'; //LOL
 
 
         function updateProcessGuide() {
@@ -297,29 +348,30 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             tableBody.empty(); // Clear the table before adding data
 
             data.forEach(function(item, index) {
-                const row = $('<tr>');
+            const row = $('<tr>');
 
-                // Append cells to the row
-                row.append($('<td>').text(index + 1));
-                row.append($('<td>').text(item.PART_NUMBER));
-                row.append($('<td>').text(item.QUANTITY));
-                row.append($('<td>').text(item.STATUS));
+            // Append cells to the row
+            row.append($('<td>').text(index + 1));
+            row.append($('<td>').text(item.PART_NUMBER));
+            row.append($('<td>').text(item.QUANTITY));
+            row.append($('<td>').text(item.STATUS));
 
-                // Create the 'Continue' button
-                const continueButton = $('<button>')
-                    .addClass('btn btn-primary')
-                    .attr('type', 'button')
-                    .attr('onclick', 'handleModalOpen(this)')
-                    .text('Continue');
+            // Create the 'Continue' button
+            const continueButton = $('<button>')
+                .addClass('btn btn-primary')
+                .attr('type', 'button')
+                .attr('onclick', 'handleModalOpen(this)')
+                .text('Continue');
 
-                // Check the status and hide the button if the status is 'CLOSED'
-                if (item.STATUS === 'CLOSED') {
-                    continueButton.hide(); // Hide the button
-                    row.addClass('closed-row'); // Add the class to change the background color
-                }
-
-                row.append($('<td>').append(continueButton));
-                tableBody.append(row);
+            // Check the status and modify row appearance if 'CLOSED'
+            if (item.STATUS === 'CLOSED') {
+                continueButton.prop('disabled', true).text('Completed'); // Disable the button and change text to 'Finish'
+                row.addClass('table-success'); // Bootstrap class for green background
+                row.find('td').addClass('text-muted'); // Optional: make text slightly faded
+            }
+                
+            row.append($('<td>').append(continueButton));
+            tableBody.append(row);
             });
         }
 
@@ -342,24 +394,21 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
         document.getElementById('inputScanLabel').addEventListener('input', function() {
             if (!labelScanningEnabled) {
-                alert('Please scan Kanban first!');
-                this.value = '';
-                return;
-            }
+                swal.fire({
+                    title: 'Error',
+                    text: 'Scan Kanban Dengan Benar',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 1500,
 
+                });
+            }
             const scannedLabel = this.value;
             clearTimeout(clearLabelTimeoutId);
             clearLabelTimeoutId = setTimeout(() => {
                 handleLabelScan(scannedLabel, this); // Panggil fungsi baru
             }, 500); // Delay 1 second
         });
-
-
-
-
-
-
-
 
         // Fungsi processScan
         function processScan(kanbanContent) {
@@ -374,22 +423,35 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
-                alert('Error: Kanban content is empty.');
-                return;
+                swal.fire({
+                    title: 'Error',
+                    text: 'Lakukan Scan Kanban',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    willClose: () => {
+                        document.getElementById('inputScanKanban').value = '';
+                    }
+
+
+                });
             }
 
             clearLabelTimeoutId = setTimeout(() => {
                 // Validasi apakah konten kanban mencakup nomor bagian
                 if (!kanbanContent.includes(partNumber)) {
-                    alert('Error: Scanned value does not match the part number.');
-                    document.getElementById('inputScanKanban').value = '';
-                    return;
+                    swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'Kanban Tidak Sesuai, Cek dan Pastikan Kanban Sesuai dengan ' + partNumber,
+                        showConfirmButton: false,
+                        willClose: () => {
+                            document.getElementById('inputScanKanban').value = '';
+                            showAuthenticationModal();
+                        }
+                    });
                 }
-
                 if (kanbanContent.includes(partNumber)) {
-
-
-
                     swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
@@ -440,8 +502,17 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
                 // Validasi jumlah yang diekstrak
                 if (isNaN(quantityFromScan) || quantityFromScan <= 0) {
-                    alert('Error: Invalid quantity extracted from scan.');
-                    return;
+                    swal.fire({
+                        title: 'Error',
+                        text: 'Qty Kanban Tidak Valid, Cek Kanban Kembali',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        willClose: () => {
+                            document.getElementById('inputScanKanban').value = '';
+                            showAuthenticationModal();
+                        }
+                    });
                 }
 
                 // Mendapatkan jumlah yang sudah dipindai
@@ -478,8 +549,16 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 qtyLabelOri = modalQuantitySupplier;
                 // Validasi jika jumlah yang dipindai melebihi total
                 if (currentScannedLabelCount > totalLabelCount) {
-                    alert(`Error: Cannot exceed total label count of \${totalLabelCount}`);
-                    return;
+                    swal.fire({
+                        title: 'Error',
+                        text: 'Jumlah Label Melebihi Total, Ubah Qty Label atau Check Kembali Qty Label',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        willClose: () => {
+                            showAuthenticationModal();
+                        }
+                    });
                 }
 
                 // Update jumlah yang sudah dipindai di UI
@@ -538,6 +617,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     timer: 1500,
                     willClose: () => {
                         inputElement.value = '';
+                        showAuthenticationModal();
                     }
                 });
             }
@@ -628,11 +708,14 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 labelItem: lineItemDB,
                 actualTime: formattedTime,
                 delDates: delDate,
-                userName: '<?= \$userName; ?>'
+                userName: '<?= \$username; ?>'
             };
 
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
+
+
+            ///////////////////////////////REVISI WAJIB///////////////////////////////////////////////////
 
             // Konfirmasi sebelum mengirim
             Swal.fire({
@@ -647,6 +730,9 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.totalLabel + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.delDates + '</p>' +
                     '</div>',
+
+                ///////////////////////|||||||||///////////////////////////////////////////////////
+
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Kirim',
@@ -681,10 +767,10 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                                     title: 'Berhasil!',
                                     text: response.message || 'Data berhasil disimpan',
                                     confirmButtonText: 'OK'
-                                }).then ((result) => {
+                                }).then((result) => {
                                     location.reload();
                                 });
-                                
+
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -854,7 +940,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     });
                 }
             });
-             }
+        }
     </script>
 </body>
 </html>";

@@ -32,7 +32,8 @@ function getSilFiles($directory)
 
     return $silFiles;
 }
-
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 // Get SIL files
 $silFiles = getSilFiles('SIL_FILES/');
 
@@ -101,12 +102,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             <button type="button" class="btn btn-danger" id="clearButton">
                 <i class="fas fa-trash"></i> Clear All Entries
             </button>
-            <!-- <button class="btn btn-warning btn-sm" onclick="exportData()">
-                <i class="fas fa-file-export"></i> Export
-            </button>
-            <input type="date" name="time" id="timePort" class="form-control w-auto"> -->
         </div>
-
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable">
                 <thead>
@@ -189,8 +185,10 @@ $silFiles = getSilFiles('SIL_FILES/');
         </div>
     </div>
 
-    <script src="<?= $baseUrl; ?>JS/Auth/Auth.js"></script>
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
     <script>
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
         let noSilVar;
         let entriesVar = [];
         let partNumVar;
@@ -208,7 +206,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             hour12: false,
         };
 
-    
+
         const formattedDate = date.toLocaleString('id-ID', options);
 
         document.getElementById('addForm').addEventListener('submit', function(e) {
@@ -223,11 +221,29 @@ $silFiles = getSilFiles('SIL_FILES/');
         });
 
         function processSilInput(silValue) {
+            const table = document.getElementById('dataTable'); // Ambil tabel dengan ID 'dataTable'
+            const rows = table.getElementsByTagName('tr'); // Ambil semua baris dalam tabel
             const noSil = silValue.substring(0, 7);
             const length = silValue.length;
             const entries = [];
             let silEntries = JSON.parse(localStorage.getItem('silEntries')) || [];
             const existingSil = silEntries.find(entry => entry.noSil === noSil);
+
+            for (let i = 1; i < rows.length; i++) { // Mulai dari 1 untuk melewati header
+                const partNumber = rows[i].cells[1].textContent; // Ambil nomor bagian dari kolom kedua
+                if (partNumber === noSil) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Duplicate SIL',
+                        text: `No SIL ${noSil} already exists. Please use a different No SIL.`,
+                        confirmButtonText: 'OK',
+                        willClose: () => {
+                            location.reload();
+                        }
+                    });
+                    return;
+                }
+            }
 
             if (existingSil) {
                 Swal.fire({
@@ -338,19 +354,19 @@ $silFiles = getSilFiles('SIL_FILES/');
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/ADM/SIL_' + noSil; 
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/ADM/SIL_' + noSil;
         }
 
 
 
-        
+
         function deleteEntry(button) {
             const row = button.closest('tr');
             const numberSils = row.cells[1].innerText;
-            
-            swal.fire({
+
+            Swal.fire({
                 title: 'Are you sure?',
-                text: `You are about to delete SIL` + numberSils,
+                text: `You are about to delete SIL ${numberSils}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -366,23 +382,21 @@ $silFiles = getSilFiles('SIL_FILES/');
                             numSil: numberSils
                         },
                         success: function(response) {
-                            if (response.success) {
+                            if (response.status === 'success') { // Periksa status
                                 row.remove();
-                                swal.fire({
+                                Swal.fire({
                                     icon: 'success',
                                     title: 'SIL Deleted',
                                     text: `SIL ${numberSils} has been deleted.`,
                                     confirmButtonText: 'OK'
                                 });
-                                window.location.reload();
                             } else {
-                                swal.fire({
-                                    icon: 'success',
+                                Swal.fire({
+                                    icon: 'error',
                                     title: 'Error',
                                     text: response.message || 'Failed to delete SIL.',
                                     confirmButtonText: 'OK'
                                 });
-                                window.location.reload();
                             }
                         },
                         error: function(xhr, status, error) {
@@ -393,129 +407,23 @@ $silFiles = getSilFiles('SIL_FILES/');
                             } catch (e) {
                                 errorMessage = xhr.responseText || 'Unable to parse error response';
                             }
-                            
-                            swal.fire({
-                                icon: 'success',
-                                title: 'Success Delete Data',
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
                                 text: errorMessage,
                                 confirmButtonText: 'OK'
-                            }).then(function() {
-                                window.location.reload();
                             });
                         }
                     });
                 }
             });
-
         }
-        // function exportData() {
-        //     var timePort = document.getElementById('timePort').value;
-
-        //     // Validasi input tanggal
-        //     if (!timePort) {
-        //         Swal.fire({
-        //             icon: 'warning',
-        //             title: 'Invalid Input',
-        //             text: 'Please select a date to export data.',
-        //             confirmButtonText: 'OK'
-        //         });
-        //         return;
-        //     }
-
-        //     // Konversi format tanggal dari YYYY-MM-DD ke DD/MM/YYYY
-        //     var dateParts = timePort.split('-');
-        //     var formattedDate = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
-
-        //     var dataToSend = {
-        //         timePort: formattedDate,
-        //         customer: 'ADM ASSYST'
-        //     };
-
-        //     // Tampilkan loading
-        //     Swal.fire({
-        //         title: 'Exporting Data...',
-        //         html: 'Please wait while preparing your export...',
-        //         allowOutsideClick: false,
-        //         didOpen: function() {
-        //             Swal.showLoading();
-        //         }
-        //     });
-
-        //     // Gunakan jQuery AJAX (sesuai dengan kode asli Anda)
-        //     $.ajax({
-        //         url: <?= $baseUrl; ?> + 'CONTROLLER/ADM/3P_ADM_EXPORT.php',
-        //         type: 'POST',
-        //         data: dataToSend,
-        //         xhrFields: {
-        //             responseType: 'blob'
-        //         },
-        //         success: function(data, status, xhr) {
-        //             Swal.close();
-
-        //             // Dapatkan nama file dari header Content-Disposition
-        //             var filename = 'Report .xlsx';
-        //             var disposition = xhr.getResponseHeader('Content-Disposition');
-        //             if (disposition && disposition.indexOf('attachment') !== -1) {
-        //                 var filenameMatch = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        //                 if (filenameMatch && filenameMatch[1]) {
-        //                     filename = filenameMatch[1].replace(/['"]/g, '');
-        //                 }
-        //             }
-
-        //             // Buat URL untuk download
-        //             var downloadUrl = window.URL.createObjectURL(data);
-        //             var a = document.createElement('a');
-        //             a.style.display = 'none';
-        //             a.href = downloadUrl;
-        //             a.download = filename;
-
-        //             document.body.appendChild(a);
-        //             a.click();
-
-        //             // Bersihkan URL objek
-        //             window.URL.revokeObjectURL(downloadUrl);
-
-        //             // Tampilkan pesan sukses
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: 'Export Successful',
-        //                 text: 'File ' + filename + ' has been downloaded',
-        //                 confirmButtonText: 'OK'
-        //             });
-        //         },
-        //         error: function(xhr, status, error) {
-        //             Swal.close();
-
-        //             var errorMessage = 'Unknown error occurred';
-
-        //             // Coba parsing error response
-        //             try {
-        //                 // Jika response adalah text, parse sebagai JSON
-        //                 var responseText = xhr.responseText;
-        //                 if (responseText) {
-        //                     var errorResponse = JSON.parse(responseText);
-        //                     errorMessage = errorResponse.message || errorMessage;
-        //                 }
-        //             } catch (e) {
-        //                 // Jika parsing gagal, gunakan pesan error default
-        //                 errorMessage = xhr.statusText || 'Export failed';
-        //             }
-
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Export Failed',
-        //                 text: errorMessage,
-        //                 confirmButtonText: 'OK'
-        //             });
-        //         }
-        //     });
-
-        // }
     </script>
 </body>
 
 </html>
 
 <?php
-// include "../../../GENERAL/TEMPLATE/3P_Footer.php";
+include "../../../GENERAL/TEMPLATE/3P_Footer.php";
 ?>

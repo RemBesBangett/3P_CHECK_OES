@@ -1,5 +1,6 @@
 // Fungsi untuk menampilkan modal autentikasi
-function showAuthenticationModal() {
+// Fungsi untuk menampilkan modal autentikasi dengan pesan kustom
+function showAuthenticationModal(customMessage = null) {
     // Kirim request untuk mengecek status user sebelum menampilkan modal
     $.ajax({
         type: 'POST',
@@ -9,19 +10,22 @@ function showAuthenticationModal() {
             userSession: usernameLogin // Tambahkan user session yang sedang aktif
         }),
         contentType: "application/json",
-        success: function(response) {
+        success: function (response) {
             console.log("Server Pre-Check Response:", response);
+
+            // Siapkan pesan default atau gunakan pesan kustom
+            const defaultMessage = response.message || "Sistem membutuhkan verifikasi ulang.";
+            const displayMessage = customMessage || defaultMessage;
 
             // Jika status membutuhkan autentikasi ulang
             if (response.status === 'requireAuth') {
                 // Tampilkan Sweet Alert konfirmasi
                 Swal.fire({
                     title: "Verifikasi Diperlukan",
-                    text: response.message || "Sistem membutuhkan verifikasi ulang.",
+                    text: displayMessage,
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Ya, Verifikasi",
-                    cancelButtonText: "Batal"
+                    confirmButtonText: "Ya, Verifikasi"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Inisialisasi modal
@@ -29,32 +33,37 @@ function showAuthenticationModal() {
                             backdrop: 'static',
                             keyboard: false
                         });
+
+                        // Update pesan di modal jika ada pesan kustom
+                        if (customMessage) {
+                            document.getElementById('authModalMessage').textContent = customMessage;
+                        }
+
                         // Tampilkan modal
-                        modal.show();
                     }
                 });
-            } 
+                const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modal.show();
+ 
+            }
             // Jika terjadi kesalahan
             else {
                 Swal.fire({
-                    title: "Kesalahan Autentikasi",
-                    text: response.message || "Gagal memeriksa status pengguna",
+                    title: "Cek kembali Username dan Password",
+                    text: displayMessage,
                     icon: "error",
                     confirmButtonText: "Coba Lagi"
                 });
             }
-            const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
-                backdrop: 'static',
-                keyboard: false
-            });
-            // Tampilkan modal
-            modal.show();
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Error pre-checking user status:", error);
             Swal.fire({
                 title: "Kesalahan Sistem",
-                text: "Terjadi kesalahan saat memeriksa status pengguna",
+                text: customMessage || "Terjadi kesalahan saat memeriksa status pengguna",
                 icon: "error",
                 confirmButtonText: "Tutup"
             });
@@ -110,12 +119,13 @@ function interlockArea() {
                 }).then(() => {
                     // Tutup semua modal yang sedang terbuka
                     closeAllModals();
+                    location.reload(true);
                 });
             } else {
                 // Autentikasi gagal
                 Swal.fire({
                     title: "Autentikasi Gagal",
-                    text: response.message, 
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: "Coba Lagi"
                 });
@@ -137,14 +147,15 @@ function interlockArea() {
 function closeAllModals() {
     // Dapatkan semua modal yang sedang terbuka
     const openModals = document.querySelectorAll('.modal.show');
-    
+
     openModals.forEach(modalElement => {
         // Dapatkan instance modal Bootstrap
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        
+
         // Jika instance modal ditemukan, tutup modal
         if (modalInstance) {
             modalInstance.hide();
+            location.reload();
         }
     });
 

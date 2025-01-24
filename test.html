@@ -85,13 +85,19 @@
             font-weight: bold;
         }
 
-        .namProd,
         .namMod,
         .namQty,
-        .namDel,
         .namSeq {
             margin: 0;
-            font-size: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+
+        }
+
+        .namDel,
+        .namProd {
+            margin-top: 0px;
+            font-size: .8rem;
             font-weight: bold;
         }
 
@@ -105,8 +111,6 @@
         .qr-code img {
             width: 90px;
             height: 90px;
-            border: 1px solid #000000;
-            border-radius: 5px;
         }
 
         .nomer-pelanggan,
@@ -118,7 +122,7 @@
         }
 
         #firstlayer {
-            margin-bottom: -70px;
+            margin-bottom: -60px;
         }
 
         .Identitas {
@@ -126,8 +130,36 @@
         }
 
         .nomer-produk {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 30px;
+        }
+
+        .info-user {
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+
+        .sisa-qty {
+            background-color: yellow;
+            color: black;
+            padding: 0px 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .last-seq-qty {
+            font-size: 1.0rem;
+            color: black;
+            padding: 0px 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .sisa-indicator {
+            font-size: 0.7em;
+            color: red;
+            font-weight: bold;
+            margin: 0px;
         }
     </style>
 </head>
@@ -136,7 +168,7 @@
     <div class="card-Label">
         <div class="header">
             <h1>${qrValue.namaProduk}</h1>
-            <h1>Identitas Barang</h1>
+            <h1>KANBAN CARD</h1>
         </div>
         <div class="content-wrapper">
             <div>
@@ -167,7 +199,10 @@
                 <div class="row">
                     <div class="col">
                         <p class="judul-fot">Qty</p>
-                        <h6 class="namQty" style="justify-content: center;">${qrValue.qtyKanban}</h6>
+                        <h6 class="namQty" style="justify-content: center;">
+                            45
+                        </h6>
+                        <p class="sisa-indicator"><span>(Criple)</span></p>
                     </div>
                     <div class="col">
                         <p class="judul-fot">Seq</p>
@@ -176,6 +211,7 @@
                 </div>
             </div>
         </div>
+        <p class="info-user">${qrValue.tanggalPrint} || ${qrValue.namaUser}</p>
     </div>
 </body>
 

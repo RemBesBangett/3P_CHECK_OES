@@ -73,7 +73,7 @@ usort($histories, function ($a, $b) {
     return $b['PREPARE_TIME'] <=> $a['PREPARE_TIME'];
 });
 
-$dataPerPage = 10;
+$dataPerPage = 20;
 $totalData = count($histories);
 $totalPages = ceil($totalData / $dataPerPage);
 

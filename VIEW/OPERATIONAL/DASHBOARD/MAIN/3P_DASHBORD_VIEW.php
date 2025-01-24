@@ -11,20 +11,22 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 $baseUrl = '/3P_CHECK_OES/';
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3 Point Check OES - Dashboard</title>
-    
-    <!-- Bootstrap & Custom CSS -->
+    <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/Animate.min.css">
     <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -118,7 +120,7 @@ $baseUrl = '/3P_CHECK_OES/';
             font-weight: 800;
             letter-spacing: 2px;
             font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .page-header .lead {
@@ -141,7 +143,7 @@ $baseUrl = '/3P_CHECK_OES/';
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: all 0.6s;
         }
 
@@ -150,6 +152,7 @@ $baseUrl = '/3P_CHECK_OES/';
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard-container">
         <button type="button" class="btn btn-warning" onclick="window.location.href='/3P_CHECK_OES/DASHBOARD'">
@@ -161,7 +164,7 @@ $baseUrl = '/3P_CHECK_OES/';
         </div>
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">
-            <?php 
+            <?php
             $dashboards = [
                 [
                     'title' => 'ADM',
@@ -218,5 +221,12 @@ $baseUrl = '/3P_CHECK_OES/';
     </div>
 
 
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
+    <script>
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
+    </script>
+
 </body>
+
 </html>

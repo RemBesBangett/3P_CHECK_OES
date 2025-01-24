@@ -10,7 +10,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-$usernameLogin = $_SESSION['nama'];
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 include '../../GENERAL/TEMPLATE/3P_Header.php';
 ?>
 
@@ -31,46 +32,68 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         .form-control {
             margin-bottom: 10px;
         }
-        #showSisa{
+
+        #showSisa {
             font-weight: bold;
             font-size: 25pt;
             text-align: left;
             text-decoration: underline;
-            color : red;
+            color: red;
             -webkit-animation: bounce 3s infinite;
             animation: bounce 1s infinite;
         }
-    @-webkit-keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            -webkit-transform: translateY(0);
-            transform: translateY(0);
-        }
-        40% {
-            -webkit-transform: translateY(-20px);
-            transform: translateY(-20px);
-        }
-        60% {
-            -webkit-transform: translateY(-15px);
-            transform: translateY(-15px);
-        }
-    }
 
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            -webkit-transform: translateY(0);
-            transform: translateY(0);
+        .namQty.sisa-qty {
+            background-color: yellow;
+            padding: 2px;
+            border-radius: 3px;
+            display: inline-block;
         }
-        40% {
-            -webkit-transform: translateY(-20px);
-            transform: translateY(-20px);
-        }
-        60% {
-            -webkit-transform: translateY(-15px);
-            transform: translateY(-15px);
-        }
-    }
 
-       </style>
+        @-webkit-keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+
+            40% {
+                -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+            }
+
+            60% {
+                -webkit-transform: translateY(-15px);
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+
+            40% {
+                -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+            }
+
+            60% {
+                -webkit-transform: translateY(-15px);
+                transform: translateY(-15px);
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-light">
@@ -98,7 +121,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                             <input type="text" id="descriptionCust" class="form-control" placeholder="Description Part" />
                             <input type="text" id="densoNumber" class="form-control" placeholder="Denso Number" maxlength="15" required />
                             <input type="text" id="qtyRequest" class="form-control" placeholder="Quantity Request" required />
-                      
+
                         </div>
                         <div class="col-md-6">
                             <input type="number" id="qtyKanban" class="form-control" placeholder="Qty" required min="1" oninput="calculationSeq()" />
@@ -136,6 +159,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         let dateUse;
         let seqKanban = '0';
         let qtyKanban = '0';
+        let totalSeq;
 
         document.addEventListener('DOMContentLoaded', function() {
             const customerSelect = document.getElementById('customerName');
@@ -282,27 +306,35 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             // Menghitung jumlah dokumen penuh dan sisa
             const fullDocs = Math.floor(qtyRequests / qtyKanbans);
             const remainder = qtyRequests % qtyKanbans;
-            const seqLeft = fullDocs + 1;
+            const seqLeft = fullDocs + (remainder > 0 ? 1 : 0);
 
             // Menampilkan hasil di elemen yang sesuai
-            document.getElementById('seqKanban').value = fullDocs;
+            document.getElementById('seqKanban').value = seqLeft;
+
             // Jika ada sisa, tampilkan dengan SweetAlert
-            if (remainder > 0 || seqLeft == 0) {
+            if (remainder > 0) {
                 Swal.fire({
                     title: 'Dokumen Sisa',
-                    text: `Jumlah dokumen sisa: 1 (berisi ${remainder} pcs, Seq ke ${seqLeft})`,
+                    html: `
+                <p>Total Dokumen: ${seqLeft}</p>
+                <p>Dokumen Penuh: ${fullDocs} x ${qtyKanbans} pcs</p>
+                <p>Dokumen Terakhir: 1 x ${remainder} pcs</p>
+            `,
                     icon: 'info',
                     confirmButtonText: 'OK'
                 });
-                document.getElementById('showSisa').textContent = `Seq ${seqLeft} berisi ${remainder} pcs.`;
+                document.getElementById('showSisa').innerHTML =
+                    `Seq ${seqLeft}: ${remainder} pcs <span style="color:red;">(Sisa)</span>`;
             } else {
-                document.getElementById('showSisa').textContent ='';
+                document.getElementById('showSisa').textContent = '';
             }
-            seqKanban = fullDocs;
+
+            seqKanban = seqLeft;
             qtyKanban = qtyKanbans;
         }
 
         function generateQrValue() {
+
             const datePicker = document.getElementById('dateKanban').value;
             const date = new Date();
             const optionsFull = {
@@ -313,20 +345,15 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-                hour12: false, // Gunakan 24 jam
+                hour12: false,
             };
 
             // Parsing tanggal
             const [year, month, day] = datePicker.split('-');
-
-            // Ubah format
             const formattedDateMod = `${month}-${day}-${year.slice(-2)}`;
             dateUse = formattedDateMod;
 
             const formattedTime = date.toLocaleString('id-ID', optionsFull);
-            const qrCanvas = document.getElementById('qrCanvas');
-            const qrCanvasDisplay = document.getElementById('qrCanvasDisplay');
-            const qrCodeContainer = document.getElementById('qrCodeContainer');
 
             // Validate inputs
             const requiredFields = document.querySelectorAll('[required]');
@@ -342,25 +369,33 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             }
 
             // Get input values
+            const qtyKanbans = parseInt(document.getElementById('qtyKanban').value.trim());
+            const qtyRequests = parseInt(document.getElementById('qtyRequest').value.trim());
             const customerNumber = document.getElementById('customerNumber').value.trim();
             const densoNumber = document.getElementById('densoNumber').value.trim();
-
             const processKanban = document.getElementById('processKanban').value.trim();
             const customerPO = document.getElementById('customerPO').value.trim();
             const descriptionCust = document.getElementById('descriptionCust').value.trim();
             descriptionCustomer = descriptionCust;
 
-
-            // Ambil jumlah seq yang akan digenerate
-            const seqCount = parseInt(seqKanban);
+            // Hitung jumlah dokumen penuh dan sisa
+            const fullDocs = Math.floor(qtyRequests / qtyKanbans);
+            const remainder = qtyRequests % qtyKanbans;
+            totalSeq = fullDocs + (remainder > 0 ? 1 : 0);
 
             // Array untuk menyimpan HTML yang dihasilkan
             const generatedHtmlPages = [];
 
             // Generate QR Code dan HTML untuk setiap seq
-            for (let seq = 1; seq <= seqCount; seq++) {
+            for (let seq = 1; seq <= totalSeq; seq++) {
+                // Tentukan qty untuk seq ini
+                const currentQty = seq <= fullDocs ? qtyKanbans : remainder;
+
+                // Skip jika qty 0
+                if (currentQty === 0) continue;
+
                 // Format inputs
-                let qtyMod = qtyKanban.toString().padStart(7, "0");
+                let qtyMod = currentQty.toString().padStart(7, "0");
                 let seqModKanban = seq.toString().padStart(4, ' ');
                 let cusModKanban = customerPO.padEnd(20, ' ');
                 let customerModNumber = customerNumber.padEnd(25, ' ');
@@ -371,6 +406,7 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                 var printQr = densoQr + customerModNumber + densoModNumber + qtyMod + processKanbanMod + seqModKanban + cusModKanban + formattedDateMod;
 
                 // Generate QR Code
+                const qrCanvas = document.getElementById('qrCanvas');
                 const qr = new QRious({
                     element: qrCanvas,
                     value: printQr,
@@ -381,18 +417,16 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                 const qrValue = {
                     customerNumber: customerNumber,
                     densoNumber: densoNumber,
-                    qtyKanban: qtyKanban,
+                    qtyKanban: currentQty,
                     processKanban: processKanban,
-                    seqKanban: seq.toString(), // Gunakan seq aktual
+                    seqKanban: seq.toString(),
                     customerPO: customerPO,
                     date: datePicker,
                     namaProduk: nameCustomer,
                     description: descriptionCust,
-                    namaUser: '<?= $usernameLogin ?>',
+                    namaUser: '<?= $username ?>',
                     tanggalPrint: formattedTime,
                 };
-                console.log(qrValue);
-
 
                 // Generate HTML untuk setiap halaman
                 const generatedHtml = generateHtml(qrCanvas.toDataURL(), qrValue);
@@ -474,233 +508,236 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
         }
 
         function generateHtml(qrImageUrl, qrValue) {
+            // Tambahkan kondisi untuk mendeteksi sisa qty
+            const isSisaQty = qrValue.qtyKanban < 10;
+            const isLastSeq = qrValue.seqKanban === (totalSeq.toString());
             return `<!DOCTYPE html>
-                    <html lang="en">
+                <html lang="en">
 
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Identitas Barang</title>
-                        <style>
-                            @page {
-                                size: 10cm 8.5cm;
-                                margin: 0;
-                            }
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Identitas Barang</title>
+                    <style>
+                        @page {
+                            size: 10cm 8.5cm;
+                            margin: 0;
+                        }
 
-                            body {
-                                width: 10cm;
-                                height: 8.5cm;
-                                margin: 0;
-                                padding: 0;
-                                overflow: hidden;
-                            }
+                        body {
+                            width: 10cm;
+                            height: 8.5cm;
+                            margin: 0;
+                            padding: 0;
+                            overflow: hidden;
+                        }
 
-                            .card-Label {
-                                background-color: #f0f8ff;
-                                border: 2px solid #0066cc;
-                                border-radius: 10px;
-                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                                font-family: 'Arial', sans-serif;
-                                width: 10cm;
-                                height: 8.5cm;
-                                display: flex;
-                                flex-direction: column;
-                                overflow: hidden;
-                                font-size: 0.9rem;
-                                margin: 0;
-                                padding: 5px;
-                                box-sizing: border-box;
-                            }
+                        .card-Label {
+                            background-color: #f0f8ff;
+                            border: 2px solid #0066cc;
+                            border-radius: 10px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            font-family: 'Arial', sans-serif;
+                            width: 10cm;
+                            height: 8.5cm;
+                            display: flex;
+                            flex-direction: column;
+                            overflow: hidden;
+                            font-size: 0.9rem;
+                            margin: 0;
+                            padding: 5px;
+                            box-sizing: border-box;
+                        }
 
-                            .header {
-                                text-align: center;
-                                margin-bottom: 5px;
-                                border-bottom: 2px solid #0066cc;
-                                padding-bottom: 3px;
-                            }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 5px;
+                            border-bottom: 2px solid #0066cc;
+                            padding-bottom: 3px;
+                        }
 
-                            .header h1 {
-                                color: #0066cc;
-                                font-size: 1.2rem;
-                                margin: 0;
-                            }
+                        .header h1 {
+                            color: #0066cc;
+                            font-size: 1.2rem;
+                            margin: 0;
+                        }
 
 
-                            .content-wrapper {
-                                display: flex;
-                                flex-direction: column;
-                                flex-grow: 1;
+                        .content-wrapper {
+                            display: flex;
+                            flex-direction: column;
+                            flex-grow: 1;
 
-                            }
+                        }
 
-                            .container {
-                                padding: 0;
-                                margin: 0;
-                            }
+                        .container {
+                            padding: 0;
+                            margin: 0;
+                        }
 
-                            .row {
-                                display: flex;
-                                gap: 5px;
-                                margin-bottom: 3px;
-                            }
+                        .row {
+                            display: flex;
+                            gap: 5px;
+                            margin-bottom: 3px;
+                        }
 
-                            .col {
-                                text-align: center;
-                                max-width: 120px;
-                            }
+                        .col {
+                            text-align: center;
+                            max-width: 120px;
+                        }
 
-                            .judul-fot {
-                                background-color: #e6f2ff;
-                                border-radius: 3px;
-                                padding: 2px;
-                                font-size: 11px;
-                                margin-bottom: 5px;
-                                color: #0066cc;
-                                margin-top: 0px;
-                                width: 100px;
-                                font-weight: bold;
-                            }
+                        .judul-fot {
+                            background-color: #e6f2ff;
+                            border-radius: 3px;
+                            padding: 2px;
+                            font-size: 11px;
+                            margin-bottom: 5px;
+                            color: #0066cc;
+                            margin-top: 0px;
+                            width: 100px;
+                            font-weight: bold;
+                        }
 
-                            .namProd,
-                            .namMod,
-                            .namQty,
-                            .namDel,
-                            .namSeq {
-                                margin: 0;
-                                font-size: 0.8rem;
-                                font-weight: bold;
-                            }
+                        .namMod,
+                        .namQty,
+                        .namSeq {
+                            margin: 0;
+                            font-size: 1.2rem;
+                            font-weight: bold;
+                            
+                        }
+                        
+                        .namDel,
+                        .namProd {
+                            margin-top: 0px;
+                            font-size: .8rem;
+                            font-weight: bold;
+                        }
 
-                            .qr-code {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                margin-left: 20px;
-                            }
+                        .qr-code {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            margin-left: 20px;
+                        }
 
-                            .qr-code img {
-                                width: 90px;
-                                height: 90px;
-                                border: 1px solid #000000;
-                                border-radius: 5px;
-                            }
+                        .qr-code img {
+                            width: 90px;
+                            height: 90px;
+                        }
 
-                            .nomer-pelanggan,
-                            .nomer-produk {
-                                margin: 0;
-                                font-size: 0.9rem;
-                                text-align: center;
-                                font-size: 18px;
-                            }
+                        .nomer-pelanggan,
+                        .nomer-produk {
+                            margin: 0;
+                            font-size: 0.9rem;
+                            text-align: center;
+                            font-size: 18px;
+                        }
 
-                            #firstlayer {
-                                margin-bottom: -60px;
-                            }
+                        #firstlayer {
+                            margin-bottom: -60px;
+                        }
 
-                            .Identitas {
-                                margin-bottom: 0px;
-                            }
+                        .Identitas {
+                            margin-bottom: 0px;
+                        }
 
-                            .nomer-produk {
-                                margin-bottom: 20px;
-                                font-size: 30px;
-                            }
-                        </style>
-                    </head>
+                        .nomer-produk {
+                            margin-bottom: 10px;
+                            font-size: 30px;
+                        }
 
-                    <body>
-                        <div class="card-Label">
-                            <div class="header">
-                                <h1>${qrValue.namaProduk}</h1>
-                                <h1>KANBAN CARD</h1>
-                            </div>
-                            <div class="content-wrapper">
-                                <div>
-                                    <p class="Identitas">Nomor Pelanggan:</p>
-                                    <h5 class="nomer-pelanggan">${qrValue.customerNumber}</h5>
-                                </div>
-                                <div>
-                                    <p class="Identitas">Nomor Produk:</p>
-                                    <h3 class="nomer-produk">${qrValue.densoNumber}</h3>
-                                </div>
-                                <div class="container" style="border-top: solid 1px black;">
-                                    <div class="row" id="firstlayer">
-                                        <div class="col">
-                                            <p class="judul-fot">Nama Produk</p>
-                                            <h5 class="namProd">${qrValue.namaProduk}</h5>
-                                        </div>
-                                        <div class="col">
-                                            <p class="judul-fot">Tanggal Delivery</p>
-                                            <h6 class="namDel">${qrValue.date}</h6>
-                                        </div>
-                                        <div class="col qr-code">
-                                            <p class="judul-fot">QR Code</p>
-                                            <img src="${qrImageUrl}" alt="QR Code" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col">
-                                            <p class="judul-fot">Qty</p>
-                                            <h6 class="namQty" style="justify-content: center;">${qrValue.qtyKanban}</h6>
-                                        </div>
-                                        <div class="col">
-                                            <p class="judul-fot">Seq</p>
-                                            <h6 class="namSeq">${qrValue.seqKanban}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p>${qrValue.tanggalPrint} || ${qrValue.namaUser}</p>
+                        .info-user {
+                            font-size: 0.7rem;
+                            margin-top: 2px;
+                        }
+                       .sisa-qty {
+                            background-color: yellow;
+                            color: black;
+                            padding: 0px 5px;
+                            display: inline-block;
+                            font-weight: bold;
+                        }
+                        
+                        .last-seq-qty {
+                        font-size: 1.0rem;
+                            color: black;
+                            padding: 3px 5px;
+                            display: inline-block;
+                            font-weight: bold;
+                        }
+                       .sisa-indicator {
+                        font-size: 0.7em;
+                        color: red;
+                        font-weight: bold;
+                        margin: 0px 2px;
+                        }
+                    </style>
+                </head>
+
+                <body>
+                    <div class="card-Label">
+                        <div class="header">
+                            <h1>${qrValue.namaProduk}</h1>
+                            <h1>KANBAN CARD</h1>
                         </div>
-                    </body>
+                        <div class="content-wrapper">
+                            <div>
+                                <p class="Identitas">Nomor Pelanggan:</p>
+                                <h5 class="nomer-pelanggan">${qrValue.customerNumber}</h5>
+                            </div>
+                            <div>
+                                <p class="Identitas">Nomor Produk:</p>
+                                <h3 class="nomer-produk">${qrValue.densoNumber}</h3>
+                            </div>
+                            <div class="container" style="border-top: solid 1px black;">
+                                <div class="row" id="firstlayer">
+                                    <div class="col">
+                                        <p class="judul-fot">Nama Produk</p>
+                                        <h5 class="namProd">${qrValue.namaProduk}</h5>
+                                    </div>
+                                    <div class="col">
+                                        <p class="judul-fot">Tanggal Delivery</p>
+                                        <h6 class="namDel">${qrValue.date}</h6>
+                                    </div>
+                                    <div class="col qr-code">
+                                        <p class="judul-fot">QR Code</p>
+                                        <img src="${qrImageUrl}" alt="QR Code" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                        <p class="judul-fot">Qty</p>
+                        <h6 class="namQty" style="justify-content: center;">
+                            ${isLastSeq 
+                                ? `<span class="last-seq-qty">${qrValue.qtyKanban} pcs</span>` 
+                                : (isSisaQty 
+                                    ? `<span class="sisa-qty">${qrValue.qtyKanban} pcs</span>` 
+                                    : `${qrValue.qtyKanban} pcs`)
+                            }
+                                    </h6>
+                                    <p  class="sisa-indicator">${isLastSeq 
+                                ? `<span>(Criple)</span>` 
+                                : (isSisaQty 
+                                    ? `<span></span>` 
+                                    : '')
+                            }</p>
+                                 </div>
+                                    <div class="col">
+                                       <p class="judul-fot">Seq</p>
+                                       <h6 class="namSeq">${qrValue.seqKanban}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="info-user">${qrValue.tanggalPrint} || ${qrValue.namaUser}</p>
+                    </div>
+                </body>
 
-                    </html>`;
+                </html>`;
         }
-
-        // function printLabel(generatedHtml) {
-        //     const iframe = document.createElement('iframe');
-        //     iframe.style.visibility = 'hidden';
-        //     iframe.style.position = 'fixed';
-        //     iframe.style.right = '0';
-        //     iframe.style.bottom = '0';
-        //     document.body.appendChild(iframe);
-
-        //     // Write the label HTML to the iframe
-        //     iframe.contentDocument.write(generatedHtml);
-        //     iframe.contentDocument.close();
-
-        //     // Set up print styles
-        //     const style = iframe.contentDocument.createElement('style');
-        //     style.textContent = `
-        //             @page {
-        //             size: 1000mm 800mm; // Ubah ukuran menjadi 90mm x 60mm
-        //             margin: 0;
-        //             }
-        //             body {
-        //             width: 1000mm; // Ubah lebar menjadi 90mm
-        //             height: 800mm; // Ubah tinggi menjadi 60mm
-        //             }
-        //             .container {
-        //             transform: scale(0);
-        //             transform-origin: center center;
-        //             }
-        //             `;
-        //     iframe.contentDocument.head.appendChild(style);
-
-        //     // Wait for images to load
-        //     setTimeout(() => {
-        //         // Trigger print
-        //         iframe.contentWindow.print();
-
-        //         // Remove the iframe after printing
-        //         setTimeout(() => {
-        //             document.body.removeChild(iframe);
-        //         }, 1000);
-        //     }, 500);
-        //     window.print();
-        // }
     </script>
 </body>
 

@@ -34,7 +34,8 @@ function getSilFiles($directory)
 
 // Get SIL files
 $silFiles = getSilFiles('SIL_FILES/');
-
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 ?>
 
 <!DOCTYPE html>
@@ -188,8 +189,11 @@ $silFiles = getSilFiles('SIL_FILES/');
         </div>
     </div>
 
-    <script src="<?= $baseUrl; ?>JS/Auth/Auth.js"></script>
+
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
     <script>
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
         let noSilVar;
         let entriesVar = [];
         let partNumVar;
@@ -407,17 +411,64 @@ $silFiles = getSilFiles('SIL_FILES/');
             });
         }
 
-        function deleteAllSIL() {
-            const tableBody = document.querySelector('#dataTable tbody');
-            const rows = tableBody.querySelectorAll('tr');
-            const silNumbers = [];
+        function deleteEntry(button) {
+            const row = button.closest('tr');
+            const numberSils = row.cells[1].innerText;
 
-            rows.forEach(row => {
-                const silNumber = row.cells[1].innerText;
-                silNumbers.push(silNumber);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete SIL ${numberSils}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_DELETE.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            numSil: numberSils
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') { // Periksa status
+                                row.remove();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'SIL Deleted',
+                                    text: `SIL ${numberSils} has been deleted.`,
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to delete SIL.',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            let errorMessage = 'Unknown error occurred';
+                            try {
+                                const errorResponse = JSON.parse(xhr.responseText);
+                                errorMessage = errorResponse.message || errorMessage;
+                            } catch (e) {
+                                errorMessage = xhr.responseText || 'Unable to parse error response';
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
             });
-            console.log(silNumbers);
-            //data numSils untuk delete 
         }
     </script>
 </body>
@@ -425,5 +476,5 @@ $silFiles = getSilFiles('SIL_FILES/');
 </html>
 
 <?php
-// include "../../../GENERAL/TEMPLATE/3P_Footer.php";
+include "../../../GENERAL/TEMPLATE/3P_Footer.php";
 ?>

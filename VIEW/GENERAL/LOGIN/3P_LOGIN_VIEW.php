@@ -32,14 +32,12 @@ $baseUrl = '/3P_CHECK_OES/';
             background-size: cover;
             color: var(--text-color);
         }
-
         .container {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
         .login-card {
             background-color: var(--card-background);
             border-radius: 15px;
@@ -48,7 +46,6 @@ $baseUrl = '/3P_CHECK_OES/';
             max-width: 400px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
         .time-box {
             background-color: var(--primary-color);
             color: white;
@@ -58,24 +55,20 @@ $baseUrl = '/3P_CHECK_OES/';
             margin-bottom: 30px;
             text-align: center;
         }
-
         h2 {
             color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 30px;
             text-align: center;
         }
-
         .form-group {
             margin-bottom: 25px;
         }
-
         .form-group label {
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 8px;
         }
-
         .form-control {
             border: 1px solid var(--input-background);
             border-radius: 50px;
@@ -83,13 +76,11 @@ $baseUrl = '/3P_CHECK_OES/';
             background-color: var(--input-background);
             transition: all 0.3s ease;
         }
-
         .form-control:focus {
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
             background-color: var(--card-background);
             border-color: var(--primary-color);
         }
-
         .btn-login {
             background-color: var(--primary-color);
             border: none;
@@ -100,7 +91,6 @@ $baseUrl = '/3P_CHECK_OES/';
             width: 100%;
             transition: all 0.3s ease;
         }
-
         .btn-login:hover {
             background-color: darken(var(--primary-color), 10%);
             transform: translateY(-3px);
@@ -108,7 +98,6 @@ $baseUrl = '/3P_CHECK_OES/';
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="login-card">
@@ -194,5 +183,4 @@ $baseUrl = '/3P_CHECK_OES/';
         });
     </script>
 </body>
-
 </html>

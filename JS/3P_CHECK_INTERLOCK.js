@@ -1,5 +1,4 @@
 $(document).ready(function() {
-   
     $.ajax({
         type: 'GET',
         url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_CHECKER.php',
@@ -11,11 +10,12 @@ $(document).ready(function() {
             if (response.status !== 'error') {
                 // Jika status pengguna adalah 'OPEN', tidak perlu autentikasi
                 if (response[0].STATUS_USER === 'OPEN') {
-                    console.log('NIHAO');
+                    console.log('サムスゥ');
                 } else {
                     // Tampilkan modal autentikasi jika status bukan 'OPEN'
                     showAuthenticationModal();
                 }
+            // Clear all input fields of type 'input'
             } else {
                 console.log('Error:', response.message);
             }

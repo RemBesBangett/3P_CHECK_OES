@@ -1,4 +1,8 @@
 <?php
+
+use LDAP\Result;
+
+include_once "C:/xampp/htdocs/3P_CHECK_OES/MODEL/ADM/3P_ADM_HANDLER.php";
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
@@ -24,21 +28,20 @@ try {
 
     $fileToDelete = $_POST['numSil'];
     $filePath = BASE_PATH . 'SIL_' . $fileToDelete . '.php';
+    $result = deleteSilFile($fileToDelete);
 
     // Log path file
     error_log("Attempting to delete file: " . $filePath);
 
     // Periksa apakah file ada
     if (!file_exists($filePath)) {
-        throw new Exception('File not found');
+        throw new Exception('File not found');  
     }
 
     // Coba hapus file dengan izin yang tepat
     if (is_writable($filePath)) {
         if (unlink($filePath)) {
-           
-            echo 'success';
-  
+            echo json_encode(['status' => 'success', 'message' => 'File deleted successfully']);
         } else {
             throw new Exception('Failed to delete file');
         }
@@ -50,5 +53,5 @@ try {
     error_log("Error: " . $e->getMessage());
     
     // Kirim respon sesuai kesalahan
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
-?>

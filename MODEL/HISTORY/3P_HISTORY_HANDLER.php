@@ -9,7 +9,7 @@ function getAllHistory()
         $conn = dbcon();
 
         // Gunakan prepared statement untuk keamanan
-        $tsql = "SELECT * FROM [3P_T_HISTORY] ORDER BY PREPARE_TIME DESC";
+        $tsql = "SELECT * FROM [3P_T_HISTORY]";
         $stmt = sqlsrv_query($conn, $tsql);
 
         if ($stmt === false) {
