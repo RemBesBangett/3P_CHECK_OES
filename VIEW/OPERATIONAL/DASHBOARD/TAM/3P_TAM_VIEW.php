@@ -154,7 +154,7 @@ $status = $_SESSION['status_user'];
                     <form id="addForm">
                         <div class="mb-3">
                             <label for="SIL" class="form-label">SIL (any length)</label>
-                            <input type="text" class="form-control" id="SIL" required>
+                            <input type="text" class="form-control" id="SIL" required autocomplete="off">
                             <div class="invalid-feedback" id="silError"></div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Entry</button>
@@ -226,11 +226,29 @@ $status = $_SESSION['status_user'];
         });
 
         function processSilInput(silValue) {
+            const table = document.getElementById('dataTable'); // Ambil tabel dengan ID 'dataTable'
+            const rows = table.getElementsByTagName('tr'); // Ambil semua baris dalam tabel
             const noSil = silValue.substring(0, 7);
             const length = silValue.length;
             const entries = [];
             let silEntries = JSON.parse(localStorage.getItem('silEntries')) || [];
             const existingSil = silEntries.find(entry => entry.noSil === noSil);
+
+            for (let i = 1; i < rows.length; i++) { // Mulai dari 1 untuk melewati header
+                const partNumber = rows[i].cells[1].textContent; // Ambil nomor bagian dari kolom kedua
+                if (partNumber === noSil) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Duplicate SIL',
+                        text: `No SIL ${noSil} already exists. Please use a different No SIL.`,
+                        confirmButtonText: 'OK',
+                        willClose: () => {
+                            location.reload();
+                        }
+                    });
+                    return;
+                }
+            }
 
             if (existingSil) {
                 Swal.fire({

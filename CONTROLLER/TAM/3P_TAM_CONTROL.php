@@ -36,6 +36,7 @@ try {
     $noSilDelete = isset($_POST['noSilDel']) ? trim($_POST['noSilDel']) : "";
     $username = isset($_POST['userName']) ? trim($_POST['userName']) : "";
     $caseLabel = isset($_POST['caseNo']) ? trim($_POST['caseNo']) : "";
+    $remainQty = isset($_POST['remainQty']) ? trim($_POST['remainQty']) : "";
 
     // Cek apakah hanya $noSilDelete dan $dataSilAll yang diposting
     if (empty($noSil) && empty($partNumber) && empty($customerLabel) && empty($scanKanban) && empty($totalKanban) && empty($totalLabel) && empty($scanLabel) && empty($qtyLabel) && empty($qtyKanban) && empty($customer) && empty($labelItemDB) && empty($PONumber) && empty($prepareTime) && empty($actualTimes) && empty($delDates) && empty($dataID) && empty($delivVan) && empty($manifestKanban) && empty($kanbanId) && empty($kanbanItem)) {
@@ -72,7 +73,8 @@ try {
             $kanbanId,
             $kanbanItem,
             $username,
-            $caseLabel
+            $caseLabel,
+            $remainQty
         );
 
         // Kirim response

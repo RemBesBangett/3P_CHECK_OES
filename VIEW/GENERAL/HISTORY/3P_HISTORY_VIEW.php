@@ -27,7 +27,7 @@ if ($historyResult['success']) {
     exit;
 }
 
-$searchColumns = array('NO_SIL', 'PART_NUMBER', 'CUSTOMER_LABEL', 'KANBAN_CONTENT', 'TOTAL_KANBAN', 'TOTAL_LABEL', 'LABEL_CONTENT', 'QTY_LABEL', 'QTY_KANBAN', 'CUSTOMER', 'ITEM_VENDOR', 'PO_NUMBER', 'PREPARE_DATE', 'PREPARE_TIME', 'DELIVERY_DATE', 'STATUS', 'DATA_ID', 'DELIVERY_VANNING', 'KANBAN_ID', 'MANIFEST', 'KANBAN_ITEM', 'USER_ENTRY');
+$searchColumns = array('NO_SIL', 'PART_NUMBER', 'CUSTOMER_LABEL', 'KANBAN_CONTENT', 'TOTAL_KANBAN', 'TOTAL_LABEL', 'LABEL_CONTENT', 'QTY_LABEL', 'QTY_KANBAN', 'CUSTOMER', 'ITEM_VENDOR', 'PO_NUMBER', 'PREPARE_DATE', 'PREPARE_TIME', 'DELIVERY_DATE', 'STATUS', 'DATA_ID', 'DELIVERY_VANNING', 'KANBAN_ID', 'MANIFEST', 'KANBAN_ITEM', 'USER_ENTRY', 'REMAIN_QTY', 'CASE_LABEL');
 
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 $startDate = isset($_GET['start_date']) ? trim($_GET['start_date']) : '';
@@ -223,6 +223,7 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
                             <tr>
                                 <th class="resizable-column" style="width: 10px;">No</th>
                                 <th style="width: 1%">No SIL</th>
+                                <th style="width: 5%">User</th>
                                 <th style="width: 5%">Part Number</th>
                                 <th style="width: 5%">Customer Label</th>
                                 <th style="width: 1%">Kanban Content</th>
@@ -243,7 +244,8 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
                                 <th style="width: 5%">Kanban Id</th>
                                 <th style="width: 5%">Manifest</th>
                                 <th style="width: 5%">Kanban Item</th>
-                                <th style="width: 5%">User</th>
+                                <th style="width: 5%">Remain Qty</th>
+                                <th style="width: 5%">Case Label</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -256,6 +258,7 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
                                     <tr>
                                         <td><?= $index + 1 ?></td>
                                         <td><?= htmlspecialchars($history['NO_SIL'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($history['USER_ENTRY'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($history['PART_NUMBER'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($history['CUSTOMER_LABEL'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($history['KANBAN_CONTENT'] ?? '') ?></td>
@@ -276,7 +279,8 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
                                         <td><?= htmlspecialchars($history['KANBAN_ID'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($history['MANIFEST'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($history['KANBAN_ITEM'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($history['USER_ENTRY'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($history['REMAIN_QTY'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($history['CASE_LABEL'] ?? '') ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>

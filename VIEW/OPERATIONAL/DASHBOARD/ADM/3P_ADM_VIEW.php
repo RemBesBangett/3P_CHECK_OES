@@ -150,7 +150,7 @@ $silFiles = getSilFiles('SIL_FILES/');
                     <form id="addForm">
                         <div class="mb-3">
                             <label for="SIL" class="form-label">SIL (any length)</label>
-                            <input type="text" class="form-control" id="SIL" required>
+                            <input type="text" class="form-control" id="SIL" required autocomplete="off">
                             <div class="invalid-feedback" id="silError"></div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Entry</button>

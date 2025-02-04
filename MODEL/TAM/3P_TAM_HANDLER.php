@@ -23,7 +23,8 @@ function sendDatabase(
     $kanbanId,
     $kanbanItem,
     $username,
-    $caseLabel
+    $caseLabel,
+    $remainQty
 ) {
     try {
         $conn = dbcon();
@@ -31,9 +32,9 @@ function sendDatabase(
 
         // Insert statement
         $tsql = "INSERT INTO [3P_T_HISTORY] 
-                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ID, KANBAN_ITEM, USER_ENTRY, CASE_LABEL) 
+                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ID, KANBAN_ITEM, USER_ENTRY, CASE_LABEL, REMAIN_QTY) 
                  VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $noSil,
@@ -58,7 +59,8 @@ function sendDatabase(
             $kanbanId,
             $kanbanItem,
             $username,
-            $caseLabel
+            $caseLabel,
+            $remainQty
         ];
 
         $stmt = sqlsrv_prepare($conn, $tsql, $params);

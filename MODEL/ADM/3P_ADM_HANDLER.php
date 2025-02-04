@@ -17,15 +17,16 @@ function sendDatabase(
     $prepareTime,
     $actualTimes,
     $delDates,
-    $username
+    $username,
+    $remainQty
  ) {
    
     try {
         $conn = dbcon();
         $tsql = "INSERT INTO [3P_T_HISTORY] 
-                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, USER_ENTRY) 
+                    (NO_SIL, PART_NUMBER, CUSTOMER_LABEL, KANBAN_CONTENT, TOTAL_KANBAN, TOTAL_LABEL, LABEL_CONTENT, QTY_LABEL, QTY_KANBAN, CUSTOMER, ITEM_VENDOR, PO_NUMBER, PREPARE_DATE, PREPARE_TIME, DELIVERY_DATE, STATUS, USER_ENTRY, REMAIN_QTY, DATA_ID, DELIVERY_VANNING, MANIFEST, KANBAN_ITEM, KANBAN_ID, CASE_LABEL) 
                  VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
 
         $params = [
             $noSil,
@@ -44,7 +45,14 @@ function sendDatabase(
             $actualTimes,
             $delDates,
             'CLOSED',
-            $username
+            $username,
+            $remainQty,
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
         ];
 
         $stmt = sqlsrv_prepare($conn, $tsql, $params);

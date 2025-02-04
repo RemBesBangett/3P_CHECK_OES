@@ -12,10 +12,6 @@ function dbcon()
     if ($conn === false) {
         echo "Connection is failed.<br>";
         die(print_r(sqlsrv_errors(), true)); 
-    } else {
-
-
-    
     }
     return $conn;
 }

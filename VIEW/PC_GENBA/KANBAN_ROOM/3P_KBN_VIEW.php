@@ -427,9 +427,10 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                     namaUser: '<?= $username ?>',
                     tanggalPrint: formattedTime,
                 };
+                console.log(qrValue);
 
                 // Generate HTML untuk setiap halaman
-                const generatedHtml = generateHtml(qrCanvas.toDataURL(), qrValue);
+                const generatedHtml = generateHtml(qrCanvas.toDataURL(), qrValue, remainder);
                 generatedHtmlPages.push(generatedHtml);
             }
 
@@ -507,10 +508,11 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
             }, 500);
         }
 
-        function generateHtml(qrImageUrl, qrValue) {
+        function generateHtml(qrImageUrl, qrValue, remainder) {
             // Tambahkan kondisi untuk mendeteksi sisa qty
             const isSisaQty = qrValue.qtyKanban < 10;
             const isLastSeq = qrValue.seqKanban === (totalSeq.toString());
+
             return `<!DOCTYPE html>
                 <html lang="en">
 
@@ -711,19 +713,23 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                                     <div class="col">
                         <p class="judul-fot">Qty</p>
                         <h6 class="namQty" style="justify-content: center;">
-                            ${isLastSeq 
-                                ? `<span class="last-seq-qty">${qrValue.qtyKanban} pcs</span>` 
-                                : (isSisaQty 
-                                    ? `<span class="sisa-qty">${qrValue.qtyKanban} pcs</span>` 
-                                    : `${qrValue.qtyKanban} pcs`)
-                            }
-                                    </h6>
-                                    <p  class="sisa-indicator">${isLastSeq 
-                                ? `<span>(Criple)</span>` 
-                                : (isSisaQty 
-                                    ? `<span></span>` 
-                                    : '')
-                            }</p>
+                                    ${isLastSeq 
+                                        ? `<span class="last-seq-qty">${qrValue.qtyKanban} pcs</span>` 
+                                        : (isSisaQty 
+                                            ? `<span class="sisa-qty">${qrValue.qtyKanban} pcs</span>` 
+                                            : `${qrValue.qtyKanban} pcs`)
+                                    }
+                                </h6>
+                                <p class="sisa-indicator">
+                                    ${isLastSeq 
+                                        ? (remainder > 0 
+                                            ? `<span>(Criple)</span>` 
+                                            : `<span></span>`) 
+                                        : (isSisaQty 
+                                            ? `<span></span>` 
+                                            : '')
+                                    }
+                                </p>
                                  </div>
                                     <div class="col">
                                        <p class="judul-fot">Seq</p>

@@ -294,8 +294,12 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         let convertDelDateDB;
         // ------------------------------
         let usernameLogin = '<?= \$username; ?>';
-
-
+        let calculateQty = 0;
+        let calculateTotal = 0;
+        let saveCalculate;
+        let manageCalculate = 0;
+        let calculateDB = 0;
+        let seqArry = [];
 
         function updateProcessGuide() {
             const steps = [
@@ -411,7 +415,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
 
         // Fungsi processScan
-        function processScan(kanbanContent) {
+         function processScan(kanbanContent) {
             const totalQuantity = parseInt(document.getElementById('totalCount').textContent);
             const partNumber = partNumberOri;
             totalScanKanban = totalQuantity;
@@ -424,7 +428,43 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //3
             const manifestKanban = kanbanContent.substring(106, 116).trim(); //1
             const partNumberTMMIN = kanbanContent.substring(76, 90).trim(); //9
+            const seqTMMIN = kanbanContent.substring(105, 106).trim(); //10
 
+
+            if (seqArry.includes(seqTMMIN)) {
+                swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Kanban Sequence Sama!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    willClose: () => {
+                        showAuthenticationModal();
+                        document.getElementById('inputScanKanban').value = '';
+                    }
+                });
+                return;
+            } else {
+                seqArry.push(seqTMMIN);
+                console.log('Success Not Found In Array');
+            }
+            // Memeriksa urutan yang hilang
+            const totalSeq = totalScanKanbanOri; // Total urutan yang diharapkan
+            const missingSeq = [];
+
+            for (let i = 1; i <= totalSeq; i++) {
+                const seqString = i.toString(); // Mengubah angka menjadi string
+                if (!seqArry.includes(seqString)) {
+                    missingSeq.push(seqString);
+                }
+            }
+
+            // Jika ada urutan yang hilang, tampilkan di konsol
+            if (missingSeq.length > 0) {
+                console.log(`Urutan yang tidak dipindai: \${missingSeq.join(', ')}`);
+            } else {
+                console.log('Semua urutan telah dipindai.');
+            }
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
                 swal.fire({
@@ -450,11 +490,10 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                             document.getElementById('inputScanKanban').value = '';
                         }
                     })
+                    showAuthenticationModal();
                 }
 
                 if (kanbanContent.includes(partNumber)) {
-                    // Disable the input immediately upon success
-
                     swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
@@ -463,6 +502,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         timer: 1000,
                         willClose: () => {
                             totalScanKanbanOri = qtyOriSil / quantityFromScan;
+                            calculateTotal = qtyOriSil; //partnumber sil
                             document.getElementById('inputScanKanban').disabled = true;
                             document.getElementById('scannedCount').textContent = currentScannedCount;
                             document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
@@ -473,10 +513,20 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                             document.getElementById('totalCount').textContent = totalScanKanbanOri; // Set total count
                             currentStep = 1;
                             updateProcessGuide();
-                            if (contentLabel !== '') {
-                                document.getElementById('modalQuantitySupplier').disabled = true; // Set jumlah KanbcontentKanban supplier
-                            } else if (contentLabel === '') {
-                                document.getElementById('modalQuantitySupplier').value = '1';
+                            if (contentLabel == '') {
+                                // document.getElementById('inputScanCase').focus();
+                                document.getElementById('modalQuantitySupplier').disabled = false; // Aktifkan input label
+                                document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
+                                document.getElementById('inputScanLabel').focus();
+                                document.getElementById('saveButton').disabled = true;
+                                currentStep = 1;
+                                updateProcessGuide();
+                            } else {
+                                document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
+                                document.getElementById('saveButton').disabled = true;
+                                document.getElementById('inputScanLabel').focus();
+                                currentStep = 2;
+                                updateProcessGuide();
                             }
                         }
                     });
@@ -564,7 +614,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         function handleLabelScan(scannedLabel, inputElement) {
             const modalSupplierLabel = document.getElementById('modalSupplierLabel').value;
             let modalQuantitySupplier = parseInt(document.getElementById('modalQuantitySupplier').value) || 1;
-            const totalLabelCount = parseInt(document.getElementById('totalLabelCount').textContent);
+             let totalLabelCount = parseInt(document.getElementById('totalLabelCount').textContent);
             let currentScannedLabelCount = parseInt(document.getElementById('scannedLabelCount').textContent) || 0;
             let modifiedQty = modalQuantitySupplier.toString().padStart(7, '0');
             const numericPart = modalSupplierLabel.match(/\d+/)[0];
@@ -572,7 +622,9 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             if (scannedLabel.includes(numericPart) && scannedLabel.length <= modalSupplierLabel.length + 10) {
                 // Jika ini adalah pemindaian pertama
                 currentScannedLabelCount += modalQuantitySupplier;
-                totalScanLabelOri = currentScannedLabelCount;
+                totalScanLabelOri = currentScannedLabelCount * progressScanKanbanOri;
+                console.log('Debug Jumlah Label WIP: ' + totalScanLabelOri);
+                
                 qtyLabelOri = modalQuantitySupplier;
                 // Validasi jika jumlah yang dipindai melebihi total
                 if (currentScannedLabelCount > totalLabelCount) {
@@ -613,6 +665,18 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
+                        if (manageCalculate === 0) {
+                                saveCalculate = calculateTotal;
+                                calculateQty = saveCalculate - modalQuantitySupplier;
+                                manageCalculate = calculateQty;
+                                calculateDB = manageCalculate;
+                                console.log('Sisa Qty' + calculateDB); 
+                            } else {
+                                calculateQty = manageCalculate - modalQuantitySupplier;
+                                manageCalculate = calculateQty;
+                                calculateDB = manageCalculate;
+                                console.log('Sisa Qty More' + calculateDB);
+                            }
                             totalTimesScan = totalScanKanbanOri * qtyLabelOri;
                             inputElement.disabled = true; // Nonaktifkan input label
                             labelScanningEnabled = false; // Nonaktifkan pemindaian label
@@ -661,6 +725,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             // Set nilai ke modal
             document.getElementById('modalPartNumber').value = partNumber;
             document.getElementById('saveButton').disabled = true;
+            document.getElementById('inputScanLabel').disabled = true;
+            document.getElementById('modalQuantitySupplier').disabled = true;
 
             currentStep = 0;
             updateProcessGuide();
@@ -676,8 +742,12 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         }
 
         function resetKanbanInput() {
-            document.getElementById('inputScanKanban').disabled = false;
+           document.getElementById('inputScanKanban').disabled = false;
             repeaterScanning = 1;
+            if (contentLabel !== '') {
+                document.getElementById('modalQuantitySupplier').disabled = true;
+            }
+                 document.getElementById('saveButton').disabled = false;
         }
 
 
@@ -754,7 +824,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 delivVan: deliveFormated,
                 dataID: 'D',
                 manifestKanban: manifestKanbanDB,
-                userName: '<?= \$username; ?>'
+                userName: '<?= \$username; ?>',
+                remainQty: calculateDB,
             };
             console.log(saveToDatabase);
 
@@ -773,6 +844,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     '<p><strong>Qty Label:</strong> ' + saveToDatabase.qtyLabel + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.totalLabel + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.delDates + '</p>' +
+                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' +  '</p>' +
                     '</div>',
                 icon: 'info',
                 showCancelButton: true,
@@ -798,7 +870,6 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         },
                         success: function(response) {
                             console.log('Response dari server:', response);
-
                             if (response.status === 'success') {
                                 currentStep = 3;
                                 updateProcessGuide();

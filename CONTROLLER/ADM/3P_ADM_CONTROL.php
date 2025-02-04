@@ -35,6 +35,7 @@ try {
     $manifestKanban = isset($_POST['manifestKanban']) ? trim ($_POST['manifestKanban']) : "";
     $noSilDelete = isset($_POST['noSilDel']) ? trim ($_POST['noSilDel']) : "";
     $username = isset($_POST['userName']) ? trim($_POST['userName']) : "";
+    $remainQty = isset($_POST['remainQty']) ? trim($_POST['remainQty']) : "";
     // Cek apakah hanya $noSilDelete dan $dataSilAll yang diposting
     if (!empty($noSilDelete) && !empty($dataSilAll)) {
         // Panggil fungsi untuk menyimpan ke database
@@ -65,7 +66,8 @@ try {
             $prepareTime,
             $actualTimes,
             $delDates,
-            $username
+            $username,
+            $remainQty
         );
 
         // Kirim response

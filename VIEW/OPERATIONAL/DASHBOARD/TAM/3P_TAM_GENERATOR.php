@@ -187,7 +187,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     <h5 class='modal-title'>Continue Process</h5>
                     <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal'></button>
                 </div>
-                <div class='modal-body'>
+                 <div class='modal-body'>
                     <form id='continueForm'>
                         <div class='row'>
                             <div class='col-md-4 mb-3'>
@@ -197,18 +197,18 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Kanban</label>
-                                <input type='text' class='form-control' id='inputScanKanban' placeholder='Scan Kanban'>
+                                <input type='text' class='form-control' id='inputScanKanban' placeholder='Scan Kanban' autocomplete='off'>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Case</label>
-                                <input type='text' class='form-control' id='inputScanCase' class='cektohok' placeholder='Scan Case Label'>
+                                <input type='text' class='form-control' id='inputScanCase' class='cektohok' placeholder='Scan Case Label' autocomplete='off'>
                             </div>
                             <div class='col-md-12 mb-3'>
                                 <p class='jumlahScanKanban'>Scanned: <span id='scannedCount'>0</span> / <span id='totalCount'>0</span></p>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Supplier Label</label>
-                                <input type='text' class='form-control' id='modalSupplierLabel' readonly placeholder='Scan Kanban (Customer PN)'>
+                                <input type='text' class='form-control' id='modalSupplierLabel' readonly placeholder='Scan Kanban (Customer PN)' autocomplete='off'>
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Qty</label>
@@ -216,7 +216,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                             </div>
                             <div class='col-md-4 mb-3'>
                                 <label class='form-label'>Scan Label</label>
-                                <input type='text' class='form-control' id='inputScanLabel' placeholder='Scan Supplier Label'>
+                                <input type='text' class='form-control' id='inputScanLabel' placeholder='Scan Supplier Label' autocomplete='off'>
                             </div>
                             <div class='col-md-12 mb-3'>
                                 <p class='jumlahScanLabel'>Scanned: <span id='scannedLabelCount'>0</span> | <span id='totalLabelCount'>0</span></p>
@@ -273,9 +273,9 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         </div>
     </div>
 
-    <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script>
+     <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script>
     <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
-<script>
+    <script>
         const user = '<?= \$username; ?>';
         const statusLogin = '<?= \$status; ?>';
         let partNumberOri = '';
@@ -310,8 +310,13 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         let caseLabelContentDB = '';
         let currentSteps = '';
         let usernameLogin = '<?= \$username; ?>';
+        //Calculate
         let calculateQty = 0;
-
+        let calculateTotal = 0;
+        let saveCalculate;
+        let manageCalculate = 0;
+        let calculateDB = 0;
+        let seqArry = [];
 
         function updateProcessGuide() {
             const steps = [
@@ -368,35 +373,35 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             });
         }
 
-      function populateTable(data) {
+        function populateTable(data) {
             const tableBody = $('#dataTable');
             tableBody.empty(); // Clear the table before adding data
 
             data.forEach(function(item, index) {
-            const row = $('<tr>');
+                const row = $('<tr>');
 
-            // Append cells to the row
-            row.append($('<td>').text(index + 1));
-            row.append($('<td>').text(item.PART_NUMBER));
-            row.append($('<td>').text(item.QUANTITY));
-            row.append($('<td>').text(item.STATUS));
+                // Append cells to the row
+                row.append($('<td>').text(index + 1));
+                row.append($('<td>').text(item.PART_NUMBER));
+                row.append($('<td>').text(item.QUANTITY));
+                row.append($('<td>').text(item.STATUS));
 
-            // Create the 'Continue' button
-            const continueButton = $('<button>')
-                .addClass('btn btn-primary')
-                .attr('type', 'button')
-                .attr('onclick', 'handleModalOpen(this)')
-                .text('Continue');
+                // Create the 'Continue' button
+                const continueButton = $('<button>')
+                    .addClass('btn btn-primary')
+                    .attr('type', 'button')
+                    .attr('onclick', 'handleModalOpen(this)')
+                    .text('Continue');
 
-            // Check the status and modify row appearance if 'CLOSED'
-            if (item.STATUS === 'CLOSED') {
-                continueButton.prop('disabled', true).text('Completed'); // Disable the button and change text to 'Finish'
-                row.addClass('table-success'); // Bootstrap class for green background
-                row.find('td').addClass('text-muted'); // Optional: make text slightly faded
-            }
-                
-            row.append($('<td>').append(continueButton));
-            tableBody.append(row);
+                // Check the status and modify row appearance if 'CLOSED'
+                if (item.STATUS === 'CLOSED') {
+                    continueButton.prop('disabled', true).text('Completed'); // Disable the button and change text to 'Finish'
+                    row.addClass('table-success'); // Bootstrap class for green background
+                    row.find('td').addClass('text-muted'); // Optional: make text slightly faded
+                }
+
+                row.append($('<td>').append(continueButton));
+                tableBody.append(row);
             });
         }
 
@@ -453,18 +458,60 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             totalScanKanban = totalQuantity;
             const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
             const supplierLabel = kanbanContent.substring(51, 75).trim().replace(/-/g, ''); //OKOK
-            const itemNo = kanbanContent.substring(144, 147).trim(); //OKOK
+            const itemNo = kanbanContent.substring(144, 148).trim(); //OKOK
             const PONumber = kanbanContent.substring(106, 125).trim(); //OKOK
             const kanbanID = kanbanContent.substring(134, 143).trim(); //
             const deliveryDate = kanbanContent.substring(126, 134).trim(); // Original format dd-mm-yy
             const [day, month, year] = deliveryDate.split('-');
             const formattedDeliveryDate = `20\${year}\${month}\${day}`; // Convert to yyyymmdd format
-            const kanbanItem = kanbanContent.substring(143, 147).trim();
+            const kanbanItem = kanbanContent.substring(143, 148).trim();
             // const manifestKanban = kanbanContent.substring(106, 125).trim(); //
             const partNumberTAM = kanbanContent.substring(76, 91).trim(); // OK
             const vendorCode = kanbanContent.substring(148, 152).trim(); // OK
             let currentScannedCount = parseInt(document.getElementById('scannedCount').textContent) || 0;
+            const seqKanban = kanbanContent.substring(105, 106);
             // Pastikan kanbanContent tidak kosong
+            quantityKanbanOri = quantityFromScan;
+            console.log(seqKanban);
+
+            // Cek apakah seqKanban sudah ada
+            if (seqArry.includes(seqKanban)) {
+                swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Sequence Kanban Sudah Ada',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    willClose: () => {
+                        showAuthenticationModal();
+                        document.getElementById('inputScanKanban').value = '';
+                    }
+                });
+                return;
+            } else {
+                seqArry.push(seqKanban);
+                console.log('Success Adding Data');
+            }
+
+            // Memeriksa urutan yang hilang
+            const totalSeq = totalScanKanbanOri; // Total urutan yang diharapkan
+            const missingSeq = [];
+
+            for (let i = 1; i <= totalSeq; i++) {
+                const seqString = i.toString(); // Mengubah angka menjadi string
+                if (!seqArry.includes(seqString)) {
+                    missingSeq.push(seqString);
+                }
+            }
+
+            // Jika ada urutan yang hilang, tampilkan di konsol
+            if (missingSeq.length > 0) {
+                console.log(`Urutan yang tidak dipindai: \${missingSeq.join(', ')}`);
+            } else {
+                console.log('Semua urutan telah dipindai.');
+            }
+
+
             if (!kanbanContent) {
                 swal.fire({
                     icon: 'error',
@@ -496,8 +543,6 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     });
                     return;
                 }
-                console.log();
-
                 //postpone
                 if (kanbanContent.includes(partNumber)) {
                     // Disable the input immediately upon success
@@ -509,6 +554,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         timer: 1000,
                         willClose: () => {
                             totalScanKanbanOri = qtyOriSil / quantityFromScan;
+                            calculateTotal = qtyOriSil / quantityFromScan;
                             document.getElementById('inputScanKanban').disabled = true;
                             document.getElementById('scannedCount').textContent = currentScannedCount;
                             document.getElementById('modalSupplierLabel').value = supplierLabel; // Set label supplier
@@ -526,6 +572,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                             } else {
                                 document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                                 document.getElementById('inputScanLabel').focus();
+                                document.getElementById('saveButton').disabled = true;
+                                // calculateQty = ;
                                 currentStep = 2;
                                 updateProcessGuide();
                             }
@@ -547,6 +595,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     partNumberDB = partNumberTAM,
                     labelOri = supplierLabel
                 kanbanItemDB = kanbanItem;
+
+
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
                 } else {
@@ -588,7 +638,6 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 document.getElementById('inputScanKanban').value = '';
             }, 1000);
         }
-
         function caseScan(scanContent) {
             const caseLabel = scanContent.substring(0, 1)
 
@@ -634,7 +683,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         function handleLabelScan(scannedLabel, inputElement) {
             const modalSupplierLabel = document.getElementById('modalSupplierLabel').value;
             let modalQuantitySupplier = parseInt(document.getElementById('modalQuantitySupplier').value) || 1;
-            const totalLabelCount = parseInt(document.getElementById('totalLabelCount').textContent);
+            let totalLabelCount = parseInt(document.getElementById('totalLabelCount').textContent);
             let currentScannedLabelCount = parseInt(document.getElementById('scannedLabelCount').textContent) || 0;
             let modifiedQty = modalQuantitySupplier.toString().padStart(7, '0');
             const numericPart = modalSupplierLabel.match(/\d+/)[0];
@@ -664,7 +713,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 document.getElementById('scannedLabelCount').textContent = currentScannedLabelCount;
 
                 // Cek kondisi untuk menampilkan Swal.fire
-                if (currentScannedLabelCount <= totalLabelCount) {
+                if (currentScannedLabelCount < totalLabelCount) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
@@ -683,6 +732,21 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
+                            if (manageCalculate === 0) {
+                                saveCalculate = calculateTotal;
+                                calculateQty = saveCalculate - modalQuantitySupplier;
+                                manageCalculate = calculateQty;
+                                calculateDB = manageCalculate;
+                                console.log('Sisa Qty' + calculateDB); 
+                            } else {
+                                calculateQty = manageCalculate - modalQuantitySupplier;
+                                manageCalculate = calculateQty;
+                                calculateDB = manageCalculate;
+                                console.log('Sisa Qty More' + calculateDB);
+                            }
+
+
+
                             totalTimesScan = totalScanKanbanOri * qtyLabelOri;
                             inputElement.disabled = true; // Nonaktifkan input label
                             labelScanningEnabled = false; // Nonaktifkan pemindaian label
@@ -730,9 +794,10 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             const row = button.closest('tr'); // Ambil baris terdekat dari tombol yang ditekan
             const partNumber = row.cells[1].textContent; // Ambil nomor bagian dari kolom kedua
             const quantity = row.cells[2].textContent; // Ambil jumlah dari kolom ketiga
-            partNumberOri = row.cells[1].textContent;
+            partNumberOri = partNumber;
             qtyOriSil = quantity;
-            // Set nilai ke modal
+
+            // console.log(qtyOriSil);
             document.getElementById('modalPartNumber').value = partNumber;
             document.getElementById('saveButton').disabled = true;
             document.getElementById('inputScanLabel').disabled = true;
@@ -755,6 +820,10 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         function resetKanbanInput() {
             document.getElementById('inputScanKanban').disabled = false;
             repeaterScanning = 1;
+            if (contentLabel !== '') {
+                document.getElementById('modalQuantitySupplier').disabled = true;
+            }
+                 document.getElementById('saveButton').disabled = false;
         }
 
 
@@ -816,7 +885,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 PONumber: poNumberDB, // PO Number
                 labelItem: vendorCodeDB,
                 caseNo: caseLabelContentDB,
-                userName: '<?= \$username; ?>'
+                userName: '<?= \$username; ?>',
+                remainQty: calculateDB,
                 // processCode: processCodeDB, // Process Code
             };
             console.log(saveToDatabase);
@@ -837,7 +907,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     '<p><strong>Total Kanban:</strong> ' + saveToDatabase.totalKanban + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.totalLabel + '</p>' +
                     '<p><strong>Tanggal Delivery:</strong> ' + saveToDatabase.delDates + '</p>' +
-                    '</div>',
+                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' +  '</p>' + '</div>',
                 icon: 'info',
                 showCancelButton: false,
                 confirmButtonText: 'Ya, Kirim',
