@@ -24,33 +24,18 @@ function showAuthenticationModal(customMessage = null) {
                     title: "Verifikasi Diperlukan",
                     text: displayMessage,
                     icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Ya, Verifikasi"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Inisialisasi modal
-                        const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
-                            backdrop: 'static',
-                            keyboard: false
-                        });
-
-                        // Update pesan di modal jika ada pesan kustom
-                        if (customMessage) {
-                            document.getElementById('authModalMessage').textContent = customMessage;
-                        }
-
-                        // Tampilkan modal
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    if (customMessage) {
+                        document.getElementById('authModalMessage').textContent = customMessage;
                     }
+                    modal.show();
                 });
-                const modal = new bootstrap.Modal(document.getElementById('authenticationModal'), {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                modal.show();
- 
-            }
-            // Jika terjadi kesalahan
-            else {
+            } else {
                 Swal.fire({
                     title: "Cek kembali Username dan Password",
                     text: displayMessage,
@@ -71,13 +56,9 @@ function showAuthenticationModal(customMessage = null) {
     });
 }
 
-// Fungsi untuk menangani proses autentikasi
 function interlockArea() {
-    // Ambil nilai username dan password dari input
     const usernamE = document.getElementById('authUsername').value;
     const passworD = document.getElementById('authPassword').value;
-
-    // Validasi input
     if (!usernamE || !passworD) {
         Swal.fire({
             title: "Kesalahan Input",
@@ -87,8 +68,6 @@ function interlockArea() {
         });
         return;
     }
-
-    // Kirim request autentikasi
     $.ajax({
         type: 'POST',
         url: '/3P_CHECK_OES/CONTROLLER/INTERAKTIF/3P_INTERLOCK_CONTROL.php',
@@ -101,14 +80,9 @@ function interlockArea() {
         contentType: "application/json",
         success: function (response) {
             console.log("Server Response:", response);
-
-            // Cek apakah autentikasi berhasil
             if (response.status === 'success') {
-                // Simpan informasi user di localStorage
                 localStorage.setItem('userAccess', response.data.access);
                 localStorage.setItem('userName', response.data.nama);
-
-                // Tampilkan pesan sukses
                 Swal.fire({
                     title: "Autentikasi Berhasil",
                     text: "Anda dapat melanjutkan proses",
@@ -117,12 +91,10 @@ function interlockArea() {
                     timerProgressBar: true,
                     showConfirmButton: false
                 }).then(() => {
-                    // Tutup semua modal yang sedang terbuka
                     closeAllModals();
                     location.reload(true);
                 });
             } else {
-                // Autentikasi gagal
                 Swal.fire({
                     title: "Autentikasi Gagal",
                     text: response.message,

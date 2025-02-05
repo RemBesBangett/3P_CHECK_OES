@@ -56,7 +56,7 @@ try {
         $sheet->setCellValue('H' . $row, $history['KANBAN_ITEM'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
         $sheet->setCellValue('J' . $row, $history['KANBAN_ID'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
         $sheet->setCellValue('J' . $row, $history['CUSTOMER_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
-        $sheet->setCellValue('K' . $row, $history['TOTAL_LABEL'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
+        $sheet->setCellValue('K' . $row, $history['TOTAL_QTY'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
         $sheet->setCellValue('L' . $row, $history['ITEM_VENDOR'] ?? ''); //MANIFEST NO R(ANGKA) = TMMIN
 
         // Gaya border
@@ -121,7 +121,17 @@ function getAllHistory($timeExport, $customers)
         }
 
 
-        $tsql = "SELECT * FROM [3P_T_HISTORY] WHERE PREPARE_DATE = ? AND CUSTOMER = ?";
+        $tsql = "SELECT 
+            PART_NUMBER,PO_NUMBER, KANBAN_ID,KANBAN_ITEM,DELIVERY_DATE, 
+            [CASE_LABEL], CUSTOMER_LABEL, ITEM_VENDOR ,   -- Menambahkan CASE LABEL ke dalam SELECT
+            SUM(TOTAL_LABEL) AS TOTAL_QTY 
+            FROM 
+            [3P_T_HISTORY] 
+            WHERE 
+            PREPARE_DATE = ? AND CUSTOMER = ?
+            GROUP BY 
+            PART_NUMBER, 
+            [CASE_LABEL], PO_NUMBER, KANBAN_ID, KANBAN_ITEM, DELIVERY_DATE, CUSTOMER_LABEL, ITEM_VENDOR";
         $params = [$timeExport, $customers];
         $stmt = sqlsrv_query($conn, $tsql, $params);
 

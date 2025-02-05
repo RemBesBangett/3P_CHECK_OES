@@ -273,7 +273,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         </div>
     </div>
 
-     <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script>
+    <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script>
     <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
     <script>
         const user = '<?= \$username; ?>';
@@ -638,6 +638,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 document.getElementById('inputScanKanban').value = '';
             }, 1000);
         }
+
         function caseScan(scanContent) {
             const caseLabel = scanContent.substring(0, 1)
 
@@ -691,7 +692,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             if (scannedLabel.includes(numericPart) && scannedLabel.length <= modalSupplierLabel.length + 10) {
                 // Jika ini adalah pemindaian pertama
                 currentScannedLabelCount += modalQuantitySupplier;
-                totalScanLabelOri = currentScannedLabelCount;
+                totalScanLabelOri = currentScannedLabelCount * progressScanKanbanOri;
                 qtyLabelOri = modalQuantitySupplier;
                 // Validasi jika jumlah yang dipindai melebihi total
                 if (currentScannedLabelCount > totalLabelCount) {
@@ -737,7 +738,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                                 calculateQty = saveCalculate - modalQuantitySupplier;
                                 manageCalculate = calculateQty;
                                 calculateDB = manageCalculate;
-                                console.log('Sisa Qty' + calculateDB); 
+                                console.log('Sisa Qty' + calculateDB);
                             } else {
                                 calculateQty = manageCalculate - modalQuantitySupplier;
                                 manageCalculate = calculateQty;
@@ -823,7 +824,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             if (contentLabel !== '') {
                 document.getElementById('modalQuantitySupplier').disabled = true;
             }
-                 document.getElementById('saveButton').disabled = false;
+            document.getElementById('saveButton').disabled = false;
         }
 
 
@@ -866,7 +867,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             const saveToDatabase = {
                 noSil: noSil, //
                 qtyKanban: qtyKanbanOri, //
-                totalKanban: totalScanKanbanOri, //
+                totalKanban: progressScanKanbanOri, //
                 qtyLabel: qtyLabelOri || 0, // Traceability qtyLabel
                 contentScanKanban: contentKanban, // Traceability Actual Label Content
                 contentScanLabel: contentLabel, // Traceability Actual Label Content
@@ -878,7 +879,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 //CHARACTERISTIC ZONE
                 partNumber: partNumberDB, // PartNUmber
                 customerLabel: labelOri, // Customer Label
-                totalLabel: totalTimesScan, // Qty ORI SIL
+                totalLabel: totalScanLabelOri, // Qty ORI SIL
                 KanbanId: kanbanIdDB, // franchise & case
                 kanbanItem: kanbanItemDB, // Item No
                 delDates: delDateDB, // shipment date
@@ -907,7 +908,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     '<p><strong>Total Kanban:</strong> ' + saveToDatabase.totalKanban + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.totalLabel + '</p>' +
                     '<p><strong>Tanggal Delivery:</strong> ' + saveToDatabase.delDates + '</p>' +
-                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' +  '</p>' + '</div>',
+                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' + '</p>' + '</div>',
                 icon: 'info',
                 showCancelButton: false,
                 confirmButtonText: 'Ya, Kirim',
