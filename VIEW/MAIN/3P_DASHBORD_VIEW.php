@@ -172,9 +172,11 @@ $baseUrl = '/3P_CHECK_OES/';
 <body>
     <div class="dashboard-container">
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>SELAMAT DATANG <login user>
+            <h1>SELAMAT DATANG DI   <login user>
             </h1>
-            <p class="lead">SELESAIKAN 1 CYCLE PROSES SEBELUM MENINGGALKAN PROSES</p>
+            <h1>PRE - DELIVERY CHECK</h1>
+            <p class="lead">HALO <?= $userLogin; ?></p>
+
         </div>
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">

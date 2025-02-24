@@ -78,7 +78,7 @@ elseif (
         // If not registered, proceed with insert
         $result = insertUser($npk, $nama, $password, $access, $status, $section, $line, $leader);
         if ($result['success']) {
-            $message = 'Data successfully saved. Do you want to continue?';
+           header('location: /3P_CHECK_OES/OPERATIONAL/USER');
         } else {
             $message = $result['message'];
         }

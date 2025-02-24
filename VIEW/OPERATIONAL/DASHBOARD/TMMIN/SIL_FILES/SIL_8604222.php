@@ -1,63 +1,32 @@
-<?php
-// Pastikan direktori untuk menyimpan file SIL sudah ada
-$silDirectory = 'SIL_FILES/';  // Sesuaikan dengan struktur folder Anda
 
-// Pastikan direktori ada
-if (!file_exists($silDirectory)) {
-    mkdir($silDirectory, 0777, true);
-}
-
-// Terima data dari POST
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (isset($data['noSil']) && isset($data['entries'])) {
-    $noSil = htmlspecialchars($data['noSil']); // Sanitasi input
-    $entries = $data['entries'];
-
-    // Buat nama file
-    $filename = $silDirectory . 'SIL_' . $noSil . '.php';
-
-    // Cek apakah file sudah ada
-    if (file_exists($filename)) {
-        echo json_encode(['success' => false, 'message' => 'File already exists']);
-        exit;
-    }
-
-    // Mulai buffer output
-    ob_start();
-
-    // Buat konten HTML lengkap
-    echo "
-  
     <?php
-       session_start();
-if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
+   session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset(\$_SESSION['section']) || \$_SESSION['section'] != 'OPERATIONAL' && \$_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
-} else if (isset(\$_SESSION['status_user']) && \$_SESSION['status_user'] == 'locked') {
+} else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-\$username = \$_SESSION['nama'];
-\$status = \$_SESSION['status_user'];
-\$baseUrl = '/3P_CHECK_OES/';
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
+$baseUrl = '/3P_CHECK_OES/';
     ?>
-
     <!DOCTYPE html>
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>SIL Details - " . htmlspecialchars($noSil) . "</title>
+    <title>SIL Details - 8604222</title>
     <!-- Script Dependencies -->
-    <script src='<?= \$baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
-    <script src='<?= \$baseUrl; ?>ASSET/jquery-3.7.1.js'></script>
-    <script src='<?= \$baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.min.js'></script>
-    <link rel='stylesheet' href='<?= \$baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='<?= \$baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css'>
+    <script src='<?= $baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
+    <script src='<?= $baseUrl; ?>ASSET/jquery-3.7.1.js'></script>
+    <script src='<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.min.js'></script>
+    <link rel='stylesheet' href='<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='<?= $baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css'>
     <style>
         /* Tambahkan di bagian <style> di head dokumen */
         .closed-row {
@@ -121,7 +90,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     <h5>Kanban</h5>
                     <div class='card mb-2'>
                         <div class='card-body p-2'>
-                            <h6 class='card-title mb-1'>Open</h6> 
+                            <h6 class='card-title mb-1'>Open</h6>
                             <div class='progress'>
                                 <div class='progress-bar bg-warning' role='progressbar' style='width: 25%' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>25%</div>
                             </div>
@@ -148,8 +117,8 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             <div class='col-10 p-4'>
                 <div class='card'>
                     <div class='card-header bg-primary text-white d-flex justify-content-between align-items-center'>
-                        <h3 class='mb-0' id='noSil'>" . htmlspecialchars($noSil) . "</h3>
-                        <a href='/3P_CHECK_OES/OPERATIONAL/ADM' class='btn btn-secondary btn-sm'>
+                        <h3 class='mb-0' id='noSil'>8604222</h3>
+                        <a href='<?= $baseUrl; ?>OPERATIONAL/TMMIN' class='btn btn-secondary btn-sm'>
                             <i class='fas fa-arrow-left'></i> Back to List
                         </a>
                     </div>
@@ -239,38 +208,36 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             </div>
         </div>
     </div>
+  <div class='modal' id='authenticationModal' tabindex='-1'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title'>Autentikasi</h5>
+                </div>
+                <div class='modal-body'>
+                    <!-- Tambahkan elemen untuk pesan kustom -->
+                    <p id='authModalMessage'>Silakan masukkan autentikasi</p>
 
-        <div class='modal' id='authenticationModal' tabindex='-1'>
-            <div class='modal-dialog'>
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h5 class='modal-title'>Autentikasi</h5>
+                    <div class='form-group'>
+                        <label>Username</label>
+                        <input type='text' id='authUsername' class='form-control'>
                     </div>
-                    <div class='modal-body'>
-                        <!-- Tambahkan elemen untuk pesan kustom -->
-                        <p id='authModalMessage'>Silakan masukkan autentikasi</p>
-
-                        <div class='form-group'>
-                            <label>Username</label>
-                            <input type='text' id='authUsername' class='form-control'>
-                        </div>
-                        <div class='form-group'>
-                            <label>Password</label>
-                            <input type='password' id='authPassword' class='form-control'>
-                        </div>
+                    <div class='form-group'>
+                        <label>Password</label>
+                        <input type='password' id='authPassword' class='form-control'>
                     </div>
-                    <div class='modal-footer'>
-                        <button id='authenticateButton' class='btn btn-primary'>Autentikasi</button>
-                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button id='authenticateButton' class='btn btn-primary'>Autentikasi</button>
                 </div>
             </div>
         </div>
-
-    <script src='<?= \$baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script> <!-- LOL -->
-    <script src='<?= \$baseUrl; ?>/JS/3P_INTERLOCK.js'></script> <!-- LOL -->
-       <script>
-        const user = '<?= \$username; ?>'; //LOL
-        const statusLogin = '<?= \$status; ?>'; //LOL
+    </div>
+    <script src='<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js'></script>
+    <script src='<?= $baseUrl; ?>/JS/3P_INTERLOCK.js'></script>
+    <script>
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
         let partNumberOri = '';
         let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
         let totalScanKanbanOri = 0;
@@ -287,17 +254,23 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         let totalTimesScan = 0;
         let repeaterScanning = 0;
         let noSilOri;
-        let poNumberOri;
-        let lineItemDB;
-        let delDate;
+        let currentStep = 0;
         let qtyOriSil;
-        let usernameLogin = '<?= \$username; ?>'; //LOL
+        //postpone zone
+        let kanbanItemDB;
+        let delDateDB;
+        let kanbanIdDB;
+        let partNumberDB;
+        let manifestKanbanDB;
+        let convertDelDateDB;
+        // ------------------------------
+        let usernameLogin = '<?= $username; ?>';
         let calculateQty = 0;
         let calculateTotal = 0;
         let saveCalculate;
         let manageCalculate = 0;
         let calculateDB = 0;
-        let seqArray = []; 
+        let seqArry = [];
 
         function updateProcessGuide() {
             const steps = [
@@ -330,7 +303,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         function getData(noSils) {
             $.ajax({
                 type: 'GET',
-                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_SHOW.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_SHOW.php',
                 data: {
                     noSil: noSils
                 },
@@ -353,37 +326,36 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             tableBody.empty(); // Clear the table before adding data
 
             data.forEach(function(item, index) {
-            const row = $('<tr>');
+                const row = $('<tr>');
 
-            // Append cells to the row
-            row.append($('<td>').text(index + 1));
-            row.append($('<td>').text(item.PART_NUMBER));
-            row.append($('<td>').text(item.QUANTITY));
-            row.append($('<td>').text(item.STATUS));
+                // Append cells to the row
+                row.append($('<td>').text(index + 1));
+                row.append($('<td>').text(item.PART_NUMBER));
+                row.append($('<td>').text(item.QUANTITY));
+                row.append($('<td>').text(item.STATUS));
 
-            // Create the 'Continue' button
-            const continueButton = $('<button>')
-                .addClass('btn btn-primary')
-                .attr('type', 'button')
-                .attr('onclick', 'handleModalOpen(this)')
-                .text('Continue');
+                // Create the 'Continue' button
+                const continueButton = $('<button>')
+                    .addClass('btn btn-primary')
+                    .attr('type', 'button')
+                    .attr('onclick', 'handleModalOpen(this)')
+                    .text('Continue');
 
-            // Check the status and modify row appearance if 'CLOSED'
-            if (item.STATUS === 'CLOSED') {
-                continueButton.prop('disabled', true).text('Completed'); // Disable the button and change text to 'Finish'
-                row.addClass('table-success'); // Bootstrap class for green background
-                row.find('td').addClass('text-muted'); // Optional: make text slightly faded
-            }
-                
-            row.append($('<td>').append(continueButton));
-            tableBody.append(row);
+                // Check the status and modify row appearance if 'CLOSED'
+                if (item.STATUS === 'CLOSED') {
+                    continueButton.prop('disabled', true).text('Completed'); // Disable the button and change text to 'Finish'
+                    row.addClass('table-success'); // Bootstrap class for green background
+                    row.find('td').addClass('text-muted'); // Optional: make text slightly faded
+                }
+
+                row.append($('<td>').append(continueButton));
+                tableBody.append(row);
             });
         }
 
         // Contoh pemanggilan fungsi getData
 
         // Event listener untuk inputScanKanban
-
         document.getElementById('inputScanKanban').addEventListener('input', function() {
             const kanbanContent = this.value; // Ambil nilai dari inputScanKanban
 
@@ -399,15 +371,12 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
         document.getElementById('inputScanLabel').addEventListener('input', function() {
             if (!labelScanningEnabled) {
-                swal.fire({
-                    title: 'Error',
-                    text: 'Scan Kanban Dengan Benar',
-                    icon: 'error',
-                    showConfirmButton: false,
-                    timer: 1500,
-
-                });
+                alert('Please scan Kanban first!');
+                showAuthenticationModal();
+                this.value = '';
+                return;
             }
+
             const scannedLabel = this.value;
             clearTimeout(clearLabelTimeoutId);
             clearLabelTimeoutId = setTimeout(() => {
@@ -415,27 +384,31 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             }, 500); // Delay 1 second
         });
 
+
         // Fungsi processScan
         function processScan(kanbanContent) {
             const totalQuantity = parseInt(document.getElementById('totalCount').textContent);
             const partNumber = partNumberOri;
-            const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
-            const supplierLabel = kanbanContent.substring(52, 67).trim();
-            const PONumber = kanbanContent.substring(106, 116).trim();
-            const lineItems = kanbanContent.substring(140, 144).trim();
-            const deliveryDate = kanbanContent.substring(126, 136).trim();
             totalScanKanban = totalQuantity;
-            const seqKanban = kanbanContent.substring(105, 106).trim();
+            const quantityFromScan = parseInt(kanbanContent.substring(91, 98));
+            const supplierLabel = kanbanContent.substring(51, 63).trim().replace(/-/g, '');
+            const itemNo = kanbanContent.substring(143, 145).trim();
+            const PONumber = kanbanContent.substring(106, 116).trim();
+            const kanbanID = kanbanContent.substring(134, 142).trim(); //5
+            const deliveryDate = kanbanContent.substring(126, 134).trim(); //6 
+            const kanbanItem = kanbanContent.substring(144, 147).trim().replace(/0/g, ''); //3
+            const manifestKanban = kanbanContent.substring(106, 116).trim(); //1
+            const partNumberTMMIN = kanbanContent.substring(76, 90).trim(); //9
+            const seqTMMIN = kanbanContent.substring(105, 106).trim(); //10
 
 
-
-            if (seqArray.includes(seqKanban)) {
+            if (seqArry.includes(seqTMMIN)) {
                 swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Sequence Kanban Sudah Ada',
+                    text: 'Kanban Sequence Sama!',
+                    timer: 2000,
                     showConfirmButton: false,
-                    timer: 1500,
                     willClose: () => {
                         showAuthenticationModal();
                         document.getElementById('inputScanKanban').value = '';
@@ -443,58 +416,54 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 });
                 return;
             } else {
-                seqArray.push(seqKanban);
-                console.log('Success Adding Data');
+                seqArry.push(seqTMMIN);
+                console.log('Success Not Found In Array');
             }
-
             // Memeriksa urutan yang hilang
             const totalSeq = totalScanKanbanOri; // Total urutan yang diharapkan
             const missingSeq = [];
 
             for (let i = 1; i <= totalSeq; i++) {
                 const seqString = i.toString(); // Mengubah angka menjadi string
-                if (!seqArray.includes(seqString)) {
+                if (!seqArry.includes(seqString)) {
                     missingSeq.push(seqString);
                 }
             }
 
             // Jika ada urutan yang hilang, tampilkan di konsol
             if (missingSeq.length > 0) {
-                console.log(`Urutan yang tidak dipindai: \${missingSeq.join(', ')}`);
+                console.log(`Urutan yang tidak dipindai: ${missingSeq.join(', ')}`);
             } else {
                 console.log('Semua urutan telah dipindai.');
             }
             // Pastikan kanbanContent tidak kosong
             if (!kanbanContent) {
                 swal.fire({
-                    title: 'Error',
-                    text: 'Lakukan Scan Kanban',
                     icon: 'error',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    willClose: () => {
-                        document.getElementById('inputScanKanban').value = '';
-                    }
-
-
+                    title: 'Error',
+                    text: 'Kanban content is empty!',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
+                return;
             }
 
             clearLabelTimeoutId = setTimeout(() => {
                 // Validasi apakah konten kanban mencakup nomor bagian
                 if (!kanbanContent.includes(partNumber)) {
                     swal.fire({
-                        title: 'Error',
                         icon: 'error',
-                        text: 'Kanban Tidak Sesuai, Cek dan Pastikan Kanban Sesuai dengan ' + partNumber,
+                        title: 'Error',
+                        text: 'Partnumber Salah, Cek Kembali Kanban yang dilakukan scan',
+                        timer: 2000,
                         showConfirmButton: false,
                         willClose: () => {
                             document.getElementById('inputScanKanban').value = '';
                         }
-                    });
+                    })
                     showAuthenticationModal();
                 }
-            
+
                 if (kanbanContent.includes(partNumber)) {
                     swal.fire({
                         icon: 'success',
@@ -521,6 +490,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                                 document.getElementById('inputScanLabel').disabled = false; // Aktifkan input label
                                 document.getElementById('inputScanLabel').focus();
                                 document.getElementById('saveButton').disabled = true;
+                                document.getElementById('modalQuantitySupplier').value = 1;
                                 currentStep = 1;
                                 updateProcessGuide();
                             } else {
@@ -534,19 +504,29 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     });
                 }
 
+                //postpone zone
+
                 // Ekstrak jumlah dari pemindaian
 
 
 
-                poNumberOri = PONumber;
+                manifestKanbanDB = manifestKanban; //manifest kanban
+                partNumberDB = partNumberTMMIN; //part number
                 qtyKanbanOri = quantityFromScan;
-                labelOri = supplierLabel;
-                lineItemDB = lineItems;
-                delDate = deliveryDate;
+                labelOri = supplierLabel; //customer label
+                kanbanItemDB = kanbanItem; //Kanban Item
+                delDateDB = deliveryDate; //ETD dd/mm/yyyy
+                kanbanIdDB = kanbanID; //Kanban ID
 
+                console.log('Kanban ID:', kanbanID);
+                console.log('Manifest Kanban:', manifestKanbanDB);
+                console.log('Part Number:', partNumberDB);
+                console.log('Qty Kanban:', qtyKanbanOri);
+                console.log('Customer Label:', labelOri);
+                console.log('Kanban Item:', kanbanItemDB);
+                console.log('Delivery Date:', delDateDB);
 
-
-
+                //--------------------------------------------------------------------------------
                 if (contentKanban === '') {
                     contentKanban = kanbanContent;
                 } else {
@@ -556,18 +536,32 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 }
 
                 // Validasi jumlah yang diekstrak
-                if (isNaN(quantityFromScan) || quantityFromScan <= 0) {
+                if (kanbanContent.length < 152 || kanbanContent.length > 152) {
                     swal.fire({
                         title: 'Error',
-                        text: 'Qty Kanban Tidak Valid, Cek Kanban Kembali',
+                        text: 'Kanban Tidak Valid, Cek Kembali Kanban yang dilakukan scan',
                         icon: 'error',
+                        timer: 2000,
                         showConfirmButton: false,
-                        timer: 1500,
                         willClose: () => {
                             document.getElementById('inputScanKanban').value = '';
                             showAuthenticationModal();
                         }
                     });
+                    return;
+                } else if (isNaN(quantityFromScan)) {
+                    swal.fire({
+                        title: 'Error',
+                        text: 'Qty Tidak Valid, Cek Kembali Kanban yang dilakukan scan',
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        willClose: () => {
+                            document.getElementById('inputScanKanban').value = '';
+                            showAuthenticationModal();
+                        }
+                    });
+                    return;
                 }
 
                 // Mendapatkan jumlah yang sudah dipindai
@@ -585,7 +579,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
                 // Clear kanban input
                 document.getElementById('inputScanKanban').value = '';
-            }, 500);
+            }, 1000);
         }
 
         // Event listener for label scanning
@@ -596,25 +590,26 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
             let currentScannedLabelCount = parseInt(document.getElementById('scannedLabelCount').textContent) || 0;
             let modifiedQty = modalQuantitySupplier.toString().padStart(7, '0');
             const numericPart = modalSupplierLabel.match(/\d+/)[0];
-
+            qtyLabelOri = modalQuantitySupplier;
             if (scannedLabel.includes(numericPart) && scannedLabel.length <= modalSupplierLabel.length + 10) {
                 // Jika ini adalah pemindaian pertama
                 currentScannedLabelCount += modalQuantitySupplier;
                 totalScanLabelOri = currentScannedLabelCount * progressScanKanbanOri;
                 console.log('Debug Jumlah Label WIP: ' + totalScanLabelOri);
-                
-                qtyLabelOri = modalQuantitySupplier;
-                document.getElementById('modalQuantitySupplier').disabled = true;
+
+
                 // Validasi jika jumlah yang dipindai melebihi total
                 if (currentScannedLabelCount > totalLabelCount) {
                     swal.fire({
-                        title: 'Error',
-                        text: 'Jumlah Label Melebihi Total, Ubah Qty Label atau Check Kembali Qty Label',
                         icon: 'error',
+                        title: 'Error',
+                        text: 'Jumlah Label Melebihi Permintaan, Cek QTY Label',
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
+                            inputElement.value = '';
                             showAuthenticationModal();
+                            location.reload();
                         }
                     });
                 }
@@ -623,28 +618,13 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 document.getElementById('scannedLabelCount').textContent = currentScannedLabelCount;
 
                 // Cek kondisi untuk menampilkan Swal.fire
-             if (currentScannedLabelCount <= totalLabelCount) {
+                if (currentScannedLabelCount <= totalLabelCount) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Scan Berhasil',
                         text: `Scan Label Berhasil`,
                         showConfirmButton: false,
-                        timer: 1500,
-                        willClose: () => {
-                            if (manageCalculate === 0) {
-                                saveCalculate = calculateTotal;
-                                calculateQty = saveCalculate - modalQuantitySupplier;
-                                manageCalculate = calculateQty;
-                                calculateDB = manageCalculate;
-                                console.log('Sisa Qty' + calculateDB);
-                            } else {
-                                calculateQty = manageCalculate - modalQuantitySupplier;
-                                manageCalculate = calculateQty;
-                                calculateDB = manageCalculate;
-                                console.log('Sisa Qty More' + calculateDB);
-                            }
-                           
-                        }
+                        timer: 1500
                     });
                 }
 
@@ -682,7 +662,6 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                             }
                         }
                     });
-
                 }
 
                 // Clear input setelah pemindaian
@@ -703,14 +682,13 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                     timer: 1500,
                     willClose: () => {
                         inputElement.value = '';
-                        showAuthenticationModal();
                     }
                 });
             }
 
         }
 
-function handleModalOpen(button) {
+        function handleModalOpen(button) {
             const row = button.closest('tr'); // Ambil baris terdekat dari tombol yang ditekan
             const partNumber = row.cells[1].textContent; // Ambil nomor bagian dari kolom kedua
             const quantity = row.cells[2].textContent; // Ambil jumlah dari kolom ketiga
@@ -721,7 +699,7 @@ function handleModalOpen(button) {
             document.getElementById('saveButton').disabled = true;
             document.getElementById('inputScanLabel').disabled = true;
             document.getElementById('modalQuantitySupplier').disabled = true;
-            document.getElementById('modalQuantitySupplier').value = 1;
+
             currentStep = 0;
             updateProcessGuide();
 
@@ -741,13 +719,20 @@ function handleModalOpen(button) {
             if (contentLabel !== '') {
                 document.getElementById('modalQuantitySupplier').disabled = true;
             }
-                 document.getElementById('saveButton').disabled = false;
+            document.getElementById('saveButton').disabled = false;
         }
 
+
+
+
         function saveData() {
-            currentStep = 3;
-            updateProcessGuide();
+
             repeaterScanning = 0;
+            if (/^[A-Za-z]{2}/.test(manifestKanbanDB)) {
+                customerAuto = 'TMMIN VANNING';
+            } else if (/^[A-Za-z]/.test(manifestKanbanDB)) {
+                customerAuto = 'ADM VANNING';
+            }
             const date = new Date();
             // Format dengan opsi
             const options = {
@@ -770,8 +755,20 @@ function handleModalOpen(button) {
 
             };
 
-            const formattedTime = date.toLocaleString('id-ID', optionsFull);
+            let stringDate = delDateDB;
+            const dateParts = stringDate.split('-');
+            const days = dateParts[0];
+            const months = dateParts[1];
+            let years = dateParts[2];
+
+            if (years.length == 2) {
+                years = '20' + years;
+            }
+
+            const deliveFormated = days + '.' + months + '.' + years;
+
             const formattedDate = date.toLocaleString('id-ID', options);
+            const formattedTime = date.toLocaleString('id-ID', optionsFull);
 
             if (!noSil || !partNumberOri) {
                 Swal.fire('Error', 'Harap lengkapi semua data yang diperlukan', 'error');
@@ -780,31 +777,32 @@ function handleModalOpen(button) {
 
             // Siapkan objek data untuk dikirim
             const saveToDatabase = {
-                noSil: noSil,
-                partNumber: partNumberOri,
-                qtyKanban: qtyKanbanOri,
-                totalKanban: progressScanKanbanOri,
-                customerLabel: labelOri,
-                qtyLabel: qtyLabelOri || 0, // Pastikan tidak null
-                totalLabel: totalScanLabelOri,
-                contentScanKanban: contentKanban,
-                contentScanLabel: contentLabel,
-                customer: 'ADM ASSYST',
-                saveButton: true,
-                prepareTime: formattedDate,
-                PONumber: poNumberOri,
-                labelItem: lineItemDB,
-                actualTime: formattedTime,
-                delDates: delDate,
-                userName: '<?= \$username; ?>',
+                noSil: noSil, //SUPLIER REF NO#1
+                partNumber: partNumberOri, //SUPLIER REF NO#2
+                qtyKanban: qtyKanbanOri, //OK
+                totalKanban: progressScanKanbanOri, //OK
+                customerLabel: labelOri, //OK
+                qtyLabel: qtyLabelOri || 0, // OK
+                totalLabel: totalScanLabelOri, // OK Qty Delivery
+                contentScanKanban: contentKanban, // OK
+                contentScanLabel: contentLabel, // OK
+                customer: customerAuto,
+                saveButton: true, //SOLID
+                prepareTime: formattedDate, //OK
+                KanbanId: kanbanIdDB, //OK
+                kanbanItem: kanbanItemDB, //OK
+                actualTime: formattedTime, //OK 
+                delDates: delDateDB, //ETD dd/mm/yyyy
+                delivVan: deliveFormated,
+                dataID: 'D',
+                manifestKanban: manifestKanbanDB,
+                userName: '<?= $username; ?>',
                 remainQty: calculateDB,
             };
+            console.log(saveToDatabase);
 
             // Tampilkan data di console.log untuk debugging
             console.log('Data yang akan dikirim:', saveToDatabase);
-
-
-            ///////////////////////////////REVISI WAJIB///////////////////////////////////////////////////
 
             // Konfirmasi sebelum mengirim
             Swal.fire({
@@ -818,11 +816,8 @@ function handleModalOpen(button) {
                     '<p><strong>Qty Label:</strong> ' + saveToDatabase.qtyLabel + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.totalLabel + '</p>' +
                     '<p><strong>Total Label:</strong> ' + saveToDatabase.delDates + '</p>' +
-                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' +  '</p>' +
+                    '<p><strong>Sisa Prepare Qty:</strong> ' + saveToDatabase.remainQty + 'pcs' + '</p>' +
                     '</div>',
-
-                ///////////////////////|||||||||///////////////////////////////////////////////////
-
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Kirim',
@@ -831,7 +826,7 @@ function handleModalOpen(button) {
                 if (result.isConfirmed) {
                     // Kirim data ke server
                     $.ajax({
-                        url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                        url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                         type: 'POST',
                         dataType: 'json',
                         data: saveToDatabase,
@@ -847,7 +842,6 @@ function handleModalOpen(button) {
                         },
                         success: function(response) {
                             console.log('Response dari server:', response);
-
                             if (response.status === 'success') {
                                 currentStep = 3;
                                 updateProcessGuide();
@@ -858,9 +852,11 @@ function handleModalOpen(button) {
                                     text: response.message || 'Data berhasil disimpan',
                                     confirmButtonText: 'OK'
                                 }).then((result) => {
-                                    location.reload();
-                                });
+                                    if (result.isConfirmed) {
 
+                                        location.reload();
+                                    }
+                                });
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -948,11 +944,11 @@ function handleModalOpen(button) {
 
             // Send the data via AJAX
             $.ajax({
-                url: '/3P_CHECK_OES/CONTROLLER/ADM/3P_ADM_CONTROL.php',
+                url: '/3P_CHECK_OES/CONTROLLER/TMMIN/3P_TMMIN_CONTROL.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    noSilDel: noSil,
+                    nosil: noSil,
                     dataSil: JSON.stringify(entireData) // Convert entireData to JSON string
                 },
                 success: function(data) {
@@ -965,7 +961,7 @@ function handleModalOpen(button) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {
@@ -1006,7 +1002,7 @@ function handleModalOpen(button) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/ADM';
+                                location.href = '<?= $baseUrl; ?>OPERATIONAL/TMMIN';
                             }
                         });
                     } else {
@@ -1033,16 +1029,4 @@ function handleModalOpen(button) {
         }
     </script>
 </body>
-</html>";
-
-    // Tulis konten ke file
-    if (file_put_contents($filename, ob_get_clean()) === false) {
-        echo json_encode(['success' => false, 'message' => 'Failed to create file']);
-        exit;
-    }
-
-    // Kirim respons
-    echo json_encode(['success' => true, 'filename' => $filename]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid data']);
-}
+</html>

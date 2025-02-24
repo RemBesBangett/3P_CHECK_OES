@@ -13,6 +13,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $username = $_SESSION['nama'];
 $status = $_SESSION['status_user'];
 include '../../GENERAL/TEMPLATE/3P_Header.php';
+include 'C:/xampp/htdocs/3P_CHECK_OES/CONTROLLER/PC_GENBA/3P_KBN_CONTROLLER.php';
+$customerList = showCustomer();
 ?>
 
 <!DOCTYPE html>
@@ -106,16 +108,9 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
                         <div class="col-md-6">
                             <select name="customerName" id="customerName" onclick="valueDropDown()" class="form-control">
                                 <option value="" id="dummy">Pilih Customer</option>
-                                <option value="PT. MESIN ISUZU INDONESIA">PT. MESIN ISUZU INDONESIA</option>
-                                <option value="PT. SUBANG AUTOCOMP INDONESIA">PT. SUBANG AUTOCOMP INDONESIA</option>
-                                <option value="PT. AISAN NASMOCO INDUSTRI">PT. AISAN NASMOCO INDUSTRI</option>
-                                <option value="PT. ASAHIMAS FLAT GLASS">PT. ASAHIMAS FLAT GLASS</option>
-                                <option value="PT. FURUKAWA AUTOMOTIVE SYSTEM">PT. FURUKAWA AUTOMOTIVE SYSTEM</option>
-                                <option value="PT. INDOPRIMA GEMILANG">PT. INDOPRIMA GEMILANG</option>
-                                <option value="PT. MIKUNI INDONESIA">PT. MIKUNI INDONESIA</option>
-                                <option value="PT. SUMI INDO WIRING SYSTEMS">PT. SUMI INDO WIRING SYSTEMS</option>
-                                <option value="PT. TRIJAYA UNION">PT. TRIJAYA UNION</option>
-                                <option value="PT. KAWASAKI MOTOR INDONESIA">PT. KAWASAKI MOTOR INDONESIA</option>
+                                <?php foreach($customerList as $index => $cust): ?>
+                                <option value="<?= $cust['CUSTOMER'] ?>"><?= $cust['CUSTOMER'] ?></option>
+                                <?php endforeach; ?>
                             </select>
                             <input type="text" id="customerNumber" class="form-control" placeholder="Customer Number" maxlength="25" required />
                             <input type="text" id="descriptionCust" class="form-control" placeholder="Description Part" />

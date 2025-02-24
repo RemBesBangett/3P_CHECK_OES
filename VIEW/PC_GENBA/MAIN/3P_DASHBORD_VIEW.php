@@ -175,11 +175,13 @@ $baseUrl = '/3P_CHECK_OES/';
 <body>
     <div class="dashboard-container">
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>SELAMAT DATANG <login user></h1>
-            <p class="lead">SELESAIKAN 1 CYCLE PROSES SEBELUM MENINGGALKAN PROSES</p>
+            <h1>PC - GENBA<login user></h1>
+            <p class="lead">BEKERJA SESUAI SOP</p>
+            <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
+            <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
         </div>
         
-        <div class="row row-cols-1 row-cols-md-2 g-4 animate__animated animate__fadeInUp">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
             <?php
             $dashboards = [
                 [
@@ -191,15 +193,15 @@ $baseUrl = '/3P_CHECK_OES/';
                 [
                     'title' => 'KANBAN GENERATOR',
                     'description' => 'Generate Any Kanban With Spesific Values',
-                    'icon' => 'text-wrap',  // Bootstrap Icon name
+                    'icon' => 'printer',  // Bootstrap Icon name
                     'link' => 'KANBAN'
+                ],
+                [
+                    'title' => 'MANAGE CUSTOMER',
+                    'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
+                    'icon' => 'person-lines-fill',  // Bootstrap Icon name
+                    'link' => 'KANBAN/DATA'
                 ]
-                // [
-                //     'title' => 'ON GOING',
-                //     'description' => 'SHIPPING PROCESS',
-                //     'icon' => 'truck',  // Bootstrap Icon name
-                //     'link' => 'SHIPPING'
-                // ]
             ];
 
             foreach ($dashboards as $dashboard): ?>

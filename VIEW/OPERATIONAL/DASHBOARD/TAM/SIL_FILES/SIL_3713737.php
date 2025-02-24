@@ -265,7 +265,6 @@ $baseUrl = '/3P_CHECK_OES/';
         let noSilOri;
         let currentStep = 0;
         let qtyOriSil;
-        //Database Zone
         let qtyKanbanOri = 0; //qty Kanban yang akan diambil dari label
         let labelOri = '';
         let kanbanItemDB; //Config
@@ -281,7 +280,6 @@ $baseUrl = '/3P_CHECK_OES/';
         let caseLabelContentDB = '';
         let currentSteps = '';
         let usernameLogin = '<?= $username; ?>';
-        //Calculate
         let calculateQty = 0;
         let calculateTotal = 0;
         let saveCalculate;
@@ -376,9 +374,6 @@ $baseUrl = '/3P_CHECK_OES/';
             });
         }
 
-        // Contoh pemanggilan fungsi getData
-
-        // Event listener untuk inputScanKanban
         document.getElementById('inputScanKanban').addEventListener('input', function() {
             const kanbanContent = this.value; // Ambil nilai dari inputScanKanban
 
@@ -420,7 +415,6 @@ $baseUrl = '/3P_CHECK_OES/';
                 handleLabelScan(scannedLabel, this); // Panggil fungsi baru
             }, 500); // Delay 1 second
         });
-
 
         // Fungsi processScan
         function processScan(kanbanContent) {
@@ -798,9 +792,6 @@ $baseUrl = '/3P_CHECK_OES/';
             document.getElementById('saveButton').disabled = false;
         }
 
-
-
-
         function saveData() {
 
             repeaterScanning = 0;
@@ -948,7 +939,6 @@ $baseUrl = '/3P_CHECK_OES/';
                 }
             });
         }
-
 
         function submitJob() {
             const noSil = document.getElementById('noSil').textContent;

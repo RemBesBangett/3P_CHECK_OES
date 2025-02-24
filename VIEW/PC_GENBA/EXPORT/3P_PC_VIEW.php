@@ -132,8 +132,6 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
 
                 const modal = bootstrap.Modal.getInstance(document.getElementById('dateModal'));
                 modal.hide(); // Close the modal
-            } else {
-                alert('Silakan masukkan tanggal sebelum mengirim.');
             }
         });
 
