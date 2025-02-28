@@ -171,90 +171,96 @@ function deleteSilFile($fileToDelete)
 {
     $conn = dbcon();
 
-    // Ambil semua data dari NO_SIL yang ingin dihapus
-    $statusQuery = "SELECT * FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
-    $statusParams = [$fileToDelete];
-    $statusStmt = sqlsrv_query($conn, $statusQuery, $statusParams);
-
-    if ($statusStmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-
-    // Cek apakah ada data
-    $rowCount = sqlsrv_num_rows($statusStmt);
-    if ($rowCount === 0) {
-        sqlsrv_free_stmt($statusStmt);
-        sqlsrv_close($conn);
-        return "No data found for NO_SIL: $fileToDelete";
+    // Pastikan $fileToDelete adalah array
+    if (!is_array($fileToDelete)) {
+        $fileToDelete = [$fileToDelete]; // Ubah menjadi array jika bukan
     }
 
     // Mulai transaksi
     sqlsrv_begin_transaction($conn);
 
+    $processedRows = 0;
+    $processedStatuses = [];
+
     try {
-        // Simpan data yang akan diproses
-        $dataToProcess = [];
-        while ($row = sqlsrv_fetch_array($statusStmt, SQLSRV_FETCH_ASSOC)) {
-            $dataToProcess[] = $row;
-        }
+        foreach ($fileToDelete as $singleFileToDelete) {
+            // Ambil semua data dari NO_SIL yang ingin dihapus
+            $statusQuery = "SELECT * FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
+            $statusParams = [$singleFileToDelete];
+            $statusStmt = sqlsrv_query($conn, $statusQuery, $statusParams);
 
-        // Hapus semua data dari tabel [3P_T_DATA-SIL] dengan NO_SIL yang sama
-        $deleteQuery = "DELETE FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
-        $deleteParams = [$fileToDelete];
-        $deleteStmt = sqlsrv_query($conn, $deleteQuery, $deleteParams);
-
-        if ($deleteStmt === false) {
-            throw new Exception(print_r(sqlsrv_errors(), true));
-        }
-
-        // Proses setiap baris data
-        $processedRows = 0;
-        $processedStatuses = [];
-
-        foreach ($dataToProcess as $row) {
-            // Ambil informasi yang diperlukan
-            $status = $row['STATUS'];
-            $partNumber = $row['PART_NUMBER'];
-            $quantity = $row['QUANTITY'];
-            $timeEntry = $row['TIME_ENTRY'];
-            $customer = $row['CUSTOMER'];
-
-            // Tentukan tabel tujuan berdasarkan status
-            if ($status === 'CLOSED') {
-                $insertQuery = "INSERT INTO [3P_T_DATA-REG] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
-            } elseif ($status === 'OPEN') {
-                $insertQuery = "INSERT INTO [3P_T_DATA-BO] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
-            } else {
-                // Lewati jika status tidak dikenali
-                continue;
-            }
-
-            // Siapkan parameter untuk insert
-            $insertParams = [$fileToDelete, $partNumber, $quantity, $status, $timeEntry, $customer];
-            $insertStmt = sqlsrv_query($conn, $insertQuery, $insertParams);
-
-            if ($insertStmt === false) {
+            if ($statusStmt === false) {
                 throw new Exception(print_r(sqlsrv_errors(), true));
             }
 
-            $processedRows++;
-            $processedStatuses[] = $status;
+            // Cek apakah ada data
+            $rowCount = sqlsrv_num_rows($statusStmt);
+            if ($rowCount === 0) {
+                sqlsrv_free_stmt($statusStmt);
+                continue; // Lewati jika tidak ada data
+            }
 
-            // Bebaskan statement insert
-            sqlsrv_free_stmt($insertStmt);
+            // Simpan data yang akan diproses
+            $dataToProcess = [];
+            while ($row = sqlsrv_fetch_array($statusStmt, SQLSRV_FETCH_ASSOC)) {
+                $dataToProcess[] = $row;
+            }
+
+            // Hapus semua data dari tabel [3P_T_DATA-SIL] dengan NO_SIL yang sama
+            $deleteQuery = "DELETE FROM [3P_T_DATA-SIL] WHERE NO_SIL = ?";
+            $deleteParams = [$singleFileToDelete];
+            $deleteStmt = sqlsrv_query($conn, $deleteQuery, $deleteParams);
+
+            if ($deleteStmt === false) {
+                throw new Exception(print_r(sqlsrv_errors(), true));
+            }
+
+            // Proses setiap baris data
+            foreach ($dataToProcess as $row) {
+                // Ambil informasi yang diperlukan
+                $status = $row['STATUS'];
+                $partNumber = $row['PART_NUMBER'];
+                $quantity = $row['QUANTITY'];
+                $timeEntry = $row['TIME_ENTRY'];
+                $customer = $row['CUSTOMER'];
+
+                // Tentukan tabel tujuan berdasarkan status
+                if ($status === 'CLOSED') {
+                    $insertQuery = "INSERT INTO [3P_T_DATA-REG] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
+                } elseif ($status === 'OPEN') {
+                    $insertQuery = "INSERT INTO [3P_T_DATA-BO] (NO_SIL, PART_NUMBER, QUANTITY, STATUS, TIME_ENTRY, CUSTOMER) VALUES (?, ?, ?, ?, ?, ?)";
+                } else {
+                    // Lewati jika status tidak dikenali
+                    continue;
+                }
+
+                // Siapkan parameter untuk insert
+                $insertParams = [$singleFileToDelete, $partNumber, $quantity, $status, $timeEntry, $customer];
+                $insertStmt = sqlsrv_query($conn, $insertQuery, $insertParams);
+
+                if ($insertStmt === false) {
+                    throw new Exception(print_r(sqlsrv_errors(), true));
+                }
+
+                $processedRows++;
+                $processedStatuses[] = $status;
+
+                // Bebaskan statement insert
+                sqlsrv_free_stmt($insertStmt);
+            }
+
+            // Bebaskan statement delete
+            sqlsrv_free_stmt($deleteStmt);
+            sqlsrv_free_stmt($statusStmt);
         }
 
         // Commit transaksi
         sqlsrv_commit($conn);
-
-        // Bebaskan statement
-        sqlsrv_free_stmt($deleteStmt);
-        sqlsrv_free_stmt($statusStmt);
         sqlsrv_close($conn);
 
         // Kembalikan informasi proses
         return [
-            'message' => "Processed $processedRows rows for NO_SIL: $fileToDelete",
+            'message' => "Processed $processedRows rows for NO_SIL: " . implode(', ', $fileToDelete),
             'processedStatuses' => array_unique($processedStatuses)
         ];
     } catch (Exception $e) {

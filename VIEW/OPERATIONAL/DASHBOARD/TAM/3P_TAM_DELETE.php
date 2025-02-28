@@ -23,32 +23,44 @@ try {
         throw new Exception('No file specified');
     }
 
+    // Ambil data dari POST dan pastikan itu adalah array
     $fileToDelete = $_POST['numSil'];
-    $filePath = BASE_PATH . 'SIL_' . $fileToDelete . '.php';
-    $result = deleteSilFile($fileToDelete);
-
-    // Log path file
-    error_log("Attempting to delete file: " . $filePath);
-
-    // Periksa apakah file ada
-    if (!file_exists($filePath)) {
-        throw new Exception('File not found');  
+    if (!is_array($fileToDelete)) {
+        $fileToDelete = [$fileToDelete]; // Ubah menjadi array jika bukan
     }
 
-    // Coba hapus file dengan izin yang tepat
-    if (is_writable($filePath)) {
-        if (unlink($filePath)) {
-            echo json_encode(['status' => 'success', 'message' => 'File deleted successfully']);
-        } else {
-            throw new Exception('Failed to delete file');
+    $results = []; // Untuk menyimpan hasil dari setiap penghapusan
+
+    foreach ($fileToDelete as $singleFileToDelete) {
+        $filePath = BASE_PATH . 'SIL_' . $singleFileToDelete . '.php';
+        $result = deleteSilFile($singleFileToDelete);
+
+        // Log path file
+        error_log("Attempting to delete file: " . $filePath);
+
+        // Periksa apakah file ada
+        if (!file_exists($filePath)) {
+            throw new Exception('File not found for NO_SIL: ' . $singleFileToDelete);
         }
-    } else {
-        throw new Exception('File not writable');
+
+        // Coba hapus file dengan izin yang tepat
+        if (is_writable($filePath)) {
+            if (unlink($filePath)) {
+                $results[] = ['status' => 'success', 'message' => 'File deleted successfully for NO_SIL: ' . $singleFileToDelete];
+            } else {
+                throw new Exception('Failed to delete file for NO_SIL: ' . $singleFileToDelete);
+            }
+        } else {
+            throw new Exception('File not writable for NO_SIL: ' . $singleFileToDelete);
+        }
     }
+
+    // Kirim respon sukses
+    echo json_encode(['status' => 'success', 'results' => $results]);
 } catch (Exception $e) {
     // Log error
     error_log("Error: " . $e->getMessage());
-    
+
     // Kirim respon sesuai kesalahan
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }

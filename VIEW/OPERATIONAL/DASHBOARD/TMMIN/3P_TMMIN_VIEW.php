@@ -100,7 +100,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Add New Entry
             </button>
-            <button type="button" class="btn btn-danger" id="clearButton">
+            <button type="button" class="btn btn-danger" id="clearButton" onclick="deleteAllSil(this)">
                 <i class="fas fa-trash"></i> Clear All Entries
             </button>
             <!-- <button class="btn btn-warning btn-sm" onclick="exportData()">
@@ -376,6 +376,76 @@ $silFiles = getSilFiles('SIL_FILES/');
                                     icon: 'success',
                                     title: 'SIL Deleted',
                                     text: `SIL ${numberSils} has been deleted.`,
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to delete SIL.',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            let errorMessage = 'Unknown error occurred';
+                            try {
+                                const errorResponse = JSON.parse(xhr.responseText);
+                                errorMessage = errorResponse.message || errorMessage;
+                            } catch (e) {
+                                errorMessage = xhr.responseText || 'Unable to parse error response';
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function deleteAllSil(button) {
+            const dataTable = document.querySelector('#dataTable tbody');
+            const rows = dataTable.rows;
+            const sils = [];
+            const rowsToDelete = []; // Array untuk menyimpan referensi baris yang akan dihapus
+
+            for (let i = 0; i < rows.length; i++) {
+                sils.push(rows[i].cells[1].innerText);
+                rowsToDelete.push(rows[i]); // Simpan referensi baris
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete SIL ${sils.join(', ')}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            numSil: sils
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') { // Periksa status
+                                // Hapus setiap baris yang telah dihapus
+                                for (let i = 0; i < rowsToDelete.length; i++) {
+                                    rowsToDelete[i].remove();
+                                }
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'SIL Deleted',
+                                    text: `SIL ${sils.join(', ')} has been deleted.`,
                                     confirmButtonText: 'OK'
                                 });
                             } else {
