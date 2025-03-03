@@ -143,7 +143,7 @@ $baseUrl = '/3P_CHECK_OES/';
         <a href="<?php echo $baseUrl; ?>Operational/Report" class="<?= ($page === 'history') ? 'active' : '' ?>">
             <i class="fas fa-box me-2"></i>REPORT
         </a>
-        <a href="#" class="<?= ($page === 'data') ? 'active' : '' ?>">
+        <a href="<?php echo $baseUrl; ?>Operational/BO" class="<?= ($page === 'data') ? 'active' : '' ?>">
             <i class="fas fa-database me-2"></i>BO PART
         </a>
     </div>

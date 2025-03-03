@@ -100,6 +100,7 @@ $customerList = showCustomer();
 
 <body class="bg-light">
     <div class="container mt-5">
+        <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">Back</a>
         <div class="card shadow">
             <div class="card-body text-center">
                 <h1 class="card-title">QR Code Generator</h1>

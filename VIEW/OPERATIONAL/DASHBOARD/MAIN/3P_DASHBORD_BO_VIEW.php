@@ -3,22 +3,16 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-
-// Cek apakah session username sudah ada (sudah login)
-else if (!isset($_SESSION['nama'])) {
-    // Jika tidak ada session, redirect ke halaman login
-    header("Location: /3P_CHECK_OES/LOGOUT");
-    exit(); // Pastikan script berhenti setelah redirect
-}
-// Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 ?>
 
 <!DOCTYPE html>
@@ -28,11 +22,10 @@ $baseUrl = '/3P_CHECK_OES/';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3 Point Check OES - Dashboard</title>
-    <!-- Bootstrap & Custom CSS -->
-    <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/Animate.min.css">
-    <script src="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
+    <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/Animate.min.css">
+    <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         :root {
@@ -157,59 +150,66 @@ $baseUrl = '/3P_CHECK_OES/';
         .card-custom:hover::after {
             left: 100%;
         }
-        .card-custom .card-body i {
-            font-size: 4rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-        .card-custom:hover .card-body i {
-            transform: scale(1.1);
-            color: var(--primary-color);
-        }
     </style>
 </head>
 
 <body>
     <div class="dashboard-container">
-        <a href="<?php echo $baseUrl; ?>Dashboard" class="btn btn-warning">Main Menu</a>
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD/OPS'">
+            <i class="fa fa-home"></i> <- Back
+        </button>
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>PC - GENBA<login user></h1>
-            <p class="lead">BEKERJA SESUAI SOP</p>
-            <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
-            <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
+            <h1>3 POINT CHECK OES BO</h1>
+            <p class="lead">Integrated Automotive Performance Tracking System</p>
         </div>
-        
-        <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">
             <?php
             $dashboards = [
                 [
-                    'title' => 'EXPORT',
-                    'description' => 'Export Document From Operational',
-                    'icon' => 'journal',  // Bootstrap Icon name
-                    'link' => 'EXPORT'
+                    'title' => 'ADM',
+                    'description' => 'Astra Daihatsu Motor Insights & Analytics',
+                    'icon' => 'daihatsu-vector-logo-idngrafis.png',
+                    'link' => 'BO/ADM'
                 ],
                 [
-                    'title' => 'KANBAN GENERATOR',
-                    'description' => 'Generate Any Kanban With Spesific Values',
-                    'icon' => 'printer',  // Bootstrap Icon name
-                    'link' => 'KANBAN'
+                    'title' => 'TMMIN',
+                    'description' => 'Toyota Motor Manufacturing Indonesia Data',
+                    'icon' => 'tmmin-logo-b1ae.png',
+                    'link' => 'BO/TMMIN'
                 ],
                 [
-                    'title' => 'MANAGE CUSTOMER',
-                    'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
-                    'icon' => 'person-lines-fill',  // Bootstrap Icon name
-                    'link' => 'KANBAN/DATA'
+                    'title' => 'TAM',
+                    'description' => 'Toyota Astra Motor Comprehensive Analysis',
+                    'icon' => 'pt-toyota-astra-motor-tam.png',
+                    'link' => 'BO/TAM'
+                ],
+                [
+                    'title' => 'History',
+                    'description' => 'Traceability Entire Process',
+                    'icon' => 'restore_10539476.png',
+                    'link' => 'BO/REPORT'
+                ],
+                [
+                    'title' => 'User Management',
+                    'description' => 'Comprehensive User Registration & Tracking',
+                    'icon' => 'user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg',
+                    'link' => 'BO/USER'
+                ],
+                [
+                    'title' => 'Upcoming Projects',
+                    'description' => 'Work In Progress',
+                    'icon' => 'OIP.jfif',
+                    'link' => '#'
                 ]
             ];
 
             foreach ($dashboards as $dashboard): ?>
                 <div class="col">
-                    <a href="<?php echo $baseUrl .'PC-GENBA/'.  $dashboard['link']; ?>" class="text-decoration-none">
+                    <a href="<?php echo $baseUrl . 'OPERATIONAL/' . $dashboard['link']; ?>" class="text-decoration-none">
                         <div class="card card-custom">
                             <div class="card-body">
-                                <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
+                                <img src="<?php echo $baseUrl; ?>ASSET/Image/<?php echo $dashboard['icon']; ?>" alt="<?php echo $dashboard['title']; ?>">
                                 <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
                                 <p class="card-text"><?php echo $dashboard['description']; ?></p>
                             </div>
@@ -219,6 +219,13 @@ $baseUrl = '/3P_CHECK_OES/';
             <?php endforeach; ?>
         </div>
     </div>
+
+
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
+    <script>
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
+    </script>
 
 </body>
 

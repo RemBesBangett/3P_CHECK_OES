@@ -192,7 +192,7 @@ $baseUrl = '/3P_CHECK_OES/';
                     'title' => 'OPERATIONAL',
                     'description' => 'PRE DELIVERY CHECK',
                     'icon' => 'gear',  // Bootstrap Icon name
-                    'link' => 'OPERATIONAL'
+                    'link' => 'DASHBOARD/OPS'
                 ],
                 [
                     'title' => 'SHIPPING',

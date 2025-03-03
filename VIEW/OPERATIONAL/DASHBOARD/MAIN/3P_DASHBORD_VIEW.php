@@ -155,11 +155,11 @@ $status = $_SESSION['status_user'];
 
 <body>
     <div class="dashboard-container">
-        <button type="button" class="btn btn-warning" onclick="window.location.href='/3P_CHECK_OES/DASHBOARD'">
-            <i class="fa fa-home"></i> Main Menu
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD/OPS'">
+            <i class="fa fa-home"></i> <- Back
         </button>
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>3 POINT CHECK OES</h1>
+            <h1>3 POINT CHECK OES REGULER</h1>
             <p class="lead">Integrated Automotive Performance Tracking System</p>
         </div>
 

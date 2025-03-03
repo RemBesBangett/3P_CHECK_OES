@@ -68,6 +68,7 @@ $baseUrl = '/3P_CHECK_OES/';
 
 <body>
     <div class="table-container">
+        <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">Back</a>
         <h2 class="text-center">Data Customer</h2>
         <button class="btn btn-success" type="button" style="float: right;" data-bs-target="#addDataModal" data-bs-toggle="modal">Add Customer</button>
 
@@ -91,8 +92,8 @@ $baseUrl = '/3P_CHECK_OES/';
                         <td><?= htmlspecialchars($duwata['PN_CUSTOMER']) ?></td>
                         <td><?= htmlspecialchars($duwata['DESCRIPTION']) ?></td>
                         <td style="text-align: center;">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModalEdit(this)">Edit</button> 
-                            | 
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModalEdit(this)">Edit</button>
+                            |
                             <button type="button" class="btn btn-danger" onclick="deleteData(this)">Delete</button>
                         </td>
                     </tr>
@@ -257,7 +258,7 @@ $baseUrl = '/3P_CHECK_OES/';
             const row = button.closest('tr');
             const partNumberDenso = row.cells[2].textContent;
             console.log(partNumberDenso);
-            
+
             $.ajax({
                 url: '<?= $baseUrl ?>CONTROLLER/PC_GENBA/3P_MANAGE_CONTROL.php',
                 method: 'POST',

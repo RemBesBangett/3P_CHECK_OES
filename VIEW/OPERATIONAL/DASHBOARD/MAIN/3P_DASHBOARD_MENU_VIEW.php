@@ -3,20 +3,15 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-
-// Cek apakah session username sudah ada (sudah login)
-else if (!isset($_SESSION['nama'])) {
-    // Jika tidak ada session, redirect ke halaman login
-    header("Location: /3P_CHECK_OES/LOGOUT");
-    exit(); // Pastikan script berhenti setelah redirect
-}
+$userLogin = $_SESSION['nama'];
+$statusUser = $_SESSION['status_user'];
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
 ?>
@@ -28,11 +23,13 @@ $baseUrl = '/3P_CHECK_OES/';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3 Point Check OES - Dashboard</title>
+    <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
     <!-- Bootstrap & Custom CSS -->
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/Animate.min.css">
     <script src="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
+    <script src='<?= $baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
 
     <style>
         :root {
@@ -157,6 +154,7 @@ $baseUrl = '/3P_CHECK_OES/';
         .card-custom:hover::after {
             left: 100%;
         }
+
         .card-custom .card-body i {
             font-size: 4rem;
             color: var(--accent-color);
@@ -173,40 +171,37 @@ $baseUrl = '/3P_CHECK_OES/';
 
 <body>
     <div class="dashboard-container">
-        <a href="<?php echo $baseUrl; ?>Dashboard" class="btn btn-warning">Main Menu</a>
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD'">
+            <i class="fa fa-home"></i> Main Menu
+        </button>
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>PC - GENBA<login user></h1>
-            <p class="lead">BEKERJA SESUAI SOP</p>
-            <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
-            <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
+            <h1>SELAMAT DATANG<login user>
+            </h1>
+            <h1>PRE - DELIVERY CHECK</h1>
+            <p class="lead">HALO <?= $userLogin; ?></p>
+
         </div>
-        
-        <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
+
+        <div class="row row-cols-1  row-cols-lg-2 g-4 animate__animated animate__fadeInUp">
             <?php
             $dashboards = [
                 [
-                    'title' => 'EXPORT',
-                    'description' => 'Export Document From Operational',
-                    'icon' => 'journal',  // Bootstrap Icon name
-                    'link' => 'EXPORT'
+                    'title' => 'REGULAR',
+                    'description' => 'PC GENBA SIP',
+                    'icon' => 'display',  // Bootstrap Icon name
+                    'link' => 'OPERATIONAL/REGULAR'
                 ],
                 [
-                    'title' => 'KANBAN GENERATOR',
-                    'description' => 'Generate Any Kanban With Spesific Values',
-                    'icon' => 'printer',  // Bootstrap Icon name
-                    'link' => 'KANBAN'
-                ],
-                [
-                    'title' => 'MANAGE CUSTOMER',
-                    'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
-                    'icon' => 'person-lines-fill',  // Bootstrap Icon name
-                    'link' => 'KANBAN/DATA'
+                    'title' => 'BO',
+                    'description' => 'PRE DELIVERY CHECK',
+                    'icon' => 'gear',  // Bootstrap Icon name
+                    'link' => 'OPERATIONAL/BO'
                 ]
             ];
 
             foreach ($dashboards as $dashboard): ?>
                 <div class="col">
-                    <a href="<?php echo $baseUrl .'PC-GENBA/'.  $dashboard['link']; ?>" class="text-decoration-none">
+                    <a href="<?php echo $baseUrl . $dashboard['link']; ?>" class="text-decoration-none">
                         <div class="card card-custom">
                             <div class="card-body">
                                 <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
@@ -219,6 +214,38 @@ $baseUrl = '/3P_CHECK_OES/';
             <?php endforeach; ?>
         </div>
     </div>
+    <div class='modal fade' id='authenticationModal' tabindex='-1' aria-labelledby='authenticationModalLabel' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='authenticationModalLabel'>Authentication Required</h5>
+                </div>
+                <div class='modal-body'>
+                    <form id='authenticationForm'>
+                        <div class='mb-3'>
+                            <label for='authUsername' class='form-label'>Username</label>
+                            <input type='text' class='form-control' id='authUsername' required>
+                        </div>
+                        <div class='mb-3'>
+                            <label for='authPassword' class='form-label'>Password</label>
+                            <input type='password' class='form-control' id='authPassword' required>
+                        </div>
+                    </form>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-primary' id='authenticateButton'>Authenticate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="<?= $baseUrl; ?>/JS/3P_INTERLOCK.js"></script>
+    <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
+    <script>
+        const usernameLogin = '<?= $userLogin; ?>';
+        const user = '<?= $userLogin; ?>';
+        const statusLogin = '<?= $statusUser; ?>';
+    </script>
 
 </body>
 
