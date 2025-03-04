@@ -11,7 +11,7 @@ RewriteRule ^(.*)$ $1 [N,R=301]
 
 
 RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/USER/3P_USER_VIEW\.php[\s?] [NC] #Dashboard Manangement User /
-RewriteRule ^OPERATIONAL/USER [R=301,L]
+RewriteRule ^UserM [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+VIEW/MAIN/3P_DASHBORD_VIEW\.php[\s?] [NC] #Dashboard Menu Utama 
 RewriteRule ^DASHBOARD [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW\.php[\s?] [NC] #Dashboard Menu Login
@@ -53,7 +53,7 @@ RewriteCond %{THE_REQUEST} \s/+VIEW/BO_PART/ADM/3P_ADM_VIEW\.php[\s?] [NC] #Dash
 RewriteRule ^OPERATIONAL/BO/ADM [R=301,L]
 
 # Internally map URL bersih ke file asli
-RewriteRule ^OPERATIONAL/USER$ VIEW/GENERAL/USER/3P_USER_VIEW.php [NC,L]
+RewriteRule ^UserM$ VIEW/GENERAL/USER/3P_USER_VIEW.php [NC,L]
 RewriteRule ^DASHBOARD$ VIEW/MAIN/3P_DASHBORD_VIEW.php [NC,L]
 RewriteRule ^LOGIN$ VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW.php [NC,L]
 RewriteRule ^$ VIEW/GENERAL/LOGIN/3P_LOGIN_VIEW.php [NC,L]

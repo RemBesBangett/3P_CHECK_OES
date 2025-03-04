@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC - GENBA' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
@@ -109,8 +109,8 @@ $customerList = showCustomer();
                         <div class="col-md-6">
                             <select name="customerName" id="customerName" onclick="valueDropDown()" class="form-control">
                                 <option value="" id="dummy">Pilih Customer</option>
-                                <?php foreach($customerList as $index => $cust): ?>
-                                <option value="<?= $cust['CUSTOMER'] ?>"><?= $cust['CUSTOMER'] ?></option>
+                                <?php foreach ($customerList as $index => $cust): ?>
+                                    <option value="<?= $cust['CUSTOMER'] ?>"><?= $cust['CUSTOMER'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <input type="text" id="customerNumber" class="form-control" placeholder="Customer Number" maxlength="25" required />
@@ -447,46 +447,44 @@ $customerList = showCustomer();
 
             // Gabungkan semua halaman HTML
             const combinedHtml = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <style>
-                            @media print {
-                                body {
-                                    margin: 0;
-                                    padding: 0;
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>
+                                @media print {
+                                    @page {
+                                        size: 10cm 8.5cm;
+                                        margin: 0; /* Pastikan tidak ada margin */
+                                    }
+                                    body {
+                                        margin: 0; /* Pastikan tidak ada margin */
+                                        padding: 0; /* Pastikan tidak ada padding */
+                                    }
+                                    .page {
+                                        margin: 0; /* Pastikan tidak ada margin */
+                                        padding: 0; /* Pastikan tidak ada padding */
+                                        overflow: hidden; /* Pastikan tidak ada overflow */
+                                        width: 10cm; /* Pastikan lebar sesuai */
+                                        height: 8.5cm; /* Pastikan tinggi sesuai */
+                                    }
                                 }
-                                .page {
+                                body {
                                     width: 10cm;
                                     height: 8.5cm;
-                                    page-break-after: always;
-                                    margin: 0;
-                                    padding: 0;
-                                    overflow: hidden;
+                                    margin: 0; /* Pastikan tidak ada margin */
+                                    padding: 0; /* Pastikan tidak ada padding */
                                 }
-                                .page:last-child {
-                                    page-break-after: avoid;
-                                }
-                            }
-                            @page {
-                                size: 10cm 8.5cm;
-                                margin: 0;
-                            }
-                            body {
-                                width: 10cm;
-                                height: 8.5cm;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${htmlPages.map(html => `
-                            <div class="page">
-                                ${html}
-                            </div>
-                        `).join('')}
-                    </body>
-                    </html>
-                `;
+                            </style>
+                        </head>
+                        <body>
+                            ${htmlPages.map(html => `
+                                <div class="page">
+                                    ${html}
+                                </div>
+                            `).join('')}
+                        </body>
+                        </html>
+                    `;
 
             // Tulis HTML kombinasi ke iframe
             iframe.contentDocument.write(combinedHtml);
@@ -510,55 +508,53 @@ $customerList = showCustomer();
             const isLastSeq = qrValue.seqKanban === (totalSeq.toString());
 
             return `<!DOCTYPE html>
-                <html lang="en">
+                        <html lang="en">
 
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Identitas Barang</title>
-                    <style>
-                        @page {
-                            size: 10cm 8.5cm;
-                            margin: 0;
-                        }
-
-                        body {
-                            width: 10cm;
-                            height: 8.5cm;
-                            margin: 0;
-                            padding: 0;
-                            overflow: hidden;
-                        }
-
-                        .card-Label {
-                            background-color: #f0f8ff;
-                            border: 2px solid #0066cc;
-                            border-radius: 10px;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                            font-family: 'Arial', sans-serif;
-                            width: 10cm;
-                            height: 8.5cm;
-                            display: flex;
-                            flex-direction: column;
-                            overflow: hidden;
-                            font-size: 0.9rem;
-                            margin: 0;
-                            padding: 5px;
-                            box-sizing: border-box;
-                        }
-
-                        .header {
-                            text-align: center;
-                            margin-bottom: 5px;
-                            border-bottom: 2px solid #0066cc;
-                            padding-bottom: 3px;
-                        }
-
-                        .header h1 {
-                            color: #0066cc;
-                            font-size: 1.2rem;
-                            margin: 0;
-                        }
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Identitas Barang</title>
+                            <style>
+                            @page {
+                                size: 10cm 8.5cm;
+                                margin: 0; /* Pastikan tidak ada margin */
+                            }
+                            body {
+                                width: 10cm;
+                                height: 8.5cm;
+                                margin: 0; /* Pastikan tidak ada margin */
+                                padding: 0; /* Pastikan tidak ada padding */
+                                overflow: hidden; /* Pastikan tidak ada overflow */
+                            }
+                            .card-Label {
+                                background-color: #f0f8ff;
+                                border: 2px solid #0066cc;
+                                border-radius: 10px;
+                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                font-family: 'Arial', sans-serif;
+                                width: 10cm;
+                                height: 8.5cm;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center; /* Rata tengah secara vertikal */
+                                align-items: center; /* Rata tengah secara horizontal */
+                                overflow: hidden;
+                                font-size: 0.9rem;
+                                margin: 0;
+                                padding: 5px;
+                                box-sizing: border-box;
+                            }
+                            .header {
+                                text-align: center;
+                                margin-bottom: 5px;
+                                border-bottom: 2px solid #0066cc;
+                                padding-bottom: 3px;
+                            }
+                            .header h1 {
+                                color: #0066cc;
+                                font-size: 1.2rem;
+                                margin: 0;
+                            }
 
 
                         .content-wrapper {

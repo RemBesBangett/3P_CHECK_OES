@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../../MODEL/LOGIN/3P_LOGIN_MODEL.php";
+include "/xampp/htdocs/3P_CHECK_OES/MODEL/LOGIN/3P_LOGIN_MODEL.php";
 
 // Fungsi untuk mencatat log
 function logMessage($message) {

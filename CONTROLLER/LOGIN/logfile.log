@@ -36,3 +36,43 @@ Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
 Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
 Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
 Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
+Data diterima: {"nama":"NGAB","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"fail","message":"Invalid credentials"}
+Data diterima: {"nama":"NGAB","password":"samsul","admin_auth":"false"}
+Hasil login: {"status":"fail","message":"Invalid credentials"}
+Data diterima: {"nama":"NGAB","password":"ngab","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"NGAB","line":"PC-GENBA","npk":111,"section":"SAMSUL","status_user":"OPEN"}
+Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
+Data diterima: {"nama":"NGAB","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"fail","message":"Invalid credentials"}
+Data diterima: {"nama":"NGAB","password":"ngab","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"NGAB","line":"SAMSUl","npk":111,"section":"SAMSUL","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC-GENBA","status_user":null}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"operational","status_user":null}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"operational","status_user":null}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"OPERATIONAL","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"pc-genba","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SARI","password":"sari","admin_auth":"false"}
+Hasil login: {"status":"success","access":"OPERATOR","nama":"SARI","line":"OFFICE","npk":2040813,"section":"PC - GENBA","status_user":"OPEN"}
+Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}
+Data diterima: {"nama":"SAMSUL","password":"1234","admin_auth":"false"}
+Hasil login: {"status":"success","access":"ADMIN","nama":"SAMSUL","line":"PC","npk":2230864,"section":"PC-ENGINEERING","status_user":"OPEN"}

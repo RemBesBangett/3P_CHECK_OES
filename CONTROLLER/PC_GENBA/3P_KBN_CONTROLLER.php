@@ -1,6 +1,6 @@
 <?php
 // Sertakan file model
-require_once 'C:/xampp/htdocs/3P_CHECK_OES/MODEL/PC_GENBA/3P_KBN_MODEL.php';
+require_once '/xampp/htdocs/3P_CHECK_OES/MODEL/PC_GENBA/3P_KBN_MODEL.php';
 
 // Tangani request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

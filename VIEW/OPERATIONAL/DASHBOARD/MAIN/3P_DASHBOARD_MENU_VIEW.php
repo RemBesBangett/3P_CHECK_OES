@@ -14,6 +14,7 @@ $userLogin = $_SESSION['nama'];
 $statusUser = $_SESSION['status_user'];
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
+include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
 ?>
 
 <!DOCTYPE html>

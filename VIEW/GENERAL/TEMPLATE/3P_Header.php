@@ -1,4 +1,4 @@
-<?php 
+<?php
 $page = basename($_SERVER['PHP_SELF']);
 $title = '';
 $baseUrl = '/3P_CHECK_OES/';
@@ -135,16 +135,19 @@ $baseUrl = '/3P_CHECK_OES/';
     <div id="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="<?php echo $baseUrl; ?>Dashboard" class="<?= ($page === 'data') ? 'active' : '' ?>">
-        <i class="fa-duotone fa-solid fa-house"></i> MAIN DASHBOARD
+            <i class="fa-duotone fa-solid fa-house"></i> MAIN DASHBOARD
         </a>
-        <a href="<?php echo $baseUrl; ?>Operational" class="<?= ($page === 'home') ? 'active' : '' ?>">
-        <i class="fa-brands fa-microsoft fa-spin-pulse"></i></i> HOME MENU
+        <a href="<?php echo $baseUrl; ?>Dashboard/ops" class="<?= ($page === 'home') ? 'active' : '' ?>">
+            <i class="fa-brands fa-microsoft fa-spin-pulse"></i></i> HOME MENU
         </a>
         <a href="<?php echo $baseUrl; ?>Operational/Report" class="<?= ($page === 'history') ? 'active' : '' ?>">
             <i class="fas fa-box me-2"></i>REPORT
         </a>
         <a href="<?php echo $baseUrl; ?>Operational/BO" class="<?= ($page === 'data') ? 'active' : '' ?>">
             <i class="fas fa-database me-2"></i>BO PART
+        </a>
+        <a href="<?php echo $baseUrl; ?>UserM" class="<?= ($page === 'user') ? 'active' : '' ?>">
+            <i class="fa-solid fa-user-gear me-2"></i>USER MANAGEMENT
         </a>
     </div>
 

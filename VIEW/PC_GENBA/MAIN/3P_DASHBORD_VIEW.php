@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC - GENBA' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
@@ -19,6 +19,8 @@ else if (!isset($_SESSION['nama'])) {
 }
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
+include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -157,6 +159,7 @@ $baseUrl = '/3P_CHECK_OES/';
         .card-custom:hover::after {
             left: 100%;
         }
+
         .card-custom .card-body i {
             font-size: 4rem;
             color: var(--accent-color);
@@ -173,51 +176,54 @@ $baseUrl = '/3P_CHECK_OES/';
 
 <body>
     <div class="dashboard-container">
-        <a href="<?php echo $baseUrl; ?>Dashboard" class="btn btn-warning">Main Menu</a>
-        <div class="page-header animate__animated animate__fadeInDown">
-            <h1>PC - GENBA<login user></h1>
-            <p class="lead">BEKERJA SESUAI SOP</p>
-            <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
-            <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
-        </div>
-        
-        <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
-            <?php
-            $dashboards = [
-                [
-                    'title' => 'EXPORT',
-                    'description' => 'Export Document From Operational',
-                    'icon' => 'journal',  // Bootstrap Icon name
-                    'link' => 'EXPORT'
-                ],
-                [
-                    'title' => 'KANBAN GENERATOR',
-                    'description' => 'Generate Any Kanban With Spesific Values',
-                    'icon' => 'printer',  // Bootstrap Icon name
-                    'link' => 'KANBAN'
-                ],
-                [
-                    'title' => 'MANAGE CUSTOMER',
-                    'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
-                    'icon' => 'person-lines-fill',  // Bootstrap Icon name
-                    'link' => 'KANBAN/DATA'
-                ]
-            ];
-
-            foreach ($dashboards as $dashboard): ?>
-                <div class="col">
-                    <a href="<?php echo $baseUrl .'PC-GENBA/'.  $dashboard['link']; ?>" class="text-decoration-none">
-                        <div class="card card-custom">
-                            <div class="card-body">
-                                <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
-                                <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
-                                <p class="card-text"><?php echo $dashboard['description']; ?></p>
-                            </div>
-                        </div>
-                    </a>
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD'">
+            <i class="fa fa-home"></i> Main Menu
+                </button>
+                <div class="page-header animate__animated animate__fadeInDown">
+                    <h1>PC - GENBA<login user>
+                    </h1>
+                    <p class="lead">BEKERJA SESUAI SOP</p>
+                    <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
+                    <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
                 </div>
-            <?php endforeach; ?>
-        </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
+                    <?php
+                    $dashboards = [
+                        [
+                            'title' => 'EXPORT',
+                            'description' => 'Export Document From Operational',
+                            'icon' => 'journal',  // Bootstrap Icon name
+                            'link' => 'EXPORT'
+                        ],
+                        [
+                            'title' => 'KANBAN GENERATOR',
+                            'description' => 'Generate Any Kanban With Spesific Values',
+                            'icon' => 'printer',  // Bootstrap Icon name
+                            'link' => 'KANBAN'
+                        ],
+                        [
+                            'title' => 'MANAGE CUSTOMER',
+                            'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
+                            'icon' => 'person-lines-fill',  // Bootstrap Icon name
+                            'link' => 'KANBAN/DATA'
+                        ]
+                    ];
+
+                    foreach ($dashboards as $dashboard): ?>
+                        <div class="col">
+                            <a href="<?php echo $baseUrl . 'PC-GENBA/' .  $dashboard['link']; ?>" class="text-decoration-none">
+                                <div class="card card-custom">
+                                    <div class="card-body">
+                                        <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
+                                        <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
+                                        <p class="card-text"><?php echo $dashboard['description']; ?></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
     </div>
 
 </body>
