@@ -1,5 +1,5 @@
 <?php
-include '../../MODEL/INTERAKTIF/3P_INTERLOCK_MODEL.php';
+include '/xampp/htdocs/3P_CHECK_OES/MODEL/INTERAKTIF/3P_INTERLOCK_MODEL.php';
 
 if (isset($_GET['userLogin'])) {
     $user = $_GET['userLogin'];

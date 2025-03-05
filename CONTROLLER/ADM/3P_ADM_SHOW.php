@@ -1,5 +1,5 @@
 <?php
-include '../../MODEL/ADM/3P_ADM_HANDLER.php';
+include '/xampp/htdocs/3P_CHECK_OES//MODEL/ADM/3P_ADM_HANDLER.php';
 
 
 if (isset($_GET['noSil'])) {

@@ -965,7 +965,7 @@ function handleModalOpen(button) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/BO/ADM/3P_ADM_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {

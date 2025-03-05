@@ -132,10 +132,16 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .page-header .lead {
+        .page-header {
             font-weight: 300;
             letter-spacing: 1px;
             opacity: 0.9;
+        }
+        .lead {
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+            margin: 0px;
         }
 
         @media (max-width: 768px) {

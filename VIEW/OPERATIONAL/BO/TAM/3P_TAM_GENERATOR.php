@@ -30,7 +30,7 @@ if (isset($data['noSil']) && isset($data['entries'])) {
     echo "
     
     <?php
-session_start();
+session_start();    
 if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
@@ -1055,7 +1055,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/BO/TAM/3P_TAM_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {

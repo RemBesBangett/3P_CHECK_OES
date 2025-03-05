@@ -11,7 +11,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
-include "../../GENERAL/TEMPLATE/3P_Header.php";
+include "/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php";
 $baseUrl = '/3P_CHECK_OES/';
 // Function to read files from folder
 function getSilFiles($directory)
@@ -332,7 +332,7 @@ $silFiles = getSilFiles('SIL_FILES/');
 
         function createDynamicPHPFile(noSil, entries) {
             $.ajax({
-                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_GENERATOR.php',
+                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/BO/ADM/3P_ADM_GENERATOR.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -375,7 +375,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/ADM/3P_ADM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -441,7 +441,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/ADM/3P_ADM_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/ADM/3P_ADM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -494,5 +494,5 @@ $silFiles = getSilFiles('SIL_FILES/');
 </html>
 
 <?php
-include "../../GENERAL/TEMPLATE/3P_Footer.php";
+include "/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Footer.php";
 ?>

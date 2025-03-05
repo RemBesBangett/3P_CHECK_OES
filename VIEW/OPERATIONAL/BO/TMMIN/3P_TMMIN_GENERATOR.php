@@ -990,7 +990,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.ajax({
-                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                                    url: '/3P_CHECK_OES/VIEW/OPERATIONAL/BO/TMMIN/3P_TMMIN_DELETE.php',
                                     type: 'POST',
                                     dataType: 'json',
                                     data: {

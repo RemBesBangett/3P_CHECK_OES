@@ -322,7 +322,7 @@ $silFiles = getSilFiles('SIL_FILES/');
 
         function createDynamicPHPFile(noSil, entries) {
             $.ajax({
-                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_GENERATOR.php',
+                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/BO/TMMIN/3P_TMMIN_GENERATOR.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -363,7 +363,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/TMMIN/3P_TMMIN_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -430,7 +430,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/TMMIN/3P_TMMIN_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {

@@ -15,7 +15,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 error_log("Script started");
 
 // Gunakan konstanta atau konfigurasi path yang konsisten
-define('BASE_PATH', 'C:/xampp/htdocs/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/SIL_FILES/');
+define('BASE_PATH', 'C:/xampp/htdocs/3P_CHECK_OES/VIEW/OPERATIONAL/BO/TMMIN/SIL_FILES/');
 
 try {
     // Pastikan file yang diterima valid

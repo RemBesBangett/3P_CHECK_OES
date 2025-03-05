@@ -337,7 +337,7 @@ $status = $_SESSION['status_user'];
 
         function createDynamicPHPFile(noSil, entries) {
             $.ajax({
-                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_GENERATOR.php',
+                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/BO/TAM/3P_TAM_GENERATOR.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -377,7 +377,7 @@ $status = $_SESSION['status_user'];
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/TAM/3P_TAM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -443,7 +443,7 @@ $status = $_SESSION['status_user'];
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TAM/3P_TAM_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/BO/TAM/3P_TAM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
