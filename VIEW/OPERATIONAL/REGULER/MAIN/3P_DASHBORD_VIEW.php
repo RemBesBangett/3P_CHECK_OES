@@ -10,10 +10,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/Dashboard');
     exit();
 }
-$userLogin = $_SESSION['nama'];
-$statusUser = $_SESSION['status_user'];
-// Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
+$username = $_SESSION['nama'];
+$status = $_SESSION['status_user'];
 include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
 ?>
 
@@ -25,13 +24,10 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3 Point Check OES - Dashboard</title>
     <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
-    <!-- Bootstrap & Custom CSS -->
-    <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/Animate.min.css">
-    <script src="<?= $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/Animate.min.css">
+    <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="<?= $baseUrl; ?>ASSET/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
-    <script src='<?= $baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js'></script>
-
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -155,97 +151,81 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
         .card-custom:hover::after {
             left: 100%;
         }
-
-        .card-custom .card-body i {
-            font-size: 4rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-        .card-custom:hover .card-body i {
-            transform: scale(1.1);
-            color: var(--primary-color);
-        }
     </style>
 </head>
 
 <body>
     <div class="dashboard-container">
-        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD'">
-            <i class="fa fa-home"></i> Main Menu
-        </button>
-        <div class="page-header animate__animated animate__fadeInDown">
-            <h1>SELAMAT DATANG<login user>
-            </h1>
-            <h1>PRE - DELIVERY CHECK</h1>
-            <p class="lead">HALO <?= $userLogin; ?></p>
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD/OPS'">
+            <i class="fa fa-home"></i> <- Back
+                </button>
+                <div class="page-header animate__animated animate__fadeInDown">
+                    <h1>3 POINT CHECK OES REGULER</h1>
+                    <p class="lead">Integrated Automotive Performance Tracking System</p>
+                </div>
 
-        </div>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">
+                    <?php
+                    $dashboards = [
+                        [
+                            'title' => 'ADM',
+                            'description' => 'Astra Daihatsu Motor Insights & Analytics',
+                            'icon' => 'daihatsu-vector-logo-idngrafis.png',
+                            'link' => 'ADM'
+                        ],
+                        [
+                            'title' => 'TMMIN',
+                            'description' => 'Toyota Motor Manufacturing Indonesia Data',
+                            'icon' => 'tmmin-logo-b1ae.png',
+                            'link' => 'TMMIN'
+                        ],
+                        [
+                            'title' => 'TAM',
+                            'description' => 'Toyota Astra Motor Comprehensive Analysis',
+                            'icon' => 'pt-toyota-astra-motor-tam.png',
+                            'link' => 'TAM'
+                        ],
+                        [
+                            'title' => 'History',
+                            'description' => 'Traceability Entire Process',
+                            'icon' => 'restore_10539476.png',
+                            'link' => 'Report'
+                        ],
+                        [
+                            'title' => 'Upcoming Projects',
+                            'description' => 'Work In Progress',
+                            'icon' => 'OIP.jfif',
+                            'link' => '#'
+                        ],
+                        [
+                            'title' => 'Upcoming Projects',
+                            'description' => 'Work In Progress',
+                            'icon' => 'OIP.jfif',
+                            'link' => '#'
+                        ]
+                    ];
 
-        <div class="row row-cols-1  row-cols-lg-2 g-4 animate__animated animate__fadeInUp">
-            <?php
-            $dashboards = [
-                [
-                    'title' => 'REGULAR',
-                    'description' => 'PC GENBA SIP',
-                    'icon' => 'display',  // Bootstrap Icon name
-                    'link' => 'OPERATIONAL/REGULAR'
-                ],
-                [
-                    'title' => 'BO',
-                    'description' => 'PRE DELIVERY CHECK',
-                    'icon' => 'gear',  // Bootstrap Icon name
-                    'link' => 'OPERATIONAL/BO'
-                ]
-            ];
-
-            foreach ($dashboards as $dashboard): ?>
-                <div class="col">
-                    <a href="<?php echo $baseUrl . $dashboard['link']; ?>" class="text-decoration-none">
-                        <div class="card card-custom">
-                            <div class="card-body">
-                                <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
-                                <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
-                                <p class="card-text"><?php echo $dashboard['description']; ?></p>
-                            </div>
+                    foreach ($dashboards as $dashboard): ?>
+                        <div class="col">
+                            <a href="<?php echo $baseUrl . 'OPERATIONAL/' . $dashboard['link']; ?>" class="text-decoration-none">
+                                <div class="card card-custom">
+                                    <div class="card-body">
+                                        <img src="<?php echo $baseUrl; ?>ASSET/Image/<?php echo $dashboard['icon']; ?>" alt="<?php echo $dashboard['title']; ?>">
+                                        <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
+                                        <p class="card-text"><?php echo $dashboard['description']; ?></p>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <div class='modal fade' id='authenticationModal' tabindex='-1' aria-labelledby='authenticationModalLabel' aria-hidden='true'>
-        <div class='modal-dialog'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <h5 class='modal-title' id='authenticationModalLabel'>Authentication Required</h5>
-                </div>
-                <div class='modal-body'>
-                    <form id='authenticationForm'>
-                        <div class='mb-3'>
-                            <label for='authUsername' class='form-label'>Username</label>
-                            <input type='text' class='form-control' id='authUsername' required>
-                        </div>
-                        <div class='mb-3'>
-                            <label for='authPassword' class='form-label'>Password</label>
-                            <input type='password' class='form-control' id='authPassword' required>
-                        </div>
-                    </form>
-                </div>
-                <div class='modal-footer'>
-                    <button type='button' class='btn btn-primary' id='authenticateButton'>Authenticate</button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <script src="<?= $baseUrl; ?>/JS/3P_INTERLOCK.js"></script>
+
     <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
     <script>
-        const usernameLogin = '<?= $userLogin; ?>';
-        const user = '<?= $userLogin; ?>';
-        const statusLogin = '<?= $statusUser; ?>';
+        const user = '<?= $username; ?>';
+        const statusLogin = '<?= $status; ?>';
     </script>
 
 </body>

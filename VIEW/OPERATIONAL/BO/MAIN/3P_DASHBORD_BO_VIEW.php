@@ -192,10 +192,10 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
                     'link' => 'BO/REPORT'
                 ],
                 [
-                    'title' => 'User Management',
-                    'description' => 'Comprehensive User Registration & Tracking',
-                    'icon' => 'user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg',
-                    'link' => 'BO/USER'
+                    'title' => 'Upcoming Projects',
+                    'description' => 'Work In Progress',
+                    'icon' => 'OIP.jfif',
+                    'link' => '#'
                 ],
                 [
                     'title' => 'Upcoming Projects',

@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
@@ -13,7 +13,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 include "../../../GENERAL/TEMPLATE/3P_Header.php";
 $baseUrl = '/3P_CHECK_OES/';
-
 // Function to read files from folder
 function getSilFiles($directory)
 {
@@ -95,7 +94,7 @@ $silFiles = getSilFiles('SIL_FILES/');
 
 <body>
     <div class="container mt-5">
-        <h2 class="text-center mb-4">DATA SCAN ADM & TMMIN VANNING</h2>
+        <h2 class="text-center mb-4">DATA SCAN ADM ASSYST</h2>
         <div class="d-flex justify-content-between mb-3">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Add New Entry
@@ -103,12 +102,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             <button type="button" class="btn btn-danger" id="clearButton" onclick="deleteAllSil(this)">
                 <i class="fas fa-trash"></i> Clear All Entries
             </button>
-            <!-- <button class="btn btn-warning btn-sm" onclick="exportData()">
-                <i class="fas fa-file-export"></i> Export
-            </button>
-            <input type="date" name="time" id="timePort" class="form-control w-auto"> -->
         </div>
-
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable">
                 <thead>
@@ -191,7 +185,6 @@ $silFiles = getSilFiles('SIL_FILES/');
         </div>
     </div>
 
-
     <script src="<?= $baseUrl; ?>/JS/3P_CHECK_INTERLOCK.js"></script>
     <script>
         const user = '<?= $username; ?>';
@@ -213,6 +206,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             hour12: false,
         };
 
+
         const formattedDate = date.toLocaleString('id-ID', options);
 
         document.getElementById('addForm').addEventListener('submit', function(e) {
@@ -227,11 +221,29 @@ $silFiles = getSilFiles('SIL_FILES/');
         });
 
         function processSilInput(silValue) {
+            const table = document.getElementById('dataTable'); // Ambil tabel dengan ID 'dataTable'
+            const rows = table.getElementsByTagName('tr'); // Ambil semua baris dalam tabel
             const noSil = silValue.substring(0, 7);
             const length = silValue.length;
             const entries = [];
             let silEntries = JSON.parse(localStorage.getItem('silEntries')) || [];
             const existingSil = silEntries.find(entry => entry.noSil === noSil);
+
+            for (let i = 1; i < rows.length; i++) { // Mulai dari 1 untuk melewati header
+                const partNumber = rows[i].cells[1].textContent; // Ambil nomor bagian dari kolom kedua
+                if (partNumber === noSil) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Duplicate SIL',
+                        text: `No SIL ${noSil} already exists. Please use a different No SIL.`,
+                        confirmButtonText: 'OK',
+                        willClose: () => {
+                            location.reload();
+                        }
+                    });
+                    return;
+                }
+            }
 
             if (existingSil) {
                 Swal.fire({
@@ -260,7 +272,7 @@ $silFiles = getSilFiles('SIL_FILES/');
                 createDynamicPHPFile(noSil, entries);
 
                 $.ajax({
-                    url: '<?= $baseUrl; ?>CONTROLLER/TMMIN/3P_TMMIN_SIL.php',
+                    url: '<?= $baseUrl; ?>CONTROLLER/ADM/3P_ADM_SIL.php',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -274,10 +286,8 @@ $silFiles = getSilFiles('SIL_FILES/');
                             title: 'SIL Added Successfully',
                             text: `SIL ${noSil} has been created with ${entries.length} part numbers.`,
                             confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
+                        }).then(() => {
+                            window.location.reload();
                         });
                     },
                     error: function(xhr, status, error) {
@@ -322,7 +332,7 @@ $silFiles = getSilFiles('SIL_FILES/');
 
         function createDynamicPHPFile(noSil, entries) {
             $.ajax({
-                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_GENERATOR.php',
+                url: '<?php echo $baseUrl; ?>VIEW/OPERATIONAL/REGULER/ADM/3P_ADM_GENERATOR.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -344,8 +354,10 @@ $silFiles = getSilFiles('SIL_FILES/');
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/TMMIN/SIL_' + noSil;
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/ADM/SIL_' + noSil;
         }
+
+
 
 
         function deleteEntry(button) {
@@ -363,7 +375,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/REGULER/ADM/3P_ADM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {
@@ -407,7 +419,6 @@ $silFiles = getSilFiles('SIL_FILES/');
                 }
             });
         }
-
         function deleteAllSil(button) {
             const dataTable = document.querySelector('#dataTable tbody');
             const rows = dataTable.rows;
@@ -430,7 +441,7 @@ $silFiles = getSilFiles('SIL_FILES/');
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/DASHBOARD/TMMIN/3P_TMMIN_DELETE.php',
+                        url: '<?= $baseUrl; ?>VIEW/OPERATIONAL/REGULER/ADM/3P_ADM_DELETE.php',
                         type: 'POST',
                         dataType: 'json',
                         data: {

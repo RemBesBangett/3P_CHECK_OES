@@ -1,5 +1,5 @@
 <?php
-include_once "C:/xampp/htdocs/3P_CHECK_OES/MODEL/TMMIN/3P_TMMIN_HANDLER.php";
+include_once "C:/xampp/htdocs/3P_CHECK_OES/MODEL/TAM/3P_TAM_HANDLER.php";
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
@@ -15,7 +15,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 error_log("Script started");
 
 // Gunakan konstanta atau konfigurasi path yang konsisten
-define('BASE_PATH', 'C:/xampp/htdocs/3P_CHECK_OES/VIEW/OPERATIONAL/DASHBOARD/TMMIN/SIL_FILES/');
+define('BASE_PATH', 'C:/xampp/htdocs/3P_CHECK_OES/VIEW/OPERATIONAL/REGULER/TAM/SIL_FILES/');
 
 try {
     // Pastikan file yang diterima valid
@@ -40,7 +40,7 @@ try {
 
         // Periksa apakah file ada
         if (!file_exists($filePath)) {
-            throw new Exception('File not found for NO_SIL: ' . $singleFileToDelete);  
+            throw new Exception('File not found for NO_SIL: ' . $singleFileToDelete);
         }
 
         // Coba hapus file dengan izin yang tepat
@@ -57,11 +57,10 @@ try {
 
     // Kirim respon sukses
     echo json_encode(['status' => 'success', 'results' => $results]);
-
 } catch (Exception $e) {
     // Log error
     error_log("Error: " . $e->getMessage());
-    
+
     // Kirim respon sesuai kesalahan
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }
