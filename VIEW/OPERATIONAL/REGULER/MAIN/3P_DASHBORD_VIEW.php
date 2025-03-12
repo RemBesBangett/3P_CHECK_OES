@@ -189,7 +189,7 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
                             'title' => 'History',
                             'description' => 'Traceability Entire Process',
                             'icon' => 'restore_10539476.png',
-                            'link' => 'Report'
+                            'link' => 'REPORT/REGULER'
                         ],
                         [
                             'title' => 'Upcoming Projects',

@@ -16,6 +16,8 @@ function dbcon()
     return $conn;
 }
 
+$pathUrl = 'C:/xampp/htdocs/3P_CHECK_OES/';
+
 // function addLogEntry($message, $npk, $nama, $line, $status)
 // {
 //     // Menggunakan fungsi dbcon() untuk koneksi database

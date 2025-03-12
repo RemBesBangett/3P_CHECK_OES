@@ -7,7 +7,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 date_default_timezone_set('Asia/Jakarta');
 
-include '../../../MODEL/HISTORY/3P_HISTORY_HANDLER.php';
+include '/xampp/htdocs/3P_CHECK_OES/MODEL/HISTORY/3P_HISTORY_HANDLER_BO.php';
 include '../TEMPLATE/3P_Header.php';
 
 // Ambil data history
@@ -92,13 +92,13 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packaging Line History</title>
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
-    <script src="<?php echo $baseUrl; ?>ASSET/jquery-3.7.1.js"></script>
-    <script src="<?php echo $baseUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?php echo $baseUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js"></script>
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.css">
-    <script src="<?php echo $baseUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $pathUrl; ?>ASSET/bootstrap-5.3.3/dist/css/bootstrap.min.css">
+    <script src="<?php echo $pathUrl; ?>ASSET/jquery-3.7.1.js"></script>
+    <script src="<?php echo $pathUrl; ?>ASSET/bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo $pathUrl; ?>ASSET/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="<?php echo $pathUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo $pathUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.css">
+    <script src="<?php echo $pathUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.js"></script>
 
     <style>
         body {

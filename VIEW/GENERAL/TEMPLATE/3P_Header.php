@@ -140,8 +140,11 @@ $baseUrl = '/3P_CHECK_OES/';
         <a href="<?php echo $baseUrl; ?>Dashboard/ops" class="<?= ($page === 'home') ? 'active' : '' ?>">
             <i class="fa-brands fa-microsoft fa-spin-pulse"></i></i> HOME MENU
         </a>
-        <a href="<?php echo $baseUrl; ?>Operational/Report" class="<?= ($page === 'history') ? 'active' : '' ?>">
-            <i class="fas fa-box me-2"></i>REPORT
+        <a href="<?php echo $baseUrl; ?>Operational/Report/Reguler" class="<?= ($page === 'history') ? 'active' : '' ?>">
+            <i class="fas fa-box me-2"></i>REPORT REGULER
+        </a>
+        <a href="<?php echo $baseUrl; ?>Operational/Report/BO" class="<?= ($page === 'history') ? 'active' : '' ?>">
+            <i class="fas fa-box me-2"></i>REPORT BO
         </a>
         <a href="<?php echo $baseUrl; ?>Operational/BO" class="<?= ($page === 'data') ? 'active' : '' ?>">
             <i class="fas fa-database me-2"></i>BO PART
