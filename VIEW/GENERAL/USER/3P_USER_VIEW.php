@@ -89,7 +89,9 @@ $baseUrl = '/3P_CHECK_OES/';
 <body>
     <div class="container">
         <h1 class="mt-4 mb-4">User Information</h1>
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add User</button>
+        <?php if ($_SESSION['access'] === 'ADMIN' && $_SESSION['access'] === 'LEADER') : ?>
+            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add User</button>
+        <?php endif; ?>
         <div class="table-responsive">
 
             <table class="table table-striped table-hover">
@@ -167,7 +169,9 @@ $baseUrl = '/3P_CHECK_OES/';
                         <div class="mb-3">
                             <label for="editAccess" class="form-label">Access</label>
                             <select class="form-control" id="editAccess" name="editAccess">
-                                <option value="ADMIN">ADMIN</option>
+                                <?php if ($_SESSION['access'] === 'ADMIN') : ?>
+                                    <option value="ADMIN">ADMIN</option>
+                                <?php endif; ?>
                                 <option value="LEADER">LEADER</option>
                                 <option value="OPERATOR">OPERATOR</option>
                             </select>
@@ -176,12 +180,19 @@ $baseUrl = '/3P_CHECK_OES/';
                             <label for="editStatus" class="form-label">Status</label>
                             <select class="form-control" id="editStatus" name="editStatus">
                                 <option value="ACTIVE">ACTIVE</option>
-                                <option value="EXPIRIED">EXPIRED</option>
+                                <?php if ($_SESSION['access'] === 'ADMIN') : ?>
+                                    <option value="EXPIRED">EXPIRED</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="editSection" class="form-label">Section</label>
-                            <input type="text" class="form-control" id="editSection" name="editSection">
+                            <select name="editSection" id="editSection" class="form-control" <?php echo ($_SESSION['access'] !== 'ADMIN') ? 'disabled' : ''; ?>>
+                                <option value="OPERATOR">OPERATOR</option>
+                                <option value="PC - GENBA">PC GENBA</option>
+                                <option value="SHIPPING">SHIPPING</option>
+                            </select>
+                            <!-- <input type="text" class="form-control" id="editSection" name="editSection"> -->
                         </div>
                         <div class="mb-3">
                             <label for="editLine" class="form-label">Line</label>
@@ -225,7 +236,9 @@ $baseUrl = '/3P_CHECK_OES/';
                         <div class="mb-3">
                             <label for="addAccess" class="form-label">Access</label>
                             <select class="form-control" id="addAccess" name="addAccess" required>
-                                <option value="ADMIN">ADMIN</option>
+                                <?php if ($_SESSION['access'] === 'ADMIN') : ?>
+                                    <option value="ADMIN">ADMIN</option>
+                                <?php endif; ?>
                                 <option value="LEADER">LEADER</option>
                                 <option value="OPERATOR">OPERATOR</option>
                             </select>
@@ -234,12 +247,19 @@ $baseUrl = '/3P_CHECK_OES/';
                             <label for="addStatus" class="form-label">Status</label>
                             <select class="form-control" id="addStatus" name="addStatus" required>
                                 <option value="ACTIVE">ACTIVE</option>
-                                <option value="EXPIRED">EXPIRED</option>
+                                <?php if ($_SESSION['access'] === 'ADMIN') : ?>
+                                    <option value="EXPIRED">EXPIRED</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="addSection" class="form-label">Section</label>
-                            <input type="text" class="form-control" id="addSection" name="addSection" required>
+                            <select name="addSection" id="addSection" class="form-control">
+                                <option value="OPERATOR">OPERATOR</option>
+                                <option value="PC - GENBA">PC GENBA</option>
+                                <option value="SHIPPING">SHIPPING</option>
+                            </select>
+                            <!-- <input type="text" class="form-control" id="addSection" name="addSection" required> -->
                         </div>
                         <div class="mb-3">
                             <label for="addLine" class="form-label">Line</label>

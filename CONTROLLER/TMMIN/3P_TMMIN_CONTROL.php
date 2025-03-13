@@ -35,6 +35,7 @@ try {
     $manifestKanban = isset($_POST['manifestKanban']) ? trim($_POST['manifestKanban']) : "";
     $noSilDelete = isset($_POST['noSilDel']) ? trim($_POST['noSilDel']) : "";
     $username = isset($_POST['userName']) ? trim($_POST['userName']) : "";
+    $remainQty = isset($_POST['remainQty']) ? trim($_POST['remainQty']) : "";
     // Cek apakah hanya $noSilDelete dan $dataSilAll yang diposting
     // Cek apakah semua variabel dari $noSil sampai $manifestKanban kosong
     if (empty($noSil) && empty($partNumber) && empty($customerLabel) && empty($scanKanban) && empty($totalKanban) && empty($totalLabel) && empty($scanLabel) && empty($qtyLabel) && empty($qtyKanban) && empty($customer) && empty($labelItemDB) && empty($PONumber) && empty($prepareTime) && empty($actualTimes) && empty($delDates) && empty($dataID) && empty($delivVan) && empty($manifestKanban) && empty($kanbanId) && empty($kanbanItem)) {
@@ -71,7 +72,8 @@ try {
             $manifestKanban,
             $kanbanId,
             $kanbanItem,
-            $username
+            $username,
+            $remainQty
         );
 
         // Kirim response

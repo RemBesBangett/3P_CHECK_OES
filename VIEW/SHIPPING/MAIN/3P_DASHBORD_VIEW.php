@@ -11,7 +11,7 @@ $userLogin = $_SESSION['nama'];
 $statusUser = $_SESSION['status_user'];
 // Jika sudah login, ambil nama pengguna dari session
 $baseUrl = '/3P_CHECK_OES/';
-include '../GENERAL/TEMPLATE/3P_Header.php';
+include '../../GENERAL/TEMPLATE/3P_Header.php';
 ?>
 
 <!DOCTYPE html>
@@ -169,34 +169,30 @@ include '../GENERAL/TEMPLATE/3P_Header.php';
 
 <body>
     <div class="dashboard-container">
+        <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD'">
+            <i class="fa fa-home"></i> Main Menu
+        </button>
         <div class="page-header animate__animated animate__fadeInDown">
-            <h1>SELAMAT DATANG DI   <login user>
+            <h1>SELAMAT DATANG DI <login user>
             </h1>
             <h1>PRE - DELIVERY CHECK</h1>
             <p class="lead">HALO <?= $userLogin; ?></p>
 
         </div>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 animate__animated animate__fadeInUp">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 g-4 animate__animated animate__fadeInUp">
             <?php
             $dashboards = [
                 [
-                    'title' => 'PC',
-                    'description' => 'PC GENBA SIP',
-                    'icon' => 'display',  // Bootstrap Icon name
-                    'link' => 'PC-GENBA'
+                    'title' => 'EXPORT',
+                    'description' => 'Export Data to Excel',
+                    'icon' => 'download',  // Bootstrap Icon name
+                    'link' => 'LOGOUT'
                 ],
                 [
-                    'title' => 'OPERATIONAL',
-                    'description' => 'PRE DELIVERY CHECK',
-                    'icon' => 'gear',  // Bootstrap Icon name
-                    'link' => 'DASHBOARD/OPS'
-                ],
-                [
-                    'title' => 'SHIPPING',
-                    'description' => 'SHIPPING PROCESS',
-                    'icon' => 'truck',  // Bootstrap Icon name
-                    'link' => 'SHIPPING'
+                    'title' => 'PRINT CONTENT LIST',
+                    'description' => 'Generate Content List from Repacking Data',
+                    'icon' => 'printer',  // Bootstrap Icon name
+                    'link' => 'LOGOUT'
                 ]
             ];
 

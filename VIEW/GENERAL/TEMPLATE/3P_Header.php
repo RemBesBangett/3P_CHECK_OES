@@ -1,4 +1,5 @@
 <?php
+
 $page = basename($_SERVER['PHP_SELF']);
 $title = '';
 $baseUrl = '/3P_CHECK_OES/';
@@ -18,7 +19,6 @@ $baseUrl = '/3P_CHECK_OES/';
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
             background-color: #f0f2f5;
             transition: margin-left .5s;
         }
@@ -30,7 +30,7 @@ $baseUrl = '/3P_CHECK_OES/';
             z-index: 1000;
             top: 0;
             left: -280px;
-            background-color: #2c3e50;
+            background-color: rgb(106, 106, 106);
             padding-top: 60px;
             transition: 0.3s;
             overflow-x: hidden;
@@ -48,8 +48,10 @@ $baseUrl = '/3P_CHECK_OES/';
         }
 
         #sidebar a:hover {
-            background-color: #34495e;
+            background-color: rgb(132, 233, 147);
             border-left: 4px solid #3498db;
+            color: black;
+            font-weight: bold;
         }
 
         #sidebar a.active {
@@ -60,7 +62,6 @@ $baseUrl = '/3P_CHECK_OES/';
 
         #main {
             transition: margin-left .5s;
-
         }
 
         .navbar {
@@ -97,7 +98,7 @@ $baseUrl = '/3P_CHECK_OES/';
 
         .navbar-title h3 {
             font-weight: 600;
-            color: #2c3e50;
+            color: rgb(255, 255, 255);
             margin: 0;
         }
 
@@ -135,23 +136,25 @@ $baseUrl = '/3P_CHECK_OES/';
     <div id="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="<?php echo $baseUrl; ?>Dashboard" class="<?= ($page === 'data') ? 'active' : '' ?>">
-            <i class="fa-duotone fa-solid fa-house"></i> MAIN DASHBOARD
+            <i class="fa-duotone fa-solid fa-house"></i> MAIN MENU
         </a>
-        <a href="<?php echo $baseUrl; ?>Dashboard/ops" class="<?= ($page === 'home') ? 'active' : '' ?>">
-            <i class="fa-brands fa-microsoft fa-spin-pulse"></i></i> HOME MENU
+        <a href="<?php echo $baseUrl; ?>OPERATIONAL/REPORT/REGULER" class="pl-4 <?= ($page === 'report_reguler') ? 'active' : '' ?>">
+            <i class="fas fa-file-alt me-2"></i> REPORT REGULER
         </a>
-        <a href="<?php echo $baseUrl; ?>Operational/Report/Reguler" class="<?= ($page === 'history') ? 'active' : '' ?>">
-            <i class="fas fa-box me-2"></i>REPORT REGULER
-        </a>
-        <a href="<?php echo $baseUrl; ?>Operational/Report/BO" class="<?= ($page === 'history') ? 'active' : '' ?>">
-            <i class="fas fa-box me-2"></i>REPORT BO
-        </a>
-        <a href="<?php echo $baseUrl; ?>Operational/BO" class="<?= ($page === 'data') ? 'active' : '' ?>">
-            <i class="fas fa-database me-2"></i>BO PART
+        <a href="<?php echo $baseUrl; ?>OPERATIONAL/REPORT/BO" class="pl-4 <?= ($page === 'report_bo') ? 'active' : '' ?>">
+            <i class="fas fa-file-alt me-2"></i> REPORT BO
         </a>
         <a href="<?php echo $baseUrl; ?>UserM" class="<?= ($page === 'user') ? 'active' : '' ?>">
-            <i class="fa-solid fa-user-gear me-2"></i>USER MANAGEMENT
+            <i class="fa-solid fa-user-gear me-2"></i> USER MANAGEMENT
         </a>
+        <a href="<?php echo $baseUrl; ?>PC-GENBA/EXPORT" class="<?= ($page === 'export') ? 'active' : '' ?>">
+            <i class="fa-solid fa-download me-2"></i> EXPORT DATA
+        </a>
+        <?php if ($_SESSION['access'] === 'ADMIN' || $_SESSION['section'] === 'PC-GENBA') : ?>
+            <a href="<?php echo $baseUrl; ?>PC-GENBA/MERGE" class="<?= ($page === 'merge') ? 'active' : '' ?>">
+            <i class="fa-solid fa-object-group me-2"></i> MERGE .ZIP
+            </a>
+        <?php endif; ?>
     </div>
 
     <nav class="navbar">
@@ -183,6 +186,21 @@ $baseUrl = '/3P_CHECK_OES/';
     </div>
 
     <script>
+        $(document).ready(function() {
+            $('#sidebar a').on('click', function(e) {
+                var target = $(this).attr('href');
+                if (target.startsWith('#')) {
+                    e.preventDefault();
+                    $(target).collapse('toggle');
+                } else {
+                    e.preventDefault();
+                    target = target.replace(/\/+/g, '/'); // Menghapus multiple slashes  
+                    target = target.replace(/ /g, '_'); // Mengubah spasi menjadi _  
+                    window.location.href = target;
+                }
+            });
+        });
+
         function openNav() {
             document.getElementById("sidebar").style.left = "0";
             document.getElementById("main").style.marginLeft = "280px";
@@ -192,18 +210,6 @@ $baseUrl = '/3P_CHECK_OES/';
             document.getElementById("sidebar").style.left = "-280px";
             document.getElementById("main").style.marginLeft = "0";
         }
-        $(document).ready(function() {
-            $('#sidebar a').on('click', function(e) {
-                e.preventDefault();
-                var href = $(this).attr('href');
-
-                // Pastikan URL menggunakan format yang benar
-                href = href.replace(/\/+/g, '/'); // Menghapus multiple slashes
-                href = href.replace(/ /g, '_'); // Mengubah spasi menjadi _
-
-                window.location.href = href;
-            });
-        });
     </script>
 </body>
 

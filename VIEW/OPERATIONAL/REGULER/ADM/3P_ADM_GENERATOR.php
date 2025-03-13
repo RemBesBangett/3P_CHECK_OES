@@ -149,7 +149,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 <div class='card'>
                     <div class='card-header bg-primary text-white d-flex justify-content-between align-items-center'>
                         <h3 class='mb-0' id='noSil'>" . htmlspecialchars($noSil) . "</h3>
-                        <a href='/3P_CHECK_OES/OPERATIONAL/ADM' class='btn btn-secondary btn-sm'>
+                        <a href='/3P_CHECK_OES/OPERATIONAL/REGULER/ADM' class='btn btn-secondary btn-sm'>
                             <i class='fas fa-arrow-left'></i> Back to List
                         </a>
                     </div>
@@ -385,7 +385,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
         // Event listener untuk inputScanKanban
 
         document.getElementById('inputScanKanban').addEventListener('input', function() {
-            const kanbanContent = this.value; // Ambil nilai dari inputScanKanban
+            const kanbanContent = this.value.toUpperCase(); // Ambil nilai dari inputScanKanban
 
             // Hapus timeout sebelumnya jika ada input baru
             clearTimeout(clearLabelTimeoutId);
@@ -408,7 +408,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
                 });
             }
-            const scannedLabel = this.value;
+            const scannedLabel = this.value.toUpperCase();
             clearTimeout(clearLabelTimeoutId);
             clearLabelTimeoutId = setTimeout(() => {
                 handleLabelScan(scannedLabel, this); // Panggil fungsi baru
@@ -856,11 +856,12 @@ function handleModalOpen(button) {
                                     icon: 'success',
                                     title: 'Berhasil!',
                                     text: response.message || 'Data berhasil disimpan',
-                                    confirmButtonText: 'OK'
-                                }).then((result) => {
-                                    location.reload();
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    willClose: () => {
+                                        location.reload();
+                                    }
                                 });
-
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -1006,7 +1007,7 @@ function handleModalOpen(button) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/ADM';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/REGULER/ADM';
                             }
                         });
                     } else {

@@ -68,7 +68,9 @@ $baseUrl = '/3P_CHECK_OES/';
 
 <body>
     <div class="table-container">
-        <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">Back</a>
+        <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">
+            <i class="fa-duotone fa-solid fa-backward"></i> Kembali
+        </a>
         <h2 class="text-center">Data Customer</h2>
         <button class="btn btn-success" type="button" style="float: right;" data-bs-target="#addDataModal" data-bs-toggle="modal">Add Customer</button>
 

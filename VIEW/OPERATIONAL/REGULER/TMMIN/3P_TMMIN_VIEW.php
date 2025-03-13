@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'PC-GENBA' && $_SESSION['access'] != 'ADMIN') {
+} else if (!isset($_SESSION['section']) || $_SESSION['access'] != 'OPERATOR' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
@@ -97,6 +97,7 @@ $silFiles = getSilFiles('SIL_FILES/');
     <div class="container mt-5">
         <h2 class="text-center mb-4">DATA SCAN ADM & TMMIN VANNING</h2>
         <div class="d-flex justify-content-between mb-3">
+            <a href="<?= $baseUrl; ?>OPERATIONAL/REGULER" class="btn btn-warning"><- Back</a>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Add New Entry
             </button>
@@ -344,7 +345,7 @@ $silFiles = getSilFiles('SIL_FILES/');
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/TMMIN/SIL_' + noSil;
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/REGULER/TMMIN/SIL_' + noSil;
         }
 
 

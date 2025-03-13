@@ -75,7 +75,9 @@ include '../../GENERAL/TEMPLATE/3P_Header.php';
 
 <body>
     <div class="container">
-    <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">Back</a>
+        <a href="<?= $baseUrl; ?>/PC-GENBA" class="btn btn-warning">
+            <i class="fa-duotone fa-solid fa-backward"></i> Kembali
+        </a>
         <div class="header">
             <h1>Export Data For Customer</h1>
             <div class="current-time" id="currentTime"></div>

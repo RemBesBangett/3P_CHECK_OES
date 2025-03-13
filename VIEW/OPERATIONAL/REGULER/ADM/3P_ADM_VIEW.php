@@ -96,12 +96,13 @@ $silFiles = getSilFiles('SIL_FILES/');
     <div class="container mt-5">
         <h2 class="text-center mb-4">DATA SCAN ADM ASSYST</h2>
         <div class="d-flex justify-content-between mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i class="fas fa-plus"></i> Add New Entry
-            </button>
-            <button type="button" class="btn btn-danger" id="clearButton" onclick="deleteAllSil(this)">
-                <i class="fas fa-trash"></i> Clear All Entries
-            </button>
+            <a href="<?= $baseUrl; ?>OPERATIONAL/REGULER" class="btn btn-warning"><- Back</a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="fas fa-plus"></i> Add New Entry
+                    </button>
+                    <button type="button" class="btn btn-danger" id="clearButton" onclick="deleteAllSil(this)">
+                        <i class="fas fa-trash"></i> Clear All Entries
+                    </button>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable">
@@ -354,7 +355,7 @@ $silFiles = getSilFiles('SIL_FILES/');
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/ADM/SIL_' + noSil;
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/REGULER/ADM/SIL_' + noSil;
         }
 
 
@@ -419,6 +420,7 @@ $silFiles = getSilFiles('SIL_FILES/');
                 }
             });
         }
+
         function deleteAllSil(button) {
             const dataTable = document.querySelector('#dataTable tbody');
             const rows = dataTable.rows;

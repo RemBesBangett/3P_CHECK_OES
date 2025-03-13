@@ -171,19 +171,19 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
                             'title' => 'ADM',
                             'description' => 'Astra Daihatsu Motor Insights & Analytics',
                             'icon' => 'daihatsu-vector-logo-idngrafis.png',
-                            'link' => 'ADM'
+                            'link' => 'REGULER/ADM'
                         ],
                         [
                             'title' => 'TMMIN',
                             'description' => 'Toyota Motor Manufacturing Indonesia Data',
                             'icon' => 'tmmin-logo-b1ae.png',
-                            'link' => 'TMMIN'
+                            'link' => 'REGULER/TMMIN'
                         ],
                         [
                             'title' => 'TAM',
                             'description' => 'Toyota Astra Motor Comprehensive Analysis',
                             'icon' => 'pt-toyota-astra-motor-tam.png',
-                            'link' => 'TAM'
+                            'link' => 'REGULER/TAM'
                         ],
                         [
                             'title' => 'History',

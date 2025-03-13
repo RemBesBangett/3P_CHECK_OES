@@ -1,5 +1,5 @@
 <?php
-include "/xampp/htdocs/3P_CHECK_OES/MODEL/INTERAKTIF/3P_INTERLOCK_MODEL.php";
+include "C:/xampp/htdocs/3P_CHECK_OES/MODEL/INTERAKTIF/3P_INTERLOCK_MODEL.php";
 
 
 // Aktifkan error reporting

@@ -147,7 +147,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 <div class='card'>
                     <div class='card-header bg-primary text-white d-flex justify-content-between align-items-center'>
                         <h3 class='mb-0' id='noSil'>" . htmlspecialchars($noSil) . "</h3>
-                        <a href='<?= \$baseUrl; ?>OPERATIONAL/TMMIN' class='btn btn-secondary btn-sm'>
+                        <a href='<?= \$baseUrl; ?>OPERATIONAL/REGULER/TMMIN' class='btn btn-secondary btn-sm'>
                             <i class='fas fa-arrow-left'></i> Back to List
                         </a>
                     </div>
@@ -386,7 +386,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
         // Event listener untuk inputScanKanban
         document.getElementById('inputScanKanban').addEventListener('input', function() {
-            const kanbanContent = this.value; // Ambil nilai dari inputScanKanban
+            const kanbanContent = this.value.toUpperCase(); // Ambil nilai dari inputScanKanban
 
             // Hapus timeout sebelumnya jika ada input baru
             clearTimeout(clearLabelTimeoutId);
@@ -406,7 +406,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                 return;
             }
 
-            const scannedLabel = this.value;
+            const scannedLabel = this.value.toUpperCase();
             clearTimeout(clearLabelTimeoutId);
             clearLabelTimeoutId = setTimeout(() => {
                 handleLabelScan(scannedLabel, this); // Panggil fungsi baru
@@ -758,9 +758,9 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
 
             repeaterScanning = 0;
             if (/^[A-Za-z]{2}/.test(manifestKanbanDB)) {
-                customerAuto = 'TMMIN VANNING';
-            } else if (/^[A-Za-z]/.test(manifestKanbanDB)) {
                 customerAuto = 'ADM VANNING';
+            } else if (/^[A-Za-z]/.test(manifestKanbanDB)) {
+                customerAuto = 'TMMIN VANNING';
             }
             const date = new Date();
             // Format dengan opsi
@@ -879,14 +879,14 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                                     icon: 'success',
                                     title: 'Berhasil!',
                                     text: response.message || 'Data berhasil disimpan',
-                                    confirmButtonText: 'OK'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                    willClose: () => {
                                         location.reload();
                                     }
                                 });
-                            } else {
+                            
+                            }  else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
@@ -1031,7 +1031,7 @@ if (!isset(\$_SESSION['loggedin']) || \$_SESSION['loggedin'] !== true) {
                                         });
                                     }
                                 });
-                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/TMMIN';
+                                location.href = '<?= \$baseUrl; ?>OPERATIONAL/REGULER/TMMIN';
                             }
                         });
                     } else {

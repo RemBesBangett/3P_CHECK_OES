@@ -102,7 +102,7 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
 
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            /* font-family: 'Poppins', sans-serif; */
             background-color: #f0f2f5;
             color: #333;
             font-size: 12px;

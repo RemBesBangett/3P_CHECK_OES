@@ -3,11 +3,11 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} 
+}
 
 date_default_timezone_set('Asia/Jakarta');
 
-include '/xampp/htdocs/3P_CHECK_OES/MODEL/HISTORY/3P_HISTORY_HANDLER_BO.php';
+include '/xampp/htdocs/3P_CHECK_OES/CONTROLLER/HISTORY/3P_HISTORY_CONTROLLER_BO.php';
 include '../TEMPLATE/3P_Header.php';
 
 // Ambil data history
@@ -99,10 +99,11 @@ $histories = array_slice($histories, $startIndex, $dataPerPage);
     <link rel="stylesheet" href="<?php echo $pathUrl; ?>ASSET/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css">
     <link rel="stylesheet" href="<?php echo $pathUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.css">
     <script src="<?php echo $pathUrl; ?>ASSET/jquery-ui-1.14.0/jquery-ui.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: "Zain", sans-serif;
             background-color: #f0f2f5;
             color: #333;
             font-size: 12px;

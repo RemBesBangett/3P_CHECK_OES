@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header('location: /3P_CHECK_OES/logout');
     exit();
-} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL') {
+} else if (!isset($_SESSION['section']) || $_SESSION['section'] != 'OPERATIONAL' && $_SESSION['access'] != 'ADMIN') {
     header('location: /3P_CHECK_OES/Error_access');
     die('Access denied: Invalid session section');
 } else if (isset($_SESSION['status_user']) && $_SESSION['status_user'] == 'locked') {
@@ -13,7 +13,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $baseUrl = '/3P_CHECK_OES/';
 $username = $_SESSION['nama'];
 $status = $_SESSION['status_user'];
-include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
+include '../../../GENERAL/TEMPLATE/3P_Header.php';
 ?>
 
 <!DOCTYPE html>

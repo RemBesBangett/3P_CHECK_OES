@@ -95,6 +95,7 @@ $status = $_SESSION['status_user'];
     <div class="container mt-5">
         <h2 class="text-center mb-4">DATA SCAN TAM</h2>
         <div class="d-flex justify-content-between mb-3">
+        <a href="<?= $baseUrl; ?>OPERATIONAL/REGULER" class="btn btn-warning"><- Back</a>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Add New Entry
             </button>
@@ -359,7 +360,7 @@ $status = $_SESSION['status_user'];
         }
 
         function continueEntry(noSil) {
-            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/TAM/SIL_' + noSil;
+            window.location.href = '<?php echo $baseUrl; ?>OPERATIONAL/REGULER/TAM/SIL_' + noSil;
         }
 
         function deleteEntry(button) {

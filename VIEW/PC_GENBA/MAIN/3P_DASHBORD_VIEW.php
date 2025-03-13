@@ -85,6 +85,7 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
             align-items: center;
             padding: 1.5rem;
             text-align: center;
+            height: 250px;
         }
 
         .card-custom img {
@@ -137,6 +138,7 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
             letter-spacing: 1px;
             opacity: 0.9;
         }
+
         .lead {
             font-weight: 300;
             letter-spacing: 0.5px;
@@ -184,52 +186,58 @@ include '/xampp/htdocs/3P_CHECK_OES/VIEW/GENERAL/TEMPLATE/3P_Header.php';
     <div class="dashboard-container">
         <button type="button" class="btn btn-warning" onclick="window.location.href='<?= $baseUrl; ?>DASHBOARD'">
             <i class="fa fa-home"></i> Main Menu
-                </button>
-                <div class="page-header animate__animated animate__fadeInDown">
-                    <h1>PC - GENBA<login user>
-                    </h1>
-                    <p class="lead">BEKERJA SESUAI SOP</p>
-                    <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
-                    <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
-                </div>
+        </button>
+        <div class="page-header animate__animated animate__fadeInDown">
+            <h1>PC - GENBA<login user>
+            </h1>
+            <p class="lead">BEKERJA SESUAI SOP</p>
+            <p class="lead">LAKUKAN STOP, CALL & WAIT JIKA DITEMUKAN ABNORMALITY</p>
+            <p class="lead">LAKUKAN 1 CYCLE PROCESS</p>
+        </div>
 
-                <div class="row row-cols-1 row-cols-md-2 row-cols-md-3 g-4 animate__animated animate__fadeInUp">
-                    <?php
-                    $dashboards = [
-                        [
-                            'title' => 'EXPORT',
-                            'description' => 'Export Document From Operational',
-                            'icon' => 'journal',  // Bootstrap Icon name
-                            'link' => 'EXPORT'
-                        ],
-                        [
-                            'title' => 'KANBAN GENERATOR',
-                            'description' => 'Generate Any Kanban With Spesific Values',
-                            'icon' => 'printer',  // Bootstrap Icon name
-                            'link' => 'KANBAN'
-                        ],
-                        [
-                            'title' => 'MANAGE CUSTOMER',
-                            'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
-                            'icon' => 'person-lines-fill',  // Bootstrap Icon name
-                            'link' => 'KANBAN/DATA'
-                        ]
-                    ];
+        <div class="row row-cols-1 row-cols-md-2 row-cols-md-4 g-4 animate__animated animate__fadeInUp">
+            <?php
+            $dashboards = [
+                [
+                    'title' => 'EXPORT',
+                    'description' => 'Export Document From Operational',
+                    'icon' => 'journal',  // Bootstrap Icon name
+                    'link' => 'EXPORT'
+                ],
+                [
+                    'title' => 'KANBAN GENERATOR',
+                    'description' => 'Generate Any Kanban With Spesific Values',
+                    'icon' => 'printer',  // Bootstrap Icon name
+                    'link' => 'KANBAN'
+                ],
+                [
+                    'title' => 'MANAGE CUSTOMER',
+                    'description' => 'ADD, EDIT, DELETE CUSTOMER LIST',
+                    'icon' => 'person-lines-fill',  // Bootstrap Icon name
+                    'link' => 'KANBAN/DATA'
+                ],
+                [
+                    'title' => 'MERGE .ZIP FILE',
+                    'description' => 'COMBINE ZIP FILE TO GENERATE .TXT FILE',
+                    'icon' => 'file-earmark-zip',  // Bootstrap Icon name
+                    'link' => 'MERGE'
+                ],
+            ];
 
-                    foreach ($dashboards as $dashboard): ?>
-                        <div class="col">
-                            <a href="<?php echo $baseUrl . 'PC-GENBA/' .  $dashboard['link']; ?>" class="text-decoration-none">
-                                <div class="card card-custom">
-                                    <div class="card-body">
-                                        <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
-                                        <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
-                                        <p class="card-text"><?php echo $dashboard['description']; ?></p>
-                                    </div>
-                                </div>
-                            </a>
+            foreach ($dashboards as $dashboard): ?>
+                <div class="col">
+                    <a href="<?php echo $baseUrl . 'PC-GENBA/' .  $dashboard['link']; ?>" class="text-decoration-none">
+                        <div class="card card-custom">
+                            <div class="card-body">
+                                <i class="bi bi-<?php echo $dashboard['icon']; ?>"></i>
+                                <h5 class="card-title text-center"><?php echo $dashboard['title']; ?></h5>
+                                <p class="card-text"><?php echo $dashboard['description']; ?></p>
+                            </div>
                         </div>
-                    <?php endforeach; ?>
+                    </a>
                 </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
 </body>
